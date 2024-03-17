@@ -1,0 +1,12 @@
+@import "primeicons/primeicons.css";
+@import "primeng/resources/primeng.css";
+
+
+body, html {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+}
+
+$gutter: 1rem;
+@import "assets/layout/styles/layout/layout.scss";
