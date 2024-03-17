@@ -1,18 +1,35 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-
-import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
+import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
+import { ROUTES } from './app-routing.module';
+import { RouterModule } from '@angular/router';
+import { SeguridadService } from './modules/login/service/seguridad.service';
+import { AutenticacionGuard } from './auth-guard/autenticacion.guard';
+import { HttpRequestInterceptor } from './interceptors/http-request.interceptor';
+import { CommonModule } from '@angular/common';
+import { AppLayoutModule } from './modules/layout/app.layout.module';
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
   ],
   imports: [
+    CommonModule,
     BrowserModule,
-    AppRoutingModule
+    HttpClientModule,
+    RouterModule.forRoot(ROUTES, { scrollPositionRestoration: 'enabled', anchorScrolling: 'enabled', onSameUrlNavigation: 'reload' }),
+    AppLayoutModule,
   ],
-  providers: [],
-  bootstrap: [AppComponent]
+  providers: [
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: HttpRequestInterceptor,
+      multi: true
+    },
+    AutenticacionGuard,
+    SeguridadService
+  ],
+  bootstrap: [ AppComponent ]
 })
 export class AppModule { }
