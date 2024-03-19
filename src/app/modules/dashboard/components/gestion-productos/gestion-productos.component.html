@@ -1,0 +1,163 @@
+<div class="grid">
+  <div class="col-12">
+      <div class="card px-6 py-6">
+          <p-toolbar styleClass="mb-4">
+              <ng-template pTemplate="left">
+                  <div class="my-2">
+                      <button pButton pRipple label="Crear registro" icon="pi pi-plus" class="p-button-success mr-2" (click)="abrirModal(-1)"></button>
+                  </div>
+              </ng-template>
+          </p-toolbar>
+
+          <p-table #dt [value]="listaFiltro" responsiveLayout="scroll" [rows]="10" [paginator]="true" [rowsPerPageOptions]="[10,20,30,40]" 
+            [showCurrentPageReport]="true" currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} registros"
+            [rowHover]="true" dataKey="id">
+
+              <ng-template pTemplate="caption">
+                  <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
+                      <h5 class="m-0">Registros</h5>
+                      <span class="mt-2 md:mt-0 p-input-icon-left">
+                          <i class="pi pi-search"></i>
+                          <input pInputText type="text" (keyup)="search()" [(ngModel)]="searchText" placeholder="Buscar..."  class="w-full sm:w-auto"/>
+                      </span>
+                  </div>
+              </ng-template>
+              <ng-template pTemplate="header">
+                  <tr>
+                      <th>Image</th>
+                      <th pSortableColumn="categoria">Categoria <p-sortIcon field="categoria"></p-sortIcon></th>
+                      <th pSortableColumn="nombre">Nombre <p-sortIcon field="nombre"></p-sortIcon></th>
+                      <th pSortableColumn="descripcion">Descripción <p-sortIcon field="descripcion"></p-sortIcon></th>
+                      <th pSortableColumn="precio">Precio <p-sortIcon field="precio"></p-sortIcon></th>
+                      <th pSortableColumn="descuento">Stock <p-sortIcon field="descuento"></p-sortIcon></th>
+                      <th pSortableColumn="descuento">Descuento <p-sortIcon field="descuento"></p-sortIcon></th>
+                      <th class="text-center">Acciones</th>
+                  </tr>
+              </ng-template>
+              <ng-template pTemplate="body" let-item>
+                  <tr>
+                    <td style="width:14%; min-width:10rem;">
+                      <img [src]="'/assets/' + (item.imagen ?? 'mesa')" [alt]="item.nombre" width="100" class="shadow-4" />
+                    </td>
+                    <td style="min-width: 10rem;">
+                      <span class="flex align-items-center gap-2">
+                        <i class="pi pi-tag"></i>
+                        <span class="font-semibold">{{ item.categoria.nombre }}</span>
+                    </span>
+                    </td>
+                    <td style="min-width:10rem;">
+                        {{item.nombre}}
+                    </td>
+                    <td style="min-width:10rem;">
+                        {{item.descripcion}}
+                    </td>
+                    
+                    <td style="min-width: 10rem;">
+                      {{'$ ' + (item.precio | number)}}
+                    </td>
+                    <td style="min-width: 10rem;">
+                      <p-tag [value]="item.stock ?? 'N/A'" [severity]="item.stock ? 'success' : 'info'" ></p-tag>
+                    </td>
+
+                    <td style="min-width: 10rem;">
+                      <p-tag [value]="item.descuento ?? 'N/A'" [severity]="item.descuento ? 'success' : 'info'" ></p-tag>
+                    </td>
+                    
+                    <td>
+                        <div class="flex justify-content-center">
+                            <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-success mr-2" (click)="abrirModal(item.id_producto)"></button>
+                            <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-warning" (click)="eliminar(item.id_producto)"></button>
+                        </div>
+                    </td>
+                  </tr>
+              </ng-template>
+              <ng-template pTemplate="emptymessage">
+                <tr>
+                    <td class="text-center" colspan="7">No hay registros.</td>
+                </tr>
+            </ng-template>
+          </p-table>
+      </div>
+
+    <p-dialog *ngIf="categoriasCargadas" [header]="header" [(visible)]="visible" [modal]="true" [style]="{ width: '600px' }" [draggable]="false"
+      [resizable]="false">
+      <div>
+        <form [formGroup]="formulario" (ngSubmit)="enviarModal()" autocomplete="off">
+
+
+          <!-- <img [src]="'/assets/mesa.png'" alt="Imagen de producto" width="150" class="mt-0 mx-auto mb-5 block shadow-2"> -->
+
+          <div class="flex flex-column gap-2 border-round mb-4">
+            <label for="">Imagen del producto *</label>
+            
+            <div class="flex justify-content-center">
+              <p-button (click)="selectFile()" [rounded]="true" icon="pi pi-upload" iconPos="right" label="Seleccionar imagen"></p-button>
+              <input type="file" class="hidden" (change)="onFileSelected($event)" accept="image/*" #examinarInput>
+
+            </div>
+
+            <img *ngIf="previewUrl" [src]="previewUrl" alt="Vista previa de la imagen" width="150" height="150" class="mt-2 mx-auto mb-5 block shadow-2">
+            
+
+          </div>
+
+          <div class="flex flex-column gap-2 border-round mb-4">
+            <label for="">Categoria *</label>
+            <p-dropdown appendTo="body" [options]="categorias" formControlName="categoria" optionLabel="label" optionValue="value" placeholder="Seleccione" styleClass="w-full"></p-dropdown>
+            <span *ngIf="isValidField('categoria')" class="text-red-500 font-semibold mb-2">
+              Este campo es requerido
+            </span>
+          </div>
+
+          <div class="flex flex-column gap-2 border-round mb-4">
+            <label for="">Nombre del producto *</label>
+            <input type="text" pInputText placeholder="Escriba el nombre del producto" formControlName="nombre">
+            <span *ngIf="isValidField('nombre')" class="text-red-500 font-semibold mb-2">
+              Este campo es requerido
+            </span>
+          </div>
+          <div class="flex flex-column gap-2 border-round mb-4">
+            <label for="">Descripcion *</label>
+            <textarea rows="3" maxlength="200" pInputTextarea formControlName="descripcion" [autoResize]="true" 
+              class="h-full w-full" placeholder="Escriba la descripción del producto"></textarea>
+            <span *ngIf="isValidField('descripcion')" class="text-red-500 font-semibold mb-2">
+              Este campo es requerido
+            </span>
+          </div>
+
+          <div class="flex flex-column gap-2 border-round mb-4">
+            <label for="">Precio *</label>
+            <p-inputNumber formControlName="precio" inputId="integeronly" prefix="$ " styleClass="w-full" placeholder="Escriba el precio del producto"> </p-inputNumber>
+
+            <span *ngIf="isValidField('precio')" class="text-red-500 font-semibold mb-2">
+              Este campo es requerido
+            </span>
+          </div>
+
+          <div class="flex flex-column gap-2 border-round mb-4">
+            <label for="">Descuento</label>
+            <p-dropdown appendTo="body" [options]="descuentos" formControlName="descuento" optionLabel="label" optionValue="value" placeholder="Seleccione" styleClass="w-full"></p-dropdown>
+
+          </div>
+
+          <div class="flex flex-column gap-2 border-round mb-4">
+            <label for="">Stock</label>
+            <input type="text" pInputText placeholder="Escriba el stock del producto" formControlName="stock">
+          </div>
+
+          
+
+          
+          <p-button class="flex justify-content-center" type="submit" [rounded]="true" icon="pi pi-check" iconPos="right" [disabled]="!formulario.valid" [label]="itemId != -1 ? 'Actualizar' : 'Crear' "></p-button>
+        </form>
+      </div>
+
+      <button (click)="ver()">
+        ver
+      </button>
+    </p-dialog>
+
+  </div>
+</div>
+<p-toast></p-toast>
+<p-confirmDialog></p-confirmDialog>

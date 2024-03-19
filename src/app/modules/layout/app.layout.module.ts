@@ -14,6 +14,9 @@ import { RouterModule } from '@angular/router';
 import { AppTopBarComponent } from './components/topbar/app.topbar.component';
 import { AppSidebarComponent } from "./components/sidebar/app.sidebar.component";
 import { AppLayoutComponent } from "./app.layout.component";
+import { MenuModule } from 'primeng/menu';
+import { AvatarModule } from 'primeng/avatar';
+import { ToastModule } from 'primeng/toast';
 
 @NgModule({
     declarations: [
@@ -34,6 +37,9 @@ import { AppLayoutComponent } from "./app.layout.component";
         InputSwitchModule,
         RippleModule,
         RouterModule,
+        MenuModule,
+        AvatarModule,
+        ToastModule
     ],
     exports: [AppLayoutComponent]
 })

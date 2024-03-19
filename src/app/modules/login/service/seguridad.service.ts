@@ -22,17 +22,17 @@ export class SeguridadService {
     }
 
 
-    public signOut(body: any): Observable<boolean> {
-        return this.http.post('sign-out', body)
-            .pipe(
-                map(() => {
-                    return true;
-                }),
-                catchError(() => {
-                    return of(false);
-                })
-            );
-    }
+    // public signOut(body: any): Observable<boolean> {
+    //     return this.http.post('sign-out', body)
+    //         .pipe(
+    //             map(() => {
+    //                 return true;
+    //             }),
+    //             catchError(() => {
+    //                 return of(false);
+    //             })
+    //         );
+    // }
 
     public getUser(email: string): Observable<UsuarioDTO> {
         return this.http.get<UsuarioDTO>(`${LoginApiConstant.URL_GET_USER}/email/${email}`)

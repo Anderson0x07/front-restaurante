@@ -6,6 +6,8 @@ import { HomeComponent } from './components/home/home.component';
 import { GestionMesasComponent } from './components/gestion-mesas/gestion-mesas.component';
 import { SharedModule } from '../shared/shared.module';
 import { GestionCategoriasComponent } from './components/gestion-categorias/gestion-categorias.component';
+import { ModuloVentasComponent } from './components/modulo-ventas/modulo-ventas.component';
+import { GestionProductosComponent } from './components/gestion-productos/gestion-productos.component';
 
 @NgModule({
     imports: [
@@ -17,7 +19,8 @@ import { GestionCategoriasComponent } from './components/gestion-categorias/gest
         DashboardComponent,
         HomeComponent,
         GestionMesasComponent,
-        GestionCategoriasComponent
+        GestionCategoriasComponent,
+        GestionProductosComponent
     ]
 })
 export class DashboardModule { }

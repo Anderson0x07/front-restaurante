@@ -6,9 +6,11 @@ import {
   HttpRequest,
   HttpHandler,
   HttpEvent,
-  HttpResponse
+  HttpResponse,
+  HttpErrorResponse
 } from '@angular/common/http';
 import { AutenticacionResponseDTO } from '../dtos/login/autenticacion-response.dto';
+import { Router } from '@angular/router';
 
 type ObjectInterceptor = {
   'Content-Type': string;
@@ -18,23 +20,28 @@ type ObjectInterceptor = {
 @Injectable()
 export class HttpRequestInterceptor implements HttpInterceptor {
 
-  constructor() {}
-
+  constructor(private router: Router) {}
+  
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
 
     let contentHeader = this.getOnlyTypeJson();
     
     return next.handle(req.clone({ setHeaders: contentHeader})).pipe(
-      tap(
-        (event: HttpEvent<any>) => {
+      tap({
+        next: (event: HttpEvent<any>) => {
           if (event instanceof HttpResponse) {
             //
           }
         },
-        (err: any) => {
-          //
+        error: (err: HttpErrorResponse) => {
+
+          if(err.status == 403) {
+            localStorage.clear();
+            this.router.navigate(['login']);
+
+          }
         }
-      )
+      })
     );
   }
 

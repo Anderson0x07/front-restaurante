@@ -24,6 +24,11 @@ export class AppLayoutComponent  implements OnInit {
                     icon: 'pi pi-home'
                 },
                 {
+                    label: 'Ventas',
+                    routerLink: '/admin/ventas',
+                    icon: 'pi pi-eraser'
+                },
+                {
                     label: 'Mesas',
                     routerLink: '/admin/mesas',
                     icon: 'pi pi-plus'
@@ -32,6 +37,11 @@ export class AppLayoutComponent  implements OnInit {
                     label: 'Categorias',
                     routerLink: '/admin/categorias',
                     icon: 'pi pi-eraser'
+                },
+                {
+                    label: 'Productos',
+                    routerLink: '/admin/productos',
+                    icon: 'pi pi-truck'
                 },
             ]
         },

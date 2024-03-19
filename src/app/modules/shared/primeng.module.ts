@@ -21,6 +21,10 @@ import { ToolbarModule } from 'primeng/toolbar';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { TagModule } from 'primeng/tag';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { DataViewModule } from 'primeng/dataview';
+import { InputTextareaModule } from 'primeng/inputtextarea';
+import { FileUploadModule } from 'primeng/fileupload';
+
 
 
 @NgModule({
@@ -46,7 +50,10 @@ import { ConfirmDialogModule } from 'primeng/confirmdialog';
     ToolbarModule,
     InputNumberModule,
     TagModule,
-    ConfirmDialogModule
+    ConfirmDialogModule,
+    DataViewModule,
+    InputTextareaModule,
+    FileUploadModule
   ]
 })
 export class PrimengModule { }

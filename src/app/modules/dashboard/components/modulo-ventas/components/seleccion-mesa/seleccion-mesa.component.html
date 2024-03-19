@@ -1,0 +1,29 @@
+<p-dataView #dv [value]="mesas" layout="grid">
+  <ng-template pTemplate="header">
+      <div>
+          <h2 class="mt-2">Mesas</h2>
+      </div>
+  </ng-template>
+  
+  <ng-template let-mesas pTemplate="grid">
+    <div class="grid grid-nogutter">
+        <div class="col-12 sm:col-6 lg:col-12 xl:col-4 p-2" *ngFor="let item of mesas">
+            <div class="p-4 border-1 surface-border surface-card border-round shadow-4">
+                <div class="flex flex-wrap align-items-center justify-content-between gap-2">
+                    <span class="flex align-items-center gap-2">
+                        <i class="pi pi-exclamation-circle"></i>
+                        <span class="font-semibold">{{ item.numero }}</span>
+                    </span>
+                    <p-tag [value]="item.estado_actual" [severity]="getSeverity(item)"></p-tag>
+                </div>
+                <div class="flex flex-column align-items-center gap-3 py-5">
+                    <img class="w-9 shadow-2 border-round" src="/assets/mesa.png" alt="Mesa img" />
+                </div>
+                <div class="flex align-items-center justify-content-center">
+                    <p-button icon="pi pi-shopping-cart" severity="secondary" size="large" [rounded]="true" (click)="onSeleccionMesa(item)"></p-button>
+                </div>
+            </div>
+        </div>
+    </div>
+</ng-template>
+</p-dataView>

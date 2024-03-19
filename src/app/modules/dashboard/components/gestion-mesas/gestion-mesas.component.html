@@ -85,9 +85,8 @@
 
           </div>
 
-          
-          
-          <p-button type="submit" [disabled]="!formulario.valid" [label]="itemId != -1 ? 'Actualizar' : 'Crear' "></p-button>
+          <p-button class="flex justify-content-center" type="submit" [rounded]="true" icon="pi pi-check" iconPos="right" [disabled]="!formulario.valid" [label]="itemId != -1 ? 'Actualizar' : 'Crear' "></p-button>
+
         </form>
       </div>
     </p-dialog>
