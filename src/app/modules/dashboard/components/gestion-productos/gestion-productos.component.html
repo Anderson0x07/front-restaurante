@@ -37,7 +37,7 @@
               <ng-template pTemplate="body" let-item>
                   <tr>
                     <td style="width:14%; min-width:10rem;">
-                      <img [src]="'/assets/' + (item.imagen ?? 'mesa')" [alt]="item.nombre" width="100" class="shadow-4" />
+                      <img [src]="url + item.imagen" [alt]="item.nombre" width="100" class="shadow-4" />
                     </td>
                     <td style="min-width: 10rem;">
                       <span class="flex align-items-center gap-2">
@@ -53,7 +53,7 @@
                     </td>
                     
                     <td style="min-width: 10rem;">
-                      {{'$ ' + (item.precio | number)}}
+                      {{'$ ' + (item.precio | number : "1.1-1")}}
                     </td>
                     <td style="min-width: 10rem;">
                       <p-tag [value]="item.stock ?? 'N/A'" [severity]="item.stock ? 'success' : 'info'" ></p-tag>

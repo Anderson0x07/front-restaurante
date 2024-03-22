@@ -43,6 +43,11 @@ export class AppLayoutComponent  implements OnInit {
                     routerLink: '/admin/productos',
                     icon: 'pi pi-truck'
                 },
+                {
+                    label: 'Ingredientes',
+                    routerLink: '/admin/ingredientes',
+                    icon: 'pi pi-truck'
+                },
             ]
         },
         // Otras secciones

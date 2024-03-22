@@ -1,7 +1,6 @@
 import { Injectable } from "@angular/core";
 import { Observable } from "rxjs";
 import { HttpClient } from "@angular/common/http";
-import { MesaDto } from "src/app/dtos/mesa/mesa.dto";
 import { GestionCategoriasApiConstant } from "src/app/constant/categoria/gestion-categorias-api.constant";
 import { CategoriaDto } from "src/app/dtos/categoria/categoria.dto";
 

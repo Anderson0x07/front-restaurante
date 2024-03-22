@@ -9,14 +9,6 @@ import { GestionCategoriasService } from '../gestion-categorias/services/gestion
 import { HttpErrorResponse } from '@angular/common/http';
 
 
-interface UploadEvent {
-  originalEvent: Event;
-  files: File[];
-}
-
-//TODO: Cambiar bucket
-const url = "https://elasticbeanstalk-us-east-1-416927159758.s3.amazonaws.com/images/";
-
 @Component({
   selector: 'app-gestion-productos',
   templateUrl: './gestion-productos.component.html',
@@ -31,6 +23,8 @@ export class GestionProductosComponent implements OnInit {
     private confirmationService: ConfirmationService,
     private messageService: MessageService
   ) {}
+
+  public url = "https://elasticbeanstalk-us-east-1-475704544382.s3.amazonaws.com/images/";
 
 
   @ViewChild('examinarInput') examinarInput?: ElementRef<HTMLInputElement>;
@@ -71,6 +65,10 @@ export class GestionProductosComponent implements OnInit {
   onFileSelected(event: any) {
     
     const file = event.target.files[0];
+
+    if (!file) return;
+
+    this.fileName = file.name;
 
     const reader = new FileReader();
     reader.onload = (base: any) => {
@@ -205,7 +203,9 @@ export class GestionProductosComponent implements OnInit {
       id_categoria: formValue.categoria
     }
 
-    if (!this.imagenSeleccionada.startsWith("https")) {
+    productoEditado.imagen = this.imagenSeleccionada;
+
+    if (!this.imagenSeleccionada.startsWith("PRODUCTO")) {
       productoEditado.imagen = this.imagenSeleccionada + " " + this.fileName;
     }
 
@@ -261,8 +261,8 @@ export class GestionProductosComponent implements OnInit {
       this.gestionProductosService.findById(itemId).subscribe({
         next: (data) => {
 
-          this.imagenSeleccionada = url + data.imagen;
-          this.previewUrl = url + data.imagen;
+          this.imagenSeleccionada = data.imagen;
+          this.previewUrl = this.url + data.imagen;
           this.formulario.patchValue({
             nombre: data.nombre,
             descripcion: data.descripcion,

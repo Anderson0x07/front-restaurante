@@ -4,6 +4,7 @@ import { HomeComponent } from './components/home/home.component';
 import { GestionMesasComponent } from './components/gestion-mesas/gestion-mesas.component';
 import { GestionCategoriasComponent } from './components/gestion-categorias/gestion-categorias.component';
 import { GestionProductosComponent } from './components/gestion-productos/gestion-productos.component';
+import { GestionIngredientesComponent } from './components/gestion-ingredientes/gestion-ingredientes.component';
 
 @NgModule({
     imports: [
@@ -14,6 +15,7 @@ import { GestionProductosComponent } from './components/gestion-productos/gestio
             { path: 'mesas', component: GestionMesasComponent },
             { path: 'categorias', component: GestionCategoriasComponent },
             { path: 'productos', component: GestionProductosComponent },
+            { path: 'ingredientes', component: GestionIngredientesComponent },
         ])
     ],
     exports: [RouterModule]
