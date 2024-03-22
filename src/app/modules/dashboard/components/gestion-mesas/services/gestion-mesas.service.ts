@@ -1,8 +1,8 @@
 import { Injectable } from "@angular/core";
 import { Observable } from "rxjs";
 import { HttpClient } from "@angular/common/http";
-import { GestionMesasApiConstant } from "src/app/constant/mesa/gestion-mesas-api.constant";
-import { MesaDto } from "src/app/dtos/mesa/mesa.dto";
+import { GestionMesasApiConstant } from "src/app/constant/configuracion/mesa/gestion-mesas-api.constant";
+import { MesaDto } from "src/app/dtos/configuracion/mesa/mesa.dto";
 
 
 @Injectable({

@@ -79,13 +79,10 @@
           </p-table>
       </div>
 
-    <p-dialog *ngIf="categoriasCargadas" [header]="header" [(visible)]="visible" [modal]="true" [style]="{ width: '600px' }" [draggable]="false"
+    <p-dialog *ngIf="categoriasCargadas" [header]="header" [(visible)]="visible" [modal]="true" [style]="{ width: '500px' }" [draggable]="false"
       [resizable]="false">
       <div>
         <form [formGroup]="formulario" (ngSubmit)="enviarModal()" autocomplete="off">
-
-
-          <!-- <img [src]="'/assets/mesa.png'" alt="Imagen de producto" width="150" class="mt-0 mx-auto mb-5 block shadow-2"> -->
 
           <div class="flex flex-column gap-2 border-round mb-4">
             <label for="">Imagen del producto *</label>
@@ -103,7 +100,20 @@
 
           <div class="flex flex-column gap-2 border-round mb-4">
             <label for="">Categoria *</label>
-            <p-dropdown appendTo="body" [options]="categorias" formControlName="categoria" optionLabel="label" optionValue="value" placeholder="Seleccione" styleClass="w-full"></p-dropdown>
+
+            <p-dropdown appendTo="body" [options]="categorias" formControlName="categoria" optionLabel="label" optionValue="value" [filter]="true" styleClass="w-full" filterBy="label" placeholder="Seleccione">
+              <ng-template pTemplate="selectedItem" let-selectedOption>
+                  <div class="flex align-items-center gap-2">
+                      <div>{{ selectedOption.label }}</div>
+                  </div>
+              </ng-template>
+              <ng-template let-selectedOption pTemplate="item">
+                  <div class="flex align-items-center gap-2">
+                      <div>{{ selectedOption.label }}</div>
+                  </div>
+              </ng-template>
+            </p-dropdown>
+
             <span *ngIf="isValidField('categoria')" class="text-red-500 font-semibold mb-2">
               Este campo es requerido
             </span>
@@ -142,21 +152,15 @@
 
           <div class="flex flex-column gap-2 border-round mb-4">
             <label for="">Stock</label>
-            <input type="text" pInputText placeholder="Escriba el stock del producto" formControlName="stock">
+            <p-inputNumber formControlName="stock" inputId="integeronly" placeholder="Digite la cantidad" [min]="1" [max]="500" styleClass="w-full"
+              [maxlength]="3"
+            ></p-inputNumber>
           </div>
-
-          
-
           
           <p-button class="flex justify-content-center" type="submit" [rounded]="true" icon="pi pi-check" iconPos="right" [disabled]="!formulario.valid" [label]="itemId != -1 ? 'Actualizar' : 'Crear' "></p-button>
         </form>
       </div>
-
-      <button (click)="ver()">
-        ver
-      </button>
     </p-dialog>
-
   </div>
 </div>
 <p-toast></p-toast>

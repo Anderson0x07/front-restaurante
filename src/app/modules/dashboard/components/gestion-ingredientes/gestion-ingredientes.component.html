@@ -78,18 +78,27 @@
                     </div>
 
                     <div class="flex flex-column gap-2 border-round mb-4">
-                        <label for="">Descripcion *</label>
+                        <label for="">Descripcion</label>
                         <textarea rows="3" maxlength="200" pInputTextarea formControlName="descripcion"
                             [autoResize]="true" class="h-full w-full"
                             placeholder="Escriba la descripción del ingrediente"></textarea>
-                        <span *ngIf="isValidField('descripcion')" class="text-red-500 font-semibold mb-2">
-                            Este campo es requerido
-                        </span>
                     </div>
 
                     <div class="flex flex-column gap-2 border-round mb-4">
                         <label for="">Unidad de medida *</label>
-                        <p-dropdown appendTo="body" [options]="unidades" formControlName="unidad_medida" optionLabel="value" optionValue="value" placeholder="Seleccione" styleClass="w-full"></p-dropdown>
+                        <p-dropdown appendTo="body" [options]="unidades" formControlName="unidad_medida" optionLabel="value" optionValue="value" [filter]="true" styleClass="w-full" filterBy="value" placeholder="Seleccione">
+                            <ng-template pTemplate="selectedItem" let-selectedOption>
+                                <div class="flex align-items-center gap-2">
+                                    <div>{{ selectedOption.value }}</div>
+                                </div>
+                            </ng-template>
+                            <ng-template let-selectedOption pTemplate="item">
+                                <div class="flex align-items-center gap-2">
+                                    <div>{{ selectedOption.value }}</div>
+                                </div>
+                            </ng-template>
+                        </p-dropdown>
+
                         <span *ngIf="isValidField('unidad_medida')" class="text-red-500 font-semibold mb-2">
                           Este campo es requerido
                         </span>

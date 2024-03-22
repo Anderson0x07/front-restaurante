@@ -1,0 +1,128 @@
+<div class="grid">
+    <div class="col-12">
+        <div class="card px-6 py-6">
+            <p-toolbar styleClass="mb-4">
+                <ng-template pTemplate="left">
+                    <div class="my-2">
+                        <button pButton pRipple label="Crear registro" icon="pi pi-plus" class="p-button-success mr-2"
+                            (click)="abrirModal(-1)"></button>
+                    </div>
+                </ng-template>
+            </p-toolbar>
+
+            <p-table #dt [value]="listaFiltro" responsiveLayout="scroll" [rows]="10" [paginator]="true"
+                [rowsPerPageOptions]="[10,20,30,40]" [showCurrentPageReport]="true"
+                currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} registros" [rowHover]="true"
+                dataKey="id">
+
+                <ng-template pTemplate="caption">
+                    <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
+                        <h5 class="m-0">Registros</h5>
+                        <span class="mt-2 md:mt-0 p-input-icon-left">
+                            <i class="pi pi-search"></i>
+                            <input pInputText type="text" (keyup)="search()" [(ngModel)]="searchText"
+                                placeholder="Buscar..." class="w-full sm:w-auto" />
+                        </span>
+                    </div>
+                </ng-template>
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th pSortableColumn="ingrediente.nombre">Ingrediente<p-sortIcon field="ingrediente.nombre"></p-sortIcon></th>
+                        <th pSortableColumn="cantidad">Cantidad<p-sortIcon field="cantidad"></p-sortIcon></th>
+                        <th pSortableColumn="ingrediente.unidad_medida">Unidad de medida<p-sortIcon field="ingrediente.unidad_medida"></p-sortIcon></th>
+                        <th pSortableColumn="fecha_ingreso">Fecha de ingreso<p-sortIcon field="fecha_ingreso"></p-sortIcon></th>
+                        <th class="text-center">Acciones</th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-item>
+                    <tr>
+                        <td style="min-width:10rem;">
+                            {{item.ingrediente.nombre}}
+                        </td>
+                        <td style="min-width:10rem;">
+                            {{item.cantidad}}
+                        </td>
+                        <td style="min-width:10rem;">
+                            {{item.ingrediente.unidad_medida}}
+                        </td>
+                        <td style="min-width:10rem;">
+                            {{item.fecha_ingreso}}
+                        </td>
+                        <td>
+                            <div class="flex justify-content-center">
+                                <button pButton pRipple icon="pi pi-pencil"
+                                    class="p-button-rounded p-button-success mr-2"
+                                    (click)="abrirModal(item.id_inventario)"></button>
+                                <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-warning"
+                                    (click)="eliminar(item.id_inventario)"></button>
+                            </div>
+                        </td>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="emptymessage">
+                    <tr>
+                        <td class="text-center" colspan="5">No hay registros.</td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
+
+        <p-dialog *ngIf="ingredientesCargados" [header]="header" [(visible)]="visible" [modal]="true" [style]="{ width: '600px' }"
+            [draggable]="false" [resizable]="false">
+            <div>
+                <form [formGroup]="formulario" (ngSubmit)="enviarModal()" autocomplete="off">
+                    
+                    <ng-container *ngIf="itemId == -1; else ingredienteEdit">
+                        <div class="flex flex-column gap-2 border-round mb-4">
+                            <label for="">Ingrediente *</label>
+                            <p-dropdown appendTo="body" [options]="ingredientes" (onChange)="seleccionarIngrediente($event)" formControlName="ingrediente" optionLabel="label" optionValue="value" [filter]="true" styleClass="w-full" filterBy="label" placeholder="Seleccione">
+                                <ng-template pTemplate="selectedItem" let-selectedOption>
+                                    <div class="flex align-items-center gap-2">
+                                        <div>{{ selectedOption.label }}</div>
+                                    </div>
+                                </ng-template>
+                                <ng-template let-selectedOption pTemplate="item">
+                                    <div class="flex align-items-center gap-2">
+                                        <div>{{ selectedOption.label }}</div>
+                                    </div>
+                                </ng-template>
+                            </p-dropdown>
+                            
+                            <span *ngIf="isValidField('ingrediente')" class="text-red-500 font-semibold mb-2">
+                              Este campo es requerido
+                            </span>
+                        </div>
+                    </ng-container>
+
+                    <ng-template #ingredienteEdit>
+                        <div class="flex flex-column gap-2 border-round mb-4">
+                            <label for="">Ingrediente *</label>
+                            <input type="text" pInputText readonly [value]="ingredienteSeleccionado">
+                        </div>
+                    </ng-template>
+
+                    <div *ngIf="unidadMedidaSeleccionada" class="flex flex-column gap-2 border-round mb-4">
+                        <label for="">Unidad de medida</label>
+
+                        <input type="text" pInputText [value]="unidadMedidaSeleccionada" readonly>
+                    </div>
+
+                    <div class="flex flex-column gap-2 border-round mb-4">
+                        <label for="">Cantidad *</label>
+                        <p-inputNumber formControlName="cantidad" inputId="integeronly" placeholder="Digite la cantidad" [min]="1" [max]="500" styleClass="w-full"></p-inputNumber>
+                        
+                        <span *ngIf="isValidField('cantidad')" class="text-red-500 font-semibold mb-2">
+                            Este campo es requerido
+                        </span>
+                    </div>
+
+                    <p-button class="flex justify-content-center" type="submit" [rounded]="true" icon="pi pi-check"
+                        iconPos="right" [disabled]="!formulario.valid"
+                        [label]="itemId != -1 ? 'Actualizar' : 'Crear' "></p-button>
+                </form>
+            </div>
+        </p-dialog>
+    </div>
+</div>
+<p-toast></p-toast>
+<p-confirmDialog></p-confirmDialog>

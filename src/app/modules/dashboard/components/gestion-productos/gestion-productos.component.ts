@@ -3,8 +3,8 @@ import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { GestionProductosService } from './services/gestion-productos.service';
 import { ConfirmationService, MessageService, SelectItem } from 'primeng/api';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { ProductoDto } from 'src/app/dtos/producto/producto.dto';
-import { CategoriaDto } from 'src/app/dtos/categoria/categoria.dto';
+import { ProductoDto } from 'src/app/dtos/configuracion/producto/producto.dto';
+import { CategoriaDto } from 'src/app/dtos/configuracion/categoria/categoria.dto';
 import { GestionCategoriasService } from '../gestion-categorias/services/gestion-categorias.service';
 import { HttpErrorResponse } from '@angular/common/http';
 
@@ -145,10 +145,6 @@ export class GestionProductosComponent implements OnInit {
     }
   }
 
-  public ver(): void {
-    console.log(this.formulario.value)
-  }
-
   public registrar() {
 
       const formValue = this.formulario.value;
@@ -172,9 +168,6 @@ export class GestionProductosComponent implements OnInit {
         this.messageService.add({severity: 'warn', summary: 'Advertencia', detail: 'Debe seleccionar una imagen para el producto'});
         return;
       }
-      
-
-      console.log(producto)
 
       this.gestionProductosService.save(producto).subscribe({
         next: (res: {message: string}) => {
@@ -208,8 +201,6 @@ export class GestionProductosComponent implements OnInit {
     if (!this.imagenSeleccionada.startsWith("PRODUCTO")) {
       productoEditado.imagen = this.imagenSeleccionada + " " + this.fileName;
     }
-
-    console.log(productoEditado)
 
     this.gestionProductosService.edit(productoEditado, this.itemId).subscribe({
       next: (data: {message: string}) => {

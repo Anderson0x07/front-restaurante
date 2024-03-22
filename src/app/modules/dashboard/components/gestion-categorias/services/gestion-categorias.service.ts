@@ -1,8 +1,8 @@
 import { Injectable } from "@angular/core";
 import { Observable } from "rxjs";
 import { HttpClient } from "@angular/common/http";
-import { GestionCategoriasApiConstant } from "src/app/constant/categoria/gestion-categorias-api.constant";
-import { CategoriaDto } from "src/app/dtos/categoria/categoria.dto";
+import { GestionCategoriasApiConstant } from "src/app/constant/configuracion/categoria/gestion-categorias-api.constant";
+import { CategoriaDto } from "src/app/dtos/configuracion/categoria/categoria.dto";
 
 
 @Injectable({

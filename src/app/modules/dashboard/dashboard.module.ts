@@ -8,6 +8,7 @@ import { SharedModule } from '../shared/shared.module';
 import { GestionCategoriasComponent } from './components/gestion-categorias/gestion-categorias.component';
 import { GestionProductosComponent } from './components/gestion-productos/gestion-productos.component';
 import { GestionIngredientesComponent } from './components/gestion-ingredientes/gestion-ingredientes.component';
+import { GestionInventarioComponent } from './components/gestion-inventario/gestion-inventario.component';
 
 @NgModule({
     imports: [
@@ -22,6 +23,7 @@ import { GestionIngredientesComponent } from './components/gestion-ingredientes/
         GestionCategoriasComponent,
         GestionProductosComponent,
         GestionIngredientesComponent,
+        GestionInventarioComponent
     ]
 })
 export class DashboardModule { }
