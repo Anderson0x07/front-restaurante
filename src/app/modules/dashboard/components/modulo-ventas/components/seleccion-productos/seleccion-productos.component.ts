@@ -1,10 +1,10 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { MessageService, SelectItem } from 'primeng/api';
-import { CategoriaDto } from 'src/app/dtos/categoria/categoria.dto';
-import { MesaDto } from 'src/app/dtos/mesa/mesa.dto';
+import { CategoriaDto } from 'src/app/dtos/configuracion/categoria/categoria.dto';
+import { MesaDto } from 'src/app/dtos/configuracion/mesa/mesa.dto';
 import { GestionCategoriasService } from '../../../gestion-categorias/services/gestion-categorias.service';
 import { GestionProductosService } from '../../../gestion-productos/services/gestion-productos.service';
-import { ProductoDto } from 'src/app/dtos/producto/producto.dto';
+import { ProductoDto } from 'src/app/dtos/configuracion/producto/producto.dto';
 
 @Component({
   selector: 'app-seleccion-productos',

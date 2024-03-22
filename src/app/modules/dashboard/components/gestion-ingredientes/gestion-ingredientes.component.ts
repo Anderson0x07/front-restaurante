@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ConfirmationService, MessageService, SelectItem } from 'primeng/api';
-import { IngredienteDto } from 'src/app/dtos/ingrediente/ingrediente.dto';
+import { IngredienteDto } from 'src/app/dtos/configuracion/ingrediente/ingrediente.dto';
 import { CommonModule } from '@angular/common';
 import { GestionIngredientesService } from './services/gestion-ingredientes.service';
 
@@ -57,7 +57,7 @@ export class GestionIngredientesComponent implements OnInit {
   private initForm(): void {
     this.formulario = this.fb.group({
       nombre: ['', Validators.required],
-      descripcion: ['', Validators.required],
+      descripcion: [''],
       unidad_medida: ['', Validators.required],
     });
   }
@@ -152,6 +152,8 @@ export class GestionIngredientesComponent implements OnInit {
         next: (data) => {
           this.formulario.patchValue({
             nombre: data.nombre,
+            descripcion: data.descripcion,
+            unidad_medida: data.unidad_medida
           });
         },
         error: (err: {message: string}) => {
@@ -175,7 +177,9 @@ export class GestionIngredientesComponent implements OnInit {
 
   public search() {
     this.listaFiltro = this.registros.filter(
-      (ingrediente) => ingrediente.nombre.toLowerCase().includes(this.searchText.toLowerCase())
+      (ingrediente) => ingrediente.nombre.toLowerCase().includes(this.searchText.toLowerCase()) ||
+                      ingrediente.unidad_medida.toLowerCase().includes(this.searchText.toLowerCase()) || 
+                      ingrediente.descripcion.toLowerCase().includes(this.searchText.toLowerCase())
     );
   }
 

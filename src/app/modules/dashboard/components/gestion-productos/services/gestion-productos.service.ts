@@ -1,8 +1,8 @@
 import { Injectable } from "@angular/core";
 import { Observable } from "rxjs";
 import { HttpClient } from "@angular/common/http";
-import { ProductoDto } from "src/app/dtos/producto/producto.dto";
-import { GestionProductosApiConstant } from "src/app/constant/producto/gestion-productos-api.constant";
+import { ProductoDto } from "src/app/dtos/configuracion/producto/producto.dto";
+import { GestionProductosApiConstant } from "src/app/constant/configuracion/producto/gestion-productos-api.constant";
 
 
 @Injectable({

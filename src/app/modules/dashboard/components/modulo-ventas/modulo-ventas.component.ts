@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { MessageService } from 'primeng/api';
-import { MesaDto } from 'src/app/dtos/mesa/mesa.dto';
+import { MesaDto } from 'src/app/dtos/configuracion/mesa/mesa.dto';
 
 @Component({
   selector: 'app-modulo-ventas',

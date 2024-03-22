@@ -1,8 +1,8 @@
-import { environment } from "../environment";
+import { environment } from "../../environment";
 
-export class GestionIngredientesApiConstant {
+export class GestionCategoriasApiConstant {
 
-    static readonly BASE = 'ingrediente/'
+    static readonly BASE = 'categoria/'
 
     static readonly URL_GET_ALL: string = 
     environment.local + this.BASE +

@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ConfirmationService, MessageService } from 'primeng/api';
-import { CategoriaDto } from 'src/app/dtos/categoria/categoria.dto';
+import { CategoriaDto } from 'src/app/dtos/configuracion/categoria/categoria.dto';
 import { CommonModule } from '@angular/common';
 import { GestionCategoriasService } from './services/gestion-categorias.service';
 

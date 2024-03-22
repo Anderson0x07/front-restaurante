@@ -1,6 +1,6 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { GestionMesasService } from '../../../gestion-mesas/services/gestion-mesas.service';
-import { MesaDto } from 'src/app/dtos/mesa/mesa.dto';
+import { MesaDto } from 'src/app/dtos/configuracion/mesa/mesa.dto';
 
 @Component({
   selector: 'app-seleccion-mesa',

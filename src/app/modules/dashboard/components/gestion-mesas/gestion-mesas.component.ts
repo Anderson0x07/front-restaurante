@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { GestionMesasService } from './services/gestion-mesas.service';
 import { ConfirmationService, MenuItem, MessageService } from 'primeng/api';
-import { MesaDto } from 'src/app/dtos/mesa/mesa.dto';
+import { MesaDto } from 'src/app/dtos/configuracion/mesa/mesa.dto';
 import { CommonModule } from '@angular/common';
 
 

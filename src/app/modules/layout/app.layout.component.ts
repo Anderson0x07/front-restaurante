@@ -4,7 +4,7 @@ import { filter, Subscription } from 'rxjs';
 import { LayoutService } from "./service/app.layout.service";
 import { AppSidebarComponent } from "./components/sidebar/app.sidebar.component";
 import { AppTopBarComponent } from './components/topbar/app.topbar.component';
-import { UsuarioDTO } from 'src/app/dtos/usuario.dto';
+import { UsuarioDTO } from 'src/app/dtos/configuracion/usuario/usuario.dto';
 import { SeguridadService } from '../login/service/seguridad.service';
 import { AutenticacionResponseDTO } from 'src/app/dtos/login/autenticacion-response.dto';
 
@@ -27,29 +27,39 @@ export class AppLayoutComponent  implements OnInit {
                     label: 'Ventas',
                     routerLink: '/admin/ventas',
                     icon: 'pi pi-eraser'
-                },
+                }
+            ]
+        },
+        {
+            label: 'Configuración',
+            items: [
                 {
-                    label: 'Mesas',
+                    label: 'Gestión de Mesas',
                     routerLink: '/admin/mesas',
                     icon: 'pi pi-plus'
                 },
                 {
-                    label: 'Categorias',
+                    label: 'Gestión de Categorias',
                     routerLink: '/admin/categorias',
                     icon: 'pi pi-eraser'
                 },
                 {
-                    label: 'Productos',
+                    label: 'Gestión de Productos',
                     routerLink: '/admin/productos',
                     icon: 'pi pi-truck'
                 },
                 {
-                    label: 'Ingredientes',
+                    label: 'Gestión de Ingredientes',
                     routerLink: '/admin/ingredientes',
                     icon: 'pi pi-truck'
                 },
+                {
+                    label: 'Gestión de Inventario',
+                    routerLink: '/admin/inventario',
+                    icon: 'pi pi-table'
+                }
             ]
-        },
+        }
         // Otras secciones
     ]
 
