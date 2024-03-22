@@ -1,20 +1,20 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { ConfirmationService, MessageService } from 'primeng/api';
-import { CategoriaDto } from 'src/app/dtos/categoria/categoria.dto';
+import { ConfirmationService, MessageService, SelectItem } from 'primeng/api';
+import { IngredienteDto } from 'src/app/dtos/ingrediente/ingrediente.dto';
 import { CommonModule } from '@angular/common';
-import { GestionCategoriasService } from './services/gestion-categorias.service';
+import { GestionIngredientesService } from './services/gestion-ingredientes.service';
 
 
 @Component({
-  selector: 'app-gestion-categorias',
-  templateUrl: './gestion-categorias.component.html',
-  providers: [CommonModule, GestionCategoriasService, ConfirmationService, MessageService]
+  selector: 'app-gestion-ingredientes',
+  templateUrl: './gestion-ingredientes.component.html',
+  providers: [CommonModule, GestionIngredientesService, ConfirmationService, MessageService]
 })
-export class GestionCategoriasComponent implements OnInit {
+export class GestionIngredientesComponent implements OnInit {
 
   constructor(
-    private gestionCategoriasService: GestionCategoriasService,
+    private gestionIngredientesService: GestionIngredientesService,
     private fb: FormBuilder,
     private confirmationService: ConfirmationService,
     private messageService: MessageService
@@ -24,8 +24,8 @@ export class GestionCategoriasComponent implements OnInit {
   public itemId: number = -1;
   public header = '';
 
-  public registros: CategoriaDto[] = [];
-  public listaFiltro: CategoriaDto[] = [];
+  public registros: IngredienteDto[] = [];
+  public listaFiltro: IngredienteDto[] = [];
 
   public formulario!: FormGroup;
 
@@ -33,10 +33,17 @@ export class GestionCategoriasComponent implements OnInit {
   public first: number = 0;
   public rows: number = 10;
 
+  public unidades: SelectItem[] = [
+    { value: 'Gramos' }, { value: 'Kilogramos' }, { value: 'Libras' },
+    { value: 'Onzas' }, { value: 'Litros' }, { value: 'Mililitros' },
+    { value: 'Unidades' }, { value: 'Porciones' }, { value: 'Botellas' },
+    { value: 'Paquetes' },
+  ]
+
   ngOnInit(): void {
 
     this.initForm();
-    this.gestionCategoriasService.getAll().subscribe({
+    this.gestionIngredientesService.getAll().subscribe({
       next: (data) => {
         this.registros = data;
         this.listaFiltro = data;
@@ -49,7 +56,9 @@ export class GestionCategoriasComponent implements OnInit {
 
   private initForm(): void {
     this.formulario = this.fb.group({
-      nombre: ['', Validators.required]
+      nombre: ['', Validators.required],
+      descripcion: ['', Validators.required],
+      unidad_medida: ['', Validators.required],
     });
   }
 
@@ -77,8 +86,8 @@ export class GestionCategoriasComponent implements OnInit {
   }
 
   public registrar() {
-      const categoria: CategoriaDto = this.formulario.value;
-      this.gestionCategoriasService.save(categoria).subscribe({
+      const ingrediente: IngredienteDto = this.formulario.value;
+      this.gestionIngredientesService.save(ingrediente).subscribe({
         next: (res: {message: string}) => {
           this.visible = false;
           this.listar();
@@ -92,9 +101,9 @@ export class GestionCategoriasComponent implements OnInit {
   }
 
   public editar() {
-    const categoriaEditada: CategoriaDto = this.formulario.value;
+    const ingredienteEditado: IngredienteDto = this.formulario.value;
 
-    this.gestionCategoriasService.edit(categoriaEditada, this.itemId).subscribe({
+    this.gestionIngredientesService.edit(ingredienteEditado, this.itemId).subscribe({
       next: (data: {message: string}) => {
         this.visible = false;
         this.listar();
@@ -117,7 +126,7 @@ export class GestionCategoriasComponent implements OnInit {
       acceptLabel: 'Si',
       rejectLabel: 'No',
       accept: () => { 
-        this.gestionCategoriasService.delete(itemId).subscribe({
+        this.gestionIngredientesService.delete(itemId).subscribe({
           next: (res: {message: string}) => {
             this.messageService.add({ severity: 'success', summary: 'Éxitoso', detail: res.message, life: 3000 });
             this.listar();
@@ -139,7 +148,7 @@ export class GestionCategoriasComponent implements OnInit {
 
     } else {
       this.header = 'Editar elemento';
-      this.gestionCategoriasService.findById(itemId).subscribe({
+      this.gestionIngredientesService.findById(itemId).subscribe({
         next: (data) => {
           this.formulario.patchValue({
             nombre: data.nombre,
@@ -153,7 +162,7 @@ export class GestionCategoriasComponent implements OnInit {
   }
 
   public listar() {
-    this.gestionCategoriasService.getAll().subscribe({
+    this.gestionIngredientesService.getAll().subscribe({
       next: (data) => {
         this.registros = data;
         this.listaFiltro = data;
@@ -166,7 +175,7 @@ export class GestionCategoriasComponent implements OnInit {
 
   public search() {
     this.listaFiltro = this.registros.filter(
-      (categoria) => categoria.nombre.toLowerCase().includes(this.searchText.toLowerCase())
+      (ingrediente) => ingrediente.nombre.toLowerCase().includes(this.searchText.toLowerCase())
     );
   }
 
