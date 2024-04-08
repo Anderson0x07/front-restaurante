@@ -1,41 +1,39 @@
 import { CommonModule } from '@angular/common';
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { GestionProductosService } from './services/gestion-productos.service';
+import { GestionUsuariosService } from './services/gestion-usuarios.service';
 import { ConfirmationService, MessageService, SelectItem } from 'primeng/api';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { ProductoDto } from 'src/app/dtos/configuracion/producto/producto.dto';
-import { CategoriaDto } from 'src/app/dtos/configuracion/categoria/categoria.dto';
-import { GestionCategoriasService } from '../gestion-categorias/services/gestion-categorias.service';
 import { HttpErrorResponse } from '@angular/common/http';
+import { UsuarioDTO } from 'src/app/dtos/configuracion/usuario/usuario.dto';
+import { RolDto } from 'src/app/dtos/configuracion/usuario/rol.dto';
+import { GestionRolesService } from '../gestion-roles/services/gestion-roles.service';
 
 
 @Component({
-  selector: 'app-gestion-productos',
-  templateUrl: './gestion-productos.component.html',
-  providers: [CommonModule, GestionProductosService, ConfirmationService, MessageService]
+  selector: 'app-gestion-usuarios',
+  templateUrl: './gestion-usuarios.component.html',
+  providers: [CommonModule, GestionUsuariosService, ConfirmationService, MessageService]
 })
-export class GestionProductosComponent implements OnInit {
+export class GestionUsuariosComponent implements OnInit {
 
   constructor(
-    private gestionProductosService: GestionProductosService,
-    private gestionCategoriasService: GestionCategoriasService,
+    private gestionUsuariosService: GestionUsuariosService,
     private fb: FormBuilder,
     private confirmationService: ConfirmationService,
-    private messageService: MessageService
+    private messageService: MessageService,
+    private gestionRolesService: GestionRolesService
   ) {}
 
   public url = "https://elasticbeanstalk-us-east-1-475704544382.s3.amazonaws.com/images/";
 
-
   @ViewChild('examinarInput') examinarInput?: ElementRef<HTMLInputElement>;
-
 
   public visible = false;
   public itemId: number = -1;
   public header = '';
 
-  public registros: ProductoDto[] = [];
-  public listaFiltro: ProductoDto[] = [];
+  public registros: UsuarioDTO[] = [];
+  public listaFiltro: UsuarioDTO[] = [];
 
   public formulario!: FormGroup;
 
@@ -43,18 +41,15 @@ export class GestionProductosComponent implements OnInit {
   public first: number = 0;
   public rows: number = 10;
 
-  public descuentos: SelectItem[] = [
-    { label: "5%", value: 5 }, { label: "10%", value: 10 }, { label: "15%", value: 15 }, { label: "20%", value: 20 }
-  ]
-
-  public categorias: SelectItem[] = [];
-
-  public categoriasCargadas: boolean = false;
-
   previewUrl!: any;
 
   imagenSeleccionada: string = '';
   fileName: string = '';
+
+  public roles: SelectItem[] = [];
+
+  public rolesCargados: boolean = false;
+
 
   
   selectFile() {
@@ -89,7 +84,7 @@ export class GestionProductosComponent implements OnInit {
   ngOnInit(): void {
 
     this.initForm();
-    this.gestionProductosService.getAll().subscribe({
+    this.gestionUsuariosService.getAll().subscribe({
       next: (data) => {
         this.registros = data;
         this.listaFiltro = data;
@@ -99,35 +94,36 @@ export class GestionProductosComponent implements OnInit {
       },
     });
 
-    this.gestionCategoriasService.getAll().subscribe({
+    this.gestionRolesService.getAll().subscribe({
       next: (data) => {
-        data.forEach((item: CategoriaDto) => {
-          const categoria: SelectItem = { label: item.nombre, value: item.id_categoria }
-          this.categorias.push(categoria)
+        data.forEach((item: RolDto) => {
+          const categoria: SelectItem = { label: item.nombre, value: item.id_rol }
+          this.roles.push(categoria)
         })
       },
       complete: () => {
-        this.categoriasCargadas = true;
+        this.rolesCargados = true;
       }
     })
   }
 
+
+  private validarPassword() {
+    return this.itemId == -1 ? Validators.required : null
+  }
+
+
   private initForm(): void {
     this.formulario = this.fb.group({
       nombre: ['', Validators.required],
-      descripcion: ['', Validators.required],
-      precio: ['', Validators.required],
-      descuento: [''],
-      stock: [''],
-      estado: [false],
-      categoria: ['', Validators.required],
+      apellido: ['', Validators.required],
+      documento: ['', Validators.required],
+      telefono: ['', Validators.required],
+      estado: true,
+      email: ['', Validators.required],
+      password: [{value: ''}, this.validarPassword()],
+      rol: ['', Validators.required]
     });
-
-    this.formulario.get('stock')?.valueChanges.subscribe((nuevoValor: number) => {
-      if(nuevoValor > 0) {
-        this.formulario.get('estado')?.setValue(true)
-      }
-    })
   }
 
   public isValidField(field: string): boolean | null {
@@ -156,35 +152,33 @@ export class GestionProductosComponent implements OnInit {
 
       const formValue = this.formulario.value;
 
-      const producto: ProductoDto = new ProductoDto();
-
-      producto.nombre = formValue.nombre
-      producto.descripcion = formValue.descripcion
-      producto.precio = formValue.precio
-      producto.descuento = formValue.descuento
-      producto.stock = formValue.stock
-      producto.estado = formValue.estado
-      producto.categoria = {
-        id_categoria: formValue.categoria
+      const usuario: UsuarioDTO = {
+        nombre: formValue.nombre,
+        apellido: formValue.apellido,
+        documento: formValue.documento,
+        telefono: formValue.telefono,
+        estado: formValue.estado,
+        email: formValue.email,
+        password: formValue.password,
+        imagen: "",
+        rol: {
+          id_rol: formValue.rol
+        }
       }
-
-      producto.imagen = "";
 
       if (this.imagenSeleccionada != "") {
-        producto.imagen = this.imagenSeleccionada + " " + this.fileName;
-      } else {
-        this.messageService.add({severity: 'warn', summary: 'Advertencia', detail: 'Debe seleccionar una imagen para el producto'});
-        return;
+        usuario.imagen = this.imagenSeleccionada + " " + this.fileName;
       }
 
-      this.gestionProductosService.save(producto).subscribe({
+      this.gestionUsuariosService.save(usuario).subscribe({
         next: (res: {message: string}) => {
           this.visible = false;
           this.listar();
           this.messageService.add({ severity: 'success', summary: 'Éxitoso', detail: res.message, life: 3000 });
         },
         error: (err: HttpErrorResponse) => {
-          this.messageService.add({ severity: 'error', summary: 'Error', detail: err.error.errors.join(''), life: 3000 });
+          console.log(err)
+          this.messageService.add({ severity: 'error', summary: 'Error', detail: err.error.error, life: 3000 });
         },
       });
   }
@@ -193,35 +187,35 @@ export class GestionProductosComponent implements OnInit {
 
     const formValue = this.formulario.value;
 
-    const productoEditado: ProductoDto = new ProductoDto();
-
-    productoEditado.nombre = formValue.nombre
-    productoEditado.descripcion = formValue.descripcion
-    productoEditado.precio = formValue.precio
-    productoEditado.descuento = formValue.descuento
-    productoEditado.stock = formValue.stock
-    productoEditado.estado = formValue.estado
-    productoEditado.categoria = {
-      id_categoria: formValue.categoria
+    const usuarioEditado: UsuarioDTO = {
+      nombre: formValue.nombre,
+      apellido: formValue.apellido,
+      documento: formValue.documento,
+      telefono: formValue.telefono,
+      estado: formValue.estado,
+      email: formValue.email,
+      rol: {
+        id_rol: formValue.rol
+      }
     }
 
-    productoEditado.imagen = this.imagenSeleccionada;
+    usuarioEditado.imagen = this.imagenSeleccionada;
 
     if (!this.imagenSeleccionada.includes('http')) {
-      productoEditado.imagen = this.imagenSeleccionada + " " + this.fileName;
+      usuarioEditado.imagen = this.imagenSeleccionada + " " + this.fileName;
     } else {
-      productoEditado.imagen = "";
+      usuarioEditado.imagen = "";
     }
 
-    this.gestionProductosService.edit(productoEditado, this.itemId).subscribe({
+    console.log(usuarioEditado.imagen)
+    this.gestionUsuariosService.edit(usuarioEditado, this.itemId).subscribe({
       next: (data: {message: string}) => {
         this.visible = false;
         this.listar();
         this.messageService.add({ severity: 'success', summary: 'Éxitoso', detail: data.message, life: 3000 });
       },
-      error: () => {
-        this.visible = false;
-        this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Error de servidor', life: 3000 });
+      error: (err: HttpErrorResponse) => {
+        this.messageService.add({ severity: 'error', summary: 'Error', detail: err.error.errors.join(''), life: 3000 });
       },
     });
   }
@@ -236,7 +230,7 @@ export class GestionProductosComponent implements OnInit {
       acceptLabel: 'Si',
       rejectLabel: 'No',
       accept: () => { 
-        this.gestionProductosService.delete(itemId).subscribe({
+        this.gestionUsuariosService.delete(itemId).subscribe({
           next: (res: {message: string}) => {
             this.messageService.add({ severity: 'success', summary: 'Éxitoso', detail: res.message, life: 3000 });
             this.listar();
@@ -260,18 +254,18 @@ export class GestionProductosComponent implements OnInit {
 
     } else {
       this.header = 'Editar elemento';
-      this.gestionProductosService.findById(itemId).subscribe({
+      this.gestionUsuariosService.findById(itemId).subscribe({
         next: (data) => {
-
-          this.imagenSeleccionada = data.imagen;
+          this.imagenSeleccionada = this.url + data.imagen;
           this.previewUrl = this.url + data.imagen;
           this.formulario.patchValue({
             nombre: data.nombre,
-            descripcion: data.descripcion,
-            precio: data.precio,
-            descuento: data.descuento,
-            stock: data.stock,
-            categoria: data.categoria.id_categoria,
+            apellido: data.apellido,
+            documento: data.documento,
+            telefono: data.telefono,
+            estado: data.estado,
+            email: data.email,
+            rol: data.rol.id_rol
           });
         },
         error: (err: {message: string}) => {
@@ -282,7 +276,7 @@ export class GestionProductosComponent implements OnInit {
   }
 
   public listar() {
-    this.gestionProductosService.getAll().subscribe({
+    this.gestionUsuariosService.getAll().subscribe({
       next: (data) => {
         this.registros = data;
         this.listaFiltro = data;
@@ -297,14 +291,12 @@ export class GestionProductosComponent implements OnInit {
   public search() {
     this.listaFiltro = this.registros.filter(
       (item) => item.nombre.toLowerCase().includes(this.searchText.toLowerCase()) || 
-        item.descripcion.toLowerCase().includes(this.searchText.toLowerCase()) || 
-        item.precio.toString().includes(this.searchText) ||
-        item.stock?.toString().includes(this.searchText) ||
-        item.descuento?.toString().includes(this.searchText) ||
-        item.categoria.nombre.toLowerCase().includes(this.searchText.toLowerCase())
+        item.apellido.toLowerCase() == this.searchText || 
+        item.documento.toLowerCase() == this.searchText ||
+        item.telefono.toLowerCase() == this.searchText ||
+        item.email.toLowerCase() == this.searchText
     );
   }
-
 
   //PAGINACION
   public next() {

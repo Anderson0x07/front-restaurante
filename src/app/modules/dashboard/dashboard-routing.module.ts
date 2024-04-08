@@ -6,6 +6,7 @@ import { GestionCategoriasComponent } from './components/gestion-categorias/gest
 import { GestionProductosComponent } from './components/gestion-productos/gestion-productos.component';
 import { GestionIngredientesComponent } from './components/gestion-ingredientes/gestion-ingredientes.component';
 import { GestionInventarioComponent } from './components/gestion-inventario/gestion-inventario.component';
+import { GestionUsuariosComponent } from './components/gestion-usuarios/gestion-usuarios.component';
 
 @NgModule({
     imports: [
@@ -18,6 +19,7 @@ import { GestionInventarioComponent } from './components/gestion-inventario/gest
             { path: 'productos', component: GestionProductosComponent },
             { path: 'ingredientes', component: GestionIngredientesComponent },
             { path: 'inventario', component: GestionInventarioComponent },
+            { path: 'usuarios', component: GestionUsuariosComponent },
         ])
     ],
     exports: [RouterModule]

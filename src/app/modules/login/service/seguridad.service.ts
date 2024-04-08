@@ -21,6 +21,14 @@ export class SeguridadService {
         return this.http.post<AutenticacionResponseDTO>(LoginApiConstant.URL_LOGIN, credenciales);
     }
 
+    public enviarToken(email: string): Observable<any> {
+        return this.http.post<any>(`${LoginApiConstant.URL_ENVIAR_TOKEN}/${email}`, null);
+    }
+
+    public cambiarPassword(token: string, newPassword: string): Observable<any> {
+        return this.http.post<any>(LoginApiConstant.URL_CAMBIO_PASSWORD, { token, newPassword });
+    }
+
     public getUser(email: string): Observable<UsuarioDTO> {
         return this.http.get<UsuarioDTO>(`${LoginApiConstant.URL_GET_USER}/email/${email}`)
     }

@@ -1,0 +1,190 @@
+<div class="grid">
+  <div class="col-12">
+    <div class="card px-6 py-6">
+      <p-toolbar styleClass="mb-4">
+        <ng-template pTemplate="left">
+          <div class="my-2">
+            <button pButton pRipple label="Crear registro" icon="pi pi-plus" class="p-button-success mr-2"
+              (click)="abrirModal(-1)"></button>
+          </div>
+        </ng-template>
+      </p-toolbar>
+
+      <p-table #dt [value]="listaFiltro" responsiveLayout="scroll" [rows]="10" [paginator]="true"
+        [rowsPerPageOptions]="[10,20,30,40]" [showCurrentPageReport]="true"
+        currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} registros" [rowHover]="true"
+        dataKey="id">
+
+        <ng-template pTemplate="caption">
+          <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
+            <h5 class="m-0">Registros</h5>
+            <span class="mt-2 md:mt-0 p-input-icon-left">
+              <i class="pi pi-search"></i>
+              <input pInputText type="text" (keyup)="search()" [(ngModel)]="searchText" placeholder="Buscar..."
+                class="w-full sm:w-auto" />
+            </span>
+          </div>
+        </ng-template>
+        <ng-template pTemplate="header">
+          <tr>
+            <th>Imagen</th>
+            <th pSortableColumn="rol.nombre">Rol <p-sortIcon field="rol.nombre"></p-sortIcon></th>
+            <th pSortableColumn="nombre">Nombre <p-sortIcon field="nombre"></p-sortIcon></th>
+            <th pSortableColumn="apellido">Apellido <p-sortIcon field="apellido"></p-sortIcon></th>
+            <th pSortableColumn="documento">Documento <p-sortIcon field="documento"></p-sortIcon></th>
+            <th pSortableColumn="telefono">Teléfono <p-sortIcon field="telefono"></p-sortIcon></th>
+            <th pSortableColumn="estado">Estado <p-sortIcon field="estado"></p-sortIcon></th>
+            <th pSortableColumn="email">Email <p-sortIcon field="email"></p-sortIcon></th>
+            <th class="text-center">Acciones</th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-item>
+          <tr>
+            <td style="width:14%; min-width:10rem;">
+              <img [src]="url + item.imagen" [alt]="item.nombre" width="100" height="100" class="mt-2 mx-auto mb-5 block shadow-2">
+
+            </td>
+            <td style="min-width:10rem;">
+              {{item.rol.nombre | titlecase}}
+            </td>
+            <td style="min-width:10rem;">
+              {{item.nombre}}
+            </td>
+            <td style="min-width:10rem;">
+              {{item.apellido}}
+            </td>
+            <td style="min-width:10rem;">
+              {{item.documento}}
+            </td>
+
+            <td style="min-width:10rem;">
+              {{item.telefono}}
+            </td>
+            <td style="min-width: 10rem;">
+              <p-tag [value]="item.estado ? 'Activo' : 'Inactivo'"
+                [severity]="item.estado ? 'success' : 'danger'"></p-tag>
+            </td>
+
+            <td style="min-width:10rem;">
+              {{item.email | acortarTexto: 6}}
+            </td>
+
+            <td>
+              <div class="flex justify-content-center">
+                <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-success mr-2"
+                  (click)="abrirModal(item.id_usuario)"></button>
+                <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-warning"
+                  (click)="eliminar(item.id_usuario)"></button>
+              </div>
+            </td>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage">
+          <tr>
+            <td class="text-center" colspan="7">No hay registros.</td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
+
+    <p-dialog *ngIf="rolesCargados" [header]="header" [(visible)]="visible" [modal]="true" [style]="{ width: '500px' }" [draggable]="false"
+      [resizable]="false">
+      <div>
+        <form [formGroup]="formulario" (ngSubmit)="enviarModal()" autocomplete="off">
+
+          <div class="flex flex-column gap-2 border-round mb-4">
+            <label for="">Imagen de perfil</label>
+            
+            <div class="flex justify-content-center">
+              <p-button (click)="selectFile()" [rounded]="true" icon="pi pi-upload" iconPos="right" label="Seleccionar imagen"></p-button>
+              <input type="file" class="hidden" (change)="onFileSelected($event)" accept="image/*" #examinarInput>
+
+            </div>
+
+            <img *ngIf="previewUrl" [src]="previewUrl" alt="Vista previa de la imagen" width="150" height="150" class="mt-2 mx-auto mb-5 block shadow-2">
+            
+
+          </div>
+
+          <div class="flex flex-row justify-content-between gap-2 border-round mb-4">
+            <div>
+              <label for="">Nombre *</label>
+              <input type="text" pInputText placeholder="Escriba el nombre del mesero" formControlName="nombre">
+              <span *ngIf="isValidField('nombre')" class="text-red-500 font-semibold mb-2">
+                Este campo es requerido
+              </span>
+            </div>
+            <div>
+              <label for="">Apellido *</label>
+              <input type="text" pInputText placeholder="Escriba el apellido del mesero" formControlName="apellido">
+              <span *ngIf="isValidField('apellido')" class="text-red-500 font-semibold mb-2">
+                Este campo es requerido
+              </span>
+            </div>
+          </div>
+          <div class="flex flex-column gap-2 border-round mb-4">
+            <label for="">Documento *</label>
+            <p-inputNumber formControlName="documento" mode="decimal" inputId="withoutgrouping-document" [readonly]="itemId != -1"
+              [useGrouping]="false" styleClass="w-full" placeholder="Escriba el número de documento"> </p-inputNumber>
+            <span *ngIf="isValidField('documento')" class="text-red-500 font-semibold mb-2">
+              Este campo es requerido
+            </span>
+          </div>
+
+          <div class="flex flex-column gap-2 border-round mb-4">
+            <label for="">Teléfono *</label>
+            <p-inputNumber formControlName="telefono" mode="decimal" inputId="withoutgrouping-telefono" [readonly]="itemId != -1"
+              [useGrouping]="false" styleClass="w-full" placeholder="Escriba el número de telefono"> </p-inputNumber>
+
+            <span *ngIf="isValidField('telefono')" class="text-red-500 font-semibold mb-2">
+              Este campo es requerido
+            </span>
+          </div>
+
+          <div class="flex flex-column gap-2 border-round mb-4">
+            <label for="">Email *</label>
+
+            <input type="text" pInputText placeholder="Escriba el correo electrónico" formControlName="email" [readonly]="itemId != -1">
+            <span *ngIf="isValidField('email')" class="text-red-500 font-semibold mb-2">
+              Este campo es requerido
+            </span>
+
+          </div>
+
+          <div *ngIf="itemId == -1" class="flex flex-column gap-2 border-round mb-4">
+            <label for="">Contraseña *</label>
+            <input formControlName="password" id="password" type="password" placeholder="••••••••" pInputText
+              class="w-full">
+
+            <span *ngIf="isValidField('password')" class="text-red-500 font-semibold mb-2">
+              Este campo es requerido
+            </span>
+
+          </div>
+
+          <div class="flex flex-column gap-2 border-round mb-4">
+            <label for="">Rol del usuario *</label>
+
+            <p-dropdown appendTo="body" [options]="roles" formControlName="rol" optionLabel="label"
+              optionValue="value" styleClass="w-full" placeholder="Seleccione">
+            </p-dropdown>
+
+            <span *ngIf="isValidField('rol')" class="text-red-500 font-semibold mb-2">
+              Este campo es requerido
+            </span>
+          </div>
+
+          <div class="flex w-full flex-row gap-2 border-round mb-4">
+            <label for="">Estado *</label>
+            <p-inputSwitch formControlName="estado"></p-inputSwitch>
+          </div>
+
+          <p-button class="flex justify-content-center" type="submit" [rounded]="true" icon="pi pi-check"
+            iconPos="right" [disabled]="!formulario.valid" [label]="itemId != -1 ? 'Actualizar' : 'Crear' "></p-button>
+        </form>
+      </div>
+    </p-dialog>
+  </div>
+</div>
+<p-toast></p-toast>
+<p-confirmDialog></p-confirmDialog>

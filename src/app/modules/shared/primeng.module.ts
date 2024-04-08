@@ -24,6 +24,9 @@ import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { DataViewModule } from 'primeng/dataview';
 import { InputTextareaModule } from 'primeng/inputtextarea';
 import { FileUploadModule } from 'primeng/fileupload';
+import { StepsModule } from 'primeng/steps';
+import { InputOtpModule } from 'primeng/inputotp';
+
 
 
 
@@ -53,7 +56,9 @@ import { FileUploadModule } from 'primeng/fileupload';
     ConfirmDialogModule,
     DataViewModule,
     InputTextareaModule,
-    FileUploadModule
+    FileUploadModule,
+    StepsModule,
+    InputOtpModule
   ]
 })
 export class PrimengModule { }

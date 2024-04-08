@@ -1,9 +1,11 @@
+import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { PrimeNGConfig } from 'primeng/api';
+import { MessageService, PrimeNGConfig } from 'primeng/api';
 
 @Component({
   selector: 'app-root',
   template: '<router-outlet></router-outlet>',
+  providers: [MessageService, CommonModule]
 })
 export class AppComponent implements OnInit {
 

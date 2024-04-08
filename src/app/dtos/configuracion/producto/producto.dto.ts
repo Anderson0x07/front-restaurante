@@ -8,6 +8,7 @@ export class ProductoDto {
     public nombre!: string 
     public precio!: number
     public stock!: number
+    public estado!: boolean
     public categoria: CategoriaDto | any
 
 }

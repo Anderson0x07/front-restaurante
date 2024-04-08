@@ -110,6 +110,22 @@ export class GestionCategoriasComponent implements OnInit {
 
   public eliminar(itemId: number) {
     this.messageService.clear();
+
+    this.gestionCategoriasService.findById(itemId).subscribe({
+      next: (data) => {
+
+        if(data.productos.length > 0) {
+          this.messageService.add({ severity: 'error', summary: 'Error', detail: 'No se puede eliminar, está en uso', life: 3000 });
+
+
+        } else {
+          this.confirmarEliminacion(itemId);
+        }
+      }
+    })    
+  }
+
+  private confirmarEliminacion(itemId: number) {
     const seguroEliminar = "¿Está seguro de que desea eliminar?"
     this.confirmationService.confirm({
       message: seguroEliminar,

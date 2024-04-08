@@ -13,4 +13,15 @@ export class LoginApiConstant {
     static readonly URL_GET_USER: string =
     environment.local +
     'usuario'
+
+    static readonly URL_ENVIAR_TOKEN: string = 
+    environment.local + 
+    'usuario/restablecer-password';
+
+    static readonly URL_CAMBIO_PASSWORD: string = 
+    environment.local + 
+    'usuario/verificar-token';
+
+    
+    
 }

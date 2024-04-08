@@ -109,7 +109,7 @@
 
                     <div class="flex flex-column gap-2 border-round mb-4">
                         <label for="">Cantidad *</label>
-                        <p-inputNumber formControlName="cantidad" inputId="integeronly" placeholder="Digite la cantidad" [min]="1" [max]="500" styleClass="w-full"></p-inputNumber>
+                        <p-inputNumber formControlName="cantidad" inputId="integeronly" [maxlength]="3" placeholder="Digite la cantidad" [min]="1" [max]="500" styleClass="w-full"></p-inputNumber>
                         
                         <span *ngIf="isValidField('cantidad')" class="text-red-500 font-semibold mb-2">
                             Este campo es requerido
