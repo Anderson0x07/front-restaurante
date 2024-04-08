@@ -35,7 +35,7 @@ export class HttpRequestInterceptor implements HttpInterceptor {
         },
         error: (err: HttpErrorResponse) => {
 
-          if(err.status == 403) {
+          if(err.status == 401 || err.status == 403) {
             localStorage.clear();
             this.router.navigate(['login']);
 

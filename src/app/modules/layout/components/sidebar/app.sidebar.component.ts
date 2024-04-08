@@ -12,8 +12,5 @@ export class AppSidebarComponent {
 
     @Input() modulos: any[] = [];
 
-    ngOnInit() {
-        console.log(this.modulos)
-    }
 }
 

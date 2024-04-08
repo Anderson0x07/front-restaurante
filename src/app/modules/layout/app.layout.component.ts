@@ -12,9 +12,9 @@ import { AutenticacionResponseDTO } from 'src/app/dtos/login/autenticacion-respo
     selector: 'app-layout',
     templateUrl: './app.layout.component.html'
 })
-export class AppLayoutComponent  implements OnInit {
+export class AppLayoutComponent implements OnInit {
 
-    public modulos: any = [
+    public modulos: Array<any> = [
         {
             label: 'Dashboard',
             items: [
@@ -57,30 +57,55 @@ export class AppLayoutComponent  implements OnInit {
                     label: 'Gestión de Inventario',
                     routerLink: '/admin/inventario',
                     icon: 'pi pi-table'
+                },
+                {
+                    label: 'Gestión de Usuarios',
+                    routerLink: '/admin/usuarios',
+                    icon: 'pi pi-users'
                 }
             ]
         }
         // Otras secciones
     ]
 
-    public usuario: UsuarioDTO | any;
-        
+    public modulosMeseros: Array<any> = [
+        {
+            label: 'Dashboard',
+            items: [
+                {
+                    label: 'Ventas',
+                    routerLink: '/admin/ventas',
+                    icon: 'pi pi-eraser'
+                }
+            ]
+        }
+    ]
+
+
 
     ngOnInit(): void {
-        let usuario: AutenticacionResponseDTO = JSON?.parse(localStorage.getItem('AUTH')+'');
+        let usuario: AutenticacionResponseDTO = JSON.parse(localStorage.getItem('AUTH') + '');
         if (usuario) {
             // CONSULTAR EL USUARIO COMPLETO DE ACUERDO AL EMAIL
             this.seguridadService.getUser(usuario.username).subscribe({
                 next: (data: UsuarioDTO) => {
-                    this.usuario = data;
+                    localStorage.setItem('USUARIO', JSON.stringify(data));
+                    this.gestionarMenu(data.rol.nombre);
+
                 },
                 error: (err) => {
-
+                    console.log(err)
                 }
             })
 
 
 
+        }
+    }
+
+    private gestionarMenu(rol: string) {
+        if (rol == 'MESERO') {
+            this.modulos = this.modulosMeseros
         }
     }
 
@@ -99,9 +124,9 @@ export class AppLayoutComponent  implements OnInit {
         this.overlayMenuOpenSubscription = this.layoutService.overlayOpen$.subscribe(() => {
             if (!this.menuOutsideClickListener) {
                 this.menuOutsideClickListener = this.renderer.listen('document', 'click', event => {
-                    const isOutsideClicked = !(this.appSidebar.el.nativeElement.isSameNode(event.target) || this.appSidebar.el.nativeElement.contains(event.target) 
+                    const isOutsideClicked = !(this.appSidebar.el.nativeElement.isSameNode(event.target) || this.appSidebar.el.nativeElement.contains(event.target)
                         || this.appTopbar.menuButton.nativeElement.isSameNode(event.target) || this.appTopbar.menuButton.nativeElement.contains(event.target));
-                    
+
                     if (isOutsideClicked) {
                         this.hideMenu();
                     }

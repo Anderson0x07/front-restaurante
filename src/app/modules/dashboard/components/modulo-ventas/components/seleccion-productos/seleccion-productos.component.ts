@@ -20,23 +20,34 @@ export class SeleccionProductosComponent implements OnInit {
 
   @Input() mesa!: MesaDto
 
-  categorias: SelectItem[] = [];
+  public url = "https://elasticbeanstalk-us-east-1-475704544382.s3.amazonaws.com/images/";
 
-  sortOrder!: number;
+  public categorias: SelectItem[] = [];
 
-  sortField!: string;
+  public productos!: ProductoDto[]; // ProductoDto
 
-  productos!: any[]; // ProductoDto
+  public productosFiltrados: ProductoDto[] = [];
 
   public categoriasCargadas: boolean = false;
 
-  ngOnInit() {
+  public visible: boolean = false;
 
-    console.log("Mesa seleccionada: ", this.mesa)
+  public fotoProducto: string = ''
+
+  public productoSeleccionado!: ProductoDto;
+
+  public cantidadSeleccionada: number = 0;
+
+  public productosSeleccionados: Array<{id_producto: number, cantidad: number}> = [];
+
+  ngOnInit() {
 
     this.gestionProductosService.getAll().subscribe({
       next: (data) => {
-        this.productos = data
+
+        
+        this.productos = data.filter(producto => producto.estado);
+        this.productosFiltrados = data.filter(producto => producto.estado);
       }
     });
 
@@ -55,27 +66,47 @@ export class SeleccionProductosComponent implements OnInit {
 
 
   onSortChange(event: any) {
-    console.log(event)
     let value = event.value;
+    this.productosFiltrados = this.productos.filter(item => item.categoria.id_categoria == value);
 
-    if (value.indexOf('!') === 0) {
-      this.sortOrder = -1;
-      this.sortField = value.substring(1, value.length);
-    } else {
-      this.sortOrder = 1;
-      this.sortField = value;
-    }
+    console.log(this.productosFiltrados)
   }
 
   getSeverity(producto: ProductoDto): string {
-    return !producto.stock && producto.stock <= 0 ? 'danger' : 'success';
+    return producto.stock && producto.stock <= 0 ? 'danger' : 'success';
   };
 
-  public agregarCarrito(productoSeleccionado: any): void {
+  public abrirModalAgregarProducto(productoSeleccionado: ProductoDto): void {
     console.log('Producto agregado: ', productoSeleccionado)
 
+    this.visible = true;
+
+    this.fotoProducto = this.url + productoSeleccionado.imagen;
+    this.productoSeleccionado = productoSeleccionado;
+
+    
+  }
+  
+  public agregarCarrito() {
+    console.log(this.productoSeleccionado)
+    this.productosSeleccionados.push({id_producto: this.productoSeleccionado.id_producto, cantidad: this.cantidadSeleccionada});
     this.messageService.add({ severity: 'success', summary: 'Exito', detail: 'Producto agregado al carrito', life: 3000 });
 
+    console.log(this.productosSeleccionados)
+    
+  }
+
+  public hayDisponibilidad(): boolean {
+    return this.productoSeleccionado.stock > this.cantidadSeleccionada;
+
+  }
+
+  seleccionarCantidad(operacion: string) {
+    if(operacion == 'suma') {
+      this.cantidadSeleccionada++;
+    } else if(operacion == 'resta' && this.cantidadSeleccionada > 0){
+      this.cantidadSeleccionada--;
+    }
   }
 
 
