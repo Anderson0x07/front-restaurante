@@ -1,5 +1,5 @@
 
 export const environment = {
-    serverApiUrl: 'https://api-despliegue/',
-    local: 'http://localhost:8080/'
+    serverApiUrl: 'https://restaurante-app-production.up.railway.app/',
+    local: 'https://restaurante-app-production.up.railway.app/'
 }
