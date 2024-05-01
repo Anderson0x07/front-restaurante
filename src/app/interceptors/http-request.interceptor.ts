@@ -11,6 +11,7 @@ import {
 } from '@angular/common/http';
 import { AutenticacionResponseDTO } from '../dtos/login/autenticacion-response.dto';
 import { Router } from '@angular/router';
+import { SpinnerState } from './spinner.state';
 
 type ObjectInterceptor = {
   'Content-Type': string;
@@ -20,9 +21,10 @@ type ObjectInterceptor = {
 @Injectable()
 export class HttpRequestInterceptor implements HttpInterceptor {
 
-  constructor(private router: Router) {}
+  constructor(private spinnerState: SpinnerState, private router: Router) {}
   
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
+    this.spinnerState.displaySpinner();
 
     let contentHeader = this.getOnlyTypeJson();
     
@@ -30,7 +32,7 @@ export class HttpRequestInterceptor implements HttpInterceptor {
       tap({
         next: (event: HttpEvent<any>) => {
           if (event instanceof HttpResponse) {
-            //
+            this.spinnerState.hideSpinner();
           }
         },
         error: (err: HttpErrorResponse) => {
@@ -38,8 +40,8 @@ export class HttpRequestInterceptor implements HttpInterceptor {
           if(err.status == 401 || err.status == 403) {
             localStorage.clear();
             this.router.navigate(['login']);
-
           }
+          this.spinnerState.hideSpinner();
         }
       })
     );

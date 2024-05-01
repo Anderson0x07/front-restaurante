@@ -1,0 +1,1 @@
+export const url: string = "https://elasticbeanstalk-us-east-1-475704544382.s3.amazonaws.com/images/";

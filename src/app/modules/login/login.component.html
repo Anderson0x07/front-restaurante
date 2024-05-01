@@ -68,7 +68,7 @@
 
       </form>
 
-      <p-button (click)="next()" [loading]="loading" [label]="getInfo().labelButton" iconPos="right" icon="pi pi-check"
+      <p-button (click)="next()" [label]="getInfo().labelButton" iconPos="right" icon="pi pi-check"
         styleClass="w-full" [disabled]="activeIndex == 0 ? !validateEmail(cambioPasswordForm.get('email')?.value) : cambioPasswordForm.invalid">
       </p-button>
 

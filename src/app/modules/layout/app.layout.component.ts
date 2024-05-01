@@ -16,17 +16,22 @@ export class AppLayoutComponent implements OnInit {
 
     public modulos: Array<any> = [
         {
-            label: 'Dashboard',
+            label: 'Administración',
             items: [
                 {
-                    label: 'Dashboard',
+                    label: 'Inicio',
                     routerLink: '/admin/dashboard',
                     icon: 'pi pi-home'
                 },
                 {
                     label: 'Ventas',
                     routerLink: '/admin/ventas',
-                    icon: 'pi pi-eraser'
+                    icon: 'pi pi-shopping-cart'
+                },
+                {
+                    label: 'Reportes',
+                    routerLink: '/admin/reportes',
+                    icon: 'pi pi-file'
                 }
             ]
         },
@@ -36,12 +41,12 @@ export class AppLayoutComponent implements OnInit {
                 {
                     label: 'Gestión de Mesas',
                     routerLink: '/admin/mesas',
-                    icon: 'pi pi-plus'
+                    icon: 'pi pi-table'
                 },
                 {
                     label: 'Gestión de Categorias',
                     routerLink: '/admin/categorias',
-                    icon: 'pi pi-eraser'
+                    icon: 'pi pi-th-large'
                 },
                 {
                     label: 'Gestión de Productos',
@@ -51,12 +56,12 @@ export class AppLayoutComponent implements OnInit {
                 {
                     label: 'Gestión de Ingredientes',
                     routerLink: '/admin/ingredientes',
-                    icon: 'pi pi-truck'
+                    icon: 'pi pi-slack'
                 },
                 {
                     label: 'Gestión de Inventario',
                     routerLink: '/admin/inventario',
-                    icon: 'pi pi-table'
+                    icon: 'pi pi-server'
                 },
                 {
                     label: 'Gestión de Usuarios',
@@ -70,18 +75,18 @@ export class AppLayoutComponent implements OnInit {
 
     public modulosMeseros: Array<any> = [
         {
-            label: 'Dashboard',
+            label: 'Modulos',
             items: [
                 {
                     label: 'Ventas',
-                    routerLink: '/admin/ventas',
-                    icon: 'pi pi-eraser'
+                    routerLink: '/mesero/ventas',
+                    icon: 'pi pi-shopping-cart'
                 }
             ]
         }
     ]
 
-
+    usuario: UsuarioDTO = new UsuarioDTO();
 
     ngOnInit(): void {
         let usuario: AutenticacionResponseDTO = JSON.parse(localStorage.getItem('AUTH') + '');
@@ -89,6 +94,7 @@ export class AppLayoutComponent implements OnInit {
             // CONSULTAR EL USUARIO COMPLETO DE ACUERDO AL EMAIL
             this.seguridadService.getUser(usuario.username).subscribe({
                 next: (data: UsuarioDTO) => {
+                    this.usuario = data;
                     localStorage.setItem('USUARIO', JSON.stringify(data));
                     this.gestionarMenu(data.rol.nombre);
 
@@ -97,9 +103,6 @@ export class AppLayoutComponent implements OnInit {
                     console.log(err)
                 }
             })
-
-
-
         }
     }
 

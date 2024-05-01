@@ -1,12 +1,11 @@
 
-<div class="card">
-  <ng-container *ngIf="!mostrarSeleccionProductos; else seleccionProductos">
+<div class="card p-1">
+  <ng-container *ngIf="!mostrarSeleccionProductos && !irVentaActual; else seleccionProductos">
     <app-seleccion-mesa (seleccionMesa)="gestionMesaSeleccionada($event)"> </app-seleccion-mesa>
   </ng-container>
 
   <ng-template #seleccionProductos>
-    <app-seleccion-productos [mesa]="mesaSeleccionada"></app-seleccion-productos>
-
+    <app-seleccion-productos [mesa]="mesaSeleccionada" (alSalir)="alSalir($event)"></app-seleccion-productos>
   </ng-template>
 
 </div>

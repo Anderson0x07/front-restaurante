@@ -7,6 +7,7 @@ import { ProductoDto } from 'src/app/dtos/configuracion/producto/producto.dto';
 import { CategoriaDto } from 'src/app/dtos/configuracion/categoria/categoria.dto';
 import { GestionCategoriasService } from '../gestion-categorias/services/gestion-categorias.service';
 import { HttpErrorResponse } from '@angular/common/http';
+import { url } from 'src/app/modules/shared/utils/Utils';
 
 
 @Component({
@@ -24,7 +25,7 @@ export class GestionProductosComponent implements OnInit {
     private messageService: MessageService
   ) {}
 
-  public url = "https://elasticbeanstalk-us-east-1-475704544382.s3.amazonaws.com/images/";
+  public url = url;
 
 
   @ViewChild('examinarInput') examinarInput?: ElementRef<HTMLInputElement>;
@@ -272,6 +273,7 @@ export class GestionProductosComponent implements OnInit {
             descuento: data.descuento,
             stock: data.stock,
             categoria: data.categoria.id_categoria,
+            estado: data.estado
           });
         },
         error: (err: {message: string}) => {
