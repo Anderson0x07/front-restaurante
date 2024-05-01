@@ -7,6 +7,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { UsuarioDTO } from 'src/app/dtos/configuracion/usuario/usuario.dto';
 import { RolDto } from 'src/app/dtos/configuracion/usuario/rol.dto';
 import { GestionRolesService } from '../gestion-roles/services/gestion-roles.service';
+import { url } from 'src/app/modules/shared/utils/Utils';
 
 
 @Component({
@@ -24,7 +25,7 @@ export class GestionUsuariosComponent implements OnInit {
     private gestionRolesService: GestionRolesService
   ) {}
 
-  public url = "https://elasticbeanstalk-us-east-1-475704544382.s3.amazonaws.com/images/";
+  public url = url;
 
   @ViewChild('examinarInput') examinarInput?: ElementRef<HTMLInputElement>;
 

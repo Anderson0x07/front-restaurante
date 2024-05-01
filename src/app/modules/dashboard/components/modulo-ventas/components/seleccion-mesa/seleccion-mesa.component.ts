@@ -9,8 +9,7 @@ import { MesaDto } from 'src/app/dtos/configuracion/mesa/mesa.dto';
 export class SeleccionMesaComponent implements OnInit {
 
   @Output() public seleccionMesa = new EventEmitter<MesaDto>();
-
-
+  
 
   mesas!: MesaDto[];
 
@@ -21,7 +20,7 @@ export class SeleccionMesaComponent implements OnInit {
   ngOnInit() {
     this.gestionMesasService.getAll().subscribe({
       next: (data) => {
-        this.mesas = data
+        this.mesas = data.filter(item => item.estado)
       }
     });
 

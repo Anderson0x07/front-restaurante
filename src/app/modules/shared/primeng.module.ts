@@ -26,7 +26,7 @@ import { InputTextareaModule } from 'primeng/inputtextarea';
 import { FileUploadModule } from 'primeng/fileupload';
 import { StepsModule } from 'primeng/steps';
 import { InputOtpModule } from 'primeng/inputotp';
-
+import { ProgressSpinnerModule } from 'primeng/progressspinner';
 
 
 
@@ -58,7 +58,8 @@ import { InputOtpModule } from 'primeng/inputotp';
     InputTextareaModule,
     FileUploadModule,
     StepsModule,
-    InputOtpModule
+    InputOtpModule,
+    ProgressSpinnerModule
   ]
 })
 export class PrimengModule { }

@@ -4,7 +4,7 @@ import { MessageService, PrimeNGConfig } from 'primeng/api';
 
 @Component({
   selector: 'app-root',
-  template: '<router-outlet></router-outlet>',
+  template: '<app-spinner></app-spinner><router-outlet></router-outlet>',
   providers: [MessageService, CommonModule]
 })
 export class AppComponent implements OnInit {

@@ -1,7 +1,6 @@
 <div class="layout-topbar">
     <a class="layout-topbar-logo" routerLink="">
-        <img src="assets/layout/images/{{layoutService.config().colorScheme === 'light' ? 'logo-dark' : 'logo-white'}}.svg" alt="logo">
-        <span>SAKAI</span>
+        <img src="assets/logo-cuadrado.jpg" alt="logo">
     </a>
 
     <button #menubutton class="p-link layout-menu-button layout-topbar-button" (click)="layoutService.onMenuToggle()">
@@ -10,16 +9,16 @@
 
     <button #topbarmenubutton class="p-link layout-topbar-menu-button layout-topbar-button" (click)="layoutService.showProfileSidebar()">
         
-        <p-avatar image="https://primefaces.org/cdn/primeng/images/demo/avatar/amyelsner.png" styleClass="cursor-pointer" 
+        <p-avatar [image]="url + usuario.imagen" styleClass="cursor-pointer" 
             size="large" shape="circle">
         </p-avatar>
     </button>
     <div #topbarmenu class="layout-topbar-menu" [ngClass]="{'layout-topbar-menu-mobile-active': layoutService.state.profileSidebarVisible}">
 
-        <button class="p-link layout-topbar-button" [routerLink]="'/admin/mi-perfil'">
+        <!-- <button class="p-link layout-topbar-button" [routerLink]="rol == 'MESERO' ? '/mesero/mi-perfil' : '/admin/mi-perfil'">
             <i class="pi pi-user"></i>
             <span>Mi Perfil</span>
-        </button>
+        </button> -->
         <button class="p-link layout-topbar-button" (click)="cerrarSesion()">
             <i class="pi pi-power-off"></i>
             <span>Cerrar sesión</span>

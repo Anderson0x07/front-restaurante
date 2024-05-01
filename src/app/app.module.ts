@@ -9,10 +9,14 @@ import { AutenticacionGuard } from './auth-guard/autenticacion.guard';
 import { HttpRequestInterceptor } from './interceptors/http-request.interceptor';
 import { CommonModule } from '@angular/common';
 import { AppLayoutModule } from './modules/layout/app.layout.module';
+import { SpinnerComponent } from './spinner/spinner.component';
+import { ProgressSpinnerModule } from 'primeng/progressspinner';
+
 
 @NgModule({
   declarations: [
     AppComponent,
+    SpinnerComponent
   ],
   imports: [
     CommonModule,
@@ -20,6 +24,7 @@ import { AppLayoutModule } from './modules/layout/app.layout.module';
     HttpClientModule,
     RouterModule.forRoot(ROUTES, { scrollPositionRestoration: 'enabled', anchorScrolling: 'enabled', onSameUrlNavigation: 'reload' }),
     AppLayoutModule,
+    ProgressSpinnerModule
   ],
   providers: [
     {
@@ -28,7 +33,7 @@ import { AppLayoutModule } from './modules/layout/app.layout.module';
       multi: true
     },
     AutenticacionGuard,
-    SeguridadService
+    SeguridadService,
   ],
   bootstrap: [ AppComponent ]
 })

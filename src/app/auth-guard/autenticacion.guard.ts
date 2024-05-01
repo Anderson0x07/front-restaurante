@@ -34,9 +34,9 @@ export class AutenticacionGuard implements CanActivate {
     let auth: AutenticacionResponseDTO = JSON.parse(localStorage.getItem('AUTH')+'');
     // dependiendo del estado de la autenticacion se hace el llamado a los metodos
     if (auth && auth.username && auth.token) {
-      valido = this.canActivateUserLogin(url);
+      valido = this.canActivateUserLogin(url, auth.rol)
     } else {
-        valido = this.canActivateUserNoLogin(url);
+      valido = this.canActivateUserNoLogin(url);
     }
     
     return valido;
@@ -47,9 +47,13 @@ export class AutenticacionGuard implements CanActivate {
    * LOGIN, si la URL es LOGIN se redirecciona a la pagina
    * de bienvenida.
    */
-  private canActivateUserLogin(url: string): boolean {
+  private canActivateUserLogin(url: string, rol: string): boolean {
     if (url.includes('login')) {
-      return this.goTo('/admin/dashboard');
+      if(rol == 'ROLE_ADMINISTRADOR') {
+        this.router.navigate(['admin']);
+      } else {
+        this.router.navigate(['mesero'])
+      }
     }
     return true;
   }
@@ -72,6 +76,66 @@ export class AutenticacionGuard implements CanActivate {
    */
   private goTo(url: string): boolean {
     this.router.navigate([url]);
+    return false;
+  }
+}
+
+
+@Injectable({
+  providedIn: 'root'
+})
+export class AdministradorGuard implements CanActivate {
+  constructor(private router: Router) {}
+
+  canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
+    let auth: AutenticacionResponseDTO = JSON.parse(localStorage.getItem('AUTH')+'');
+    console.log(auth.rol)
+    if (auth.rol == 'ROLE_ADMINISTRADOR') {
+      return true;
+    } else {
+      this.router.navigateByUrl('/error');
+      return false;
+    }
+  }
+}
+
+@Injectable({
+  providedIn: 'root'
+})
+export class MeseroGuard implements CanActivate {
+  constructor(private router: Router) {}
+
+  canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
+
+    let auth: AutenticacionResponseDTO = JSON.parse(localStorage.getItem('AUTH')+'');
+
+    if (auth.rol == 'ROLE_MESERO') {
+      return true;
+    } else {
+      this.router.navigateByUrl('/error');
+      return false;
+    }
+  }
+}
+
+@Injectable({
+  providedIn: 'root'
+})
+export class RolResolver implements CanActivate {
+  constructor(private router: Router) {}
+
+  canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
+
+    let auth: AutenticacionResponseDTO = JSON.parse(localStorage.getItem('AUTH')+'');
+    console.log("rol")
+
+    if (auth.rol == 'ROLE_ADMINISTRADOR') {
+      this.router.navigate(['/dashboard']);
+    } else if (auth.rol == 'ROLE_MESERO') {
+      this.router.navigate(['/ventas']);
+    } else {
+      this.router.navigate(['/error']);
+    }
     return false;
   }
 }

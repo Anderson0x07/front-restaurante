@@ -1,0 +1,178 @@
+<div class="grid">
+  <div class="col-12">
+    <div class="card p-0 py-2 mb-2">
+      <div class="grid grid-nogutter my-4 col-12">
+
+        <div class="col-12 mb-4 md:col-6 lg:col-6 xl:col-6">
+          <div class="flex justify-content-center xl:justify-content-start">
+            <p-button [rounded]="true" icon="pi pi-send" iconPos="right" 
+              [label]="'Enviar reporte diario de ventas'" (click)="enviarReporteDiario()">
+            </p-button>
+
+          </div>
+
+        </div>
+
+        <div class="col-12 mb-4 md:col-6 lg:col-6 xl:col-6">
+
+          <div class="flex justify-content-center xl:justify-content-end gap-4">
+            <p-calendar [(ngModel)]="fecha" dateFormat="yy-mm-dd" [iconDisplay]="'input'" [showIcon]="true" placeholder="Seleccione la fecha"></p-calendar>
+            
+
+            <p-button [rounded]="true" icon="pi pi-send" iconPos="right" 
+              [label]="'Enviar'" (click)="enviarReporteFecha()" [disabled]="!fecha">
+            </p-button>
+          </div>
+        </div>
+
+      </div>
+      
+    </div>
+
+    <div class="card p-0 px-6 py-6">
+
+      <p-table #dt [value]="listaFiltro" responsiveLayout="scroll" [rows]="10" [paginator]="true"
+        [rowsPerPageOptions]="[10,20,30,40]" [showCurrentPageReport]="true"
+        currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} registros" [rowHover]="true"
+        dataKey="id">
+
+        <ng-template pTemplate="caption">
+          <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
+            <h5 class="m-0 text-3xl">Ventas</h5>
+            <span class="mt-2 md:mt-0 p-input-icon-left">
+              <i class="pi pi-search"></i>
+              <input pInputText type="text" (keyup)="search()" [(ngModel)]="searchText" placeholder="Buscar..."
+                class="w-full sm:w-auto" />
+            </span>
+          </div>
+        </ng-template>
+        <ng-template pTemplate="header">
+          <tr>
+            <th pSortableColumn="id_compra">ID<p-sortIcon field="id_compra"></p-sortIcon></th>
+            <th pSortableColumn="mesero.nombre">Mesero <p-sortIcon field="mesero.nombre"></p-sortIcon></th>
+            <th pSortableColumn="mesa.numero">Mesa <p-sortIcon field="mesa.numero"></p-sortIcon></th>
+            <th pSortableColumn="fecha_compra">Fecha de venta <p-sortIcon field="fecha_compra"></p-sortIcon></th>
+            <th pSortableColumn="hora">Hora <p-sortIcon field="hora"></p-sortIcon></th>
+            <th pSortableColumn="total">Total de venta <p-sortIcon field="total"></p-sortIcon></th>
+            <th pSortableColumn="propina">Propina <p-sortIcon field="propina"></p-sortIcon></th>
+            <th class="text-center">Acciones</th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-item>
+          <tr>
+            <td style="min-width:5rem; width: 2rem"><span class="p-column-title">ID Venta</span>
+              {{item.id_compra}}
+            </td>
+            <td style="min-width:4rem; width: 8rem">
+              <span class="p-column-title">Mesero</span>
+              {{item.mesero.nombre}}
+            </td>
+            <td style="min-width:8rem; width: 8rem">
+              <span class="p-column-title">Mesa</span>
+              {{item.mesa.numero}}
+            </td>
+            <td style="min-width:8rem; width: 10rem">
+              <span class="p-column-title">Fecha de venta</span>
+              {{item.fecha_compra}}
+            </td>
+            <td style="min-width:8rem; width: 6rem">
+              <span class="p-column-title">Hora de compra</span>
+              {{item.hora}}
+            </td>
+            <td style="min-width: 8rem; width: 10rem">
+              <p-tag [value]="'$ ' + (item.total + item.propina).toLocaleString()" [severity]="'success'"></p-tag>
+            </td>
+            <td style="min-width: 8rem; width: 8rem">
+              <p-tag [value]="'$ '+ item.propina.toLocaleString()"
+                [severity]="item.propina == 0 ? 'danger' : 'info'"></p-tag>
+            </td>
+            <td style="min-width: 8rem; width: 8rem">
+              <div class="flex justify-content-center">
+
+                <p-button [rounded]="true" icon="pi pi-search-plus" size="large" [text]="true" [raised]="true"
+                  (click)="verDetalle(item)">
+                </p-button>
+              </div>
+            </td>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage">
+          <tr>
+            <td class="text-center" colspan="8">No hay registros.</td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
+  </div>
+</div>
+
+<p-dialog *ngIf="visibleDetalleCompra" header="Pedido" [(visible)]="visibleDetalleCompra" [modal]="true"
+  [style]="{ width: '500px', margin: '5px' }" [draggable]="false" [resizable]="false">
+  <div *ngIf="detalleCompra?.pedidos.length > 0">
+
+    <div class="flex justify-content-between">
+      <p>
+        Fecha venta: <span>{{detalleCompra.fecha_compra}}</span>
+      </p>
+      <p>
+        Hora venta: <span>{{detalleCompra.hora}}</span>
+      </p>
+    </div>
+
+
+    <p-dataView #dv [value]="detalleCompra.pedidos">
+      <ng-template pTemplate="list" let-pedidos>
+        <div class="grid grid-nogutter">
+          <div class="col-12" *ngFor="let item of pedidos; let first = first; let i = index">
+
+            <div class="flex flex-row align-items-center p-2 gap-4"
+              [ngClass]="{ 'border-top-1 surface-border': !first }">
+              <img class="w-6rem xl:w-8rem shadow-2 block xl:block mx-auto border-round"
+                [src]="url + item.producto.imagen" [alt]="item.producto.id_producto" />
+              <div class="flex flex-row justify-content-between align-items-center xl:align-items-start flex-1 gap-4">
+                <div class="flex flex-column gap-2 w-full">
+                  <div class="text-xl font-bold text-900">{{ item.producto.nombre }}</div>
+
+                  <div class="flex justify-content-between gap-4">
+                    <div class="gap-3">
+                      <span class="font-semibold">{{ 'Cantidad: ' }}</span>
+                      <span class="font-semibold text-xl">{{ item.cantidad}}</span>
+                    </div>
+                    <div class="flex justify-content-end gap-3">
+                      <span class="font-semibold text-xl">{{ '$ '+item.subtotal.toLocaleString()}}</span>
+                    </div>
+
+                  </div>
+
+                  <div *ngIf="item.nota" class="flex align-items-center gap-2">
+                    <p class="font-semibold">{{ 'Nota: ' }}</p>
+                    <p class="font-semibold">{{ item.nota}}</p>
+                  </div>
+
+                  
+
+                </div>
+              </div>
+            </div>
+            
+          </div>
+
+          <div class="col-12 flex justify-content-end p-2 mt-2">
+            <p class="text-2xl text-red-600">Total: <span class="font-bold">$ {{detalleCompra.total.toLocaleString()}}</span></p>
+          </div>
+        </div>
+      </ng-template>
+
+    </p-dataView>
+    
+    <div class="flex justify-content-center align-items-center gap-3 mt-4">
+
+      <p-button icon="pi pi-times" severity="secondary" label="Cerrar" (click)="visibleDetalleCompra = false"></p-button>
+    </div>
+
+  </div>
+</p-dialog>
+
+<p-toast position="bottom-center" key="reporte">
+</p-toast>
+<p-confirmDialog></p-confirmDialog>

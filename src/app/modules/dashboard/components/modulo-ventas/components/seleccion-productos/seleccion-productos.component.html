@@ -1,82 +1,310 @@
-<p-dataView #dv [value]="productosFiltrados" layout="grid">
-    <ng-template pTemplate="header">
-        <div *ngIf="categoriasCargadas" class="flex flex-column md:flex-row md:justify-content-between">
-            <p-dropdown [options]="categorias" optionLabel="label" optionValue="value"
-                placeholder="Ordenar por categoria" (onChange)="onSortChange($event)"
-                styleClass="mb-2 md:mb-0"></p-dropdown>
-        </div>
-    </ng-template>
+<div>
+    <div class="p-2 flex justify-content-between">
+        <p-button icon="pi pi-arrow-left" [outlined]="true" severity="secondary" [rounded]="true" label="Volver" 
+            (click)="volverSeleccionMesa()"></p-button>
+        <p-button icon="pi pi-shopping-cart" severity="danger" size="large" [rounded]="true" label="Ver" 
+            (click)="verCarritoCompras()" *ngIf="hayCarrito()"></p-button>
+        
+    </div>
+    <ng-container *ngIf="vender; else resumen">
 
-    <ng-template let-productosFiltrados pTemplate="grid">
-        <div class="grid grid-nogutter">
-            <div class="col-12 sm:col-6 lg:col-12 xl:col-4 p-2" *ngFor="let item of productosFiltrados">
-                <div class="p-4 border-1 surface-border surface-card border-round shadow-4">
-                    <div class="flex flex-wrap align-items-center justify-content-between gap-2">
-                        <span class="flex align-items-center gap-2">
-                            <i class="pi pi-tag"></i>
-                            <span class="font-semibold">{{ item.categoria.nombre }}</span>
-                        </span>
-                        <p-tag [value]="(item.stock && item.stock <= 0) ? 'NO DISPONIBLE' : 'DISPONIBLE'"
-                            [severity]="getSeverity(item)"></p-tag>
+        <p-dataView #dv [value]="productosFiltrados" layout="grid">
+            <ng-template pTemplate="header">
+                <div class="flex justify-content-between">
+                    <div *ngIf="categoriasCargadas" class="flex flex-column md:flex-row md:justify-content-between">
+                        <p-dropdown [options]="categorias" optionLabel="label" optionValue="value"
+                            placeholder="Ordenar por categoria" (onChange)="onSortChange($event)"
+                            styleClass="mb-2 md:mb-0"></p-dropdown>
                     </div>
-                    <div class="flex flex-column align-items-center gap-3 py-5">
-                        <img class="w-9 shadow-2 border-round" [src]="url + item.imagen" [alt]="item.nombre" />
-                        <div class="text-2xl font-bold">{{ item.nombre }}</div>
-                    </div>
-                    <div class="flex align-items-center justify-content-between">
-                        <span class="text-2xl font-semibold">{{ '$ ' + (item.precio | number) }}</span>
-                        <p-button icon="pi pi-shopping-cart" severity="secondary" size="large" [rounded]="true"
-                            (click)="abrirModalAgregarProducto(item)"></p-button>
+                    <!-- <div class="w-full flex justify-content-end">
+                        <p-button icon="pi pi-shopping-cart" severity="danger" size="large" [rounded]="true" label="Ver" 
+                            (click)="verCarritoCompras()" *ngIf="hayCarrito()"></p-button>
+                    </div> -->
+
+                </div>
+            </ng-template>
+        
+            <ng-template let-productosFiltrados pTemplate="grid">
+                <div class="grid grid-nogutter">
+                    <div class="col-12 sm:col-6 lg:col-3 xl:col-3 p-2" *ngFor="let item of productosFiltrados">
+                        <div class="p-4 border-1 surface-border surface-card border-round shadow-4">
+                            <div class="flex flex-wrap align-items-center justify-content-between gap-2">
+                                <span class="flex align-items-center gap-2">
+                                    <i class="pi pi-tag"></i>
+                                    <span class="font-semibold">{{ item.categoria.nombre }}</span>
+                                </span>
+                                <p-tag [value]="item.stock <= 0 ? 'NO DISPONIBLE' : 'DISPONIBLE'"
+                                    [severity]="getSeverity(item)"></p-tag>
+                            </div>
+                            <div class="flex flex-column align-items-center gap-3 py-5">
+                                <img class="w-9 shadow-2 border-round" [src]="url + item.imagen" [alt]="item.nombre" />
+                                <div class="text-2xl font-bold">{{ item.nombre }}</div>
+                            </div>
+                            <div class="flex align-items-center justify-content-between">
+                                <span class="text-2xl font-semibold">{{ '$ ' + (item.precio | number) }}</span>
+                                <p-button icon="pi pi-plus" severity="secondary" size="large" [rounded]="true" [disabled]="item.stock <= 0"
+                                    (click)="abrirModalAgregarProducto(item)"></p-button>
+                            </div>
+                        </div>
                     </div>
                 </div>
+            </ng-template>
+            <ng-template pTemplate="emptymessage">
+                no data
+            </ng-template>
+            
+        </p-dataView>
+
+        <!-- <div class="fixed bottom-0 left-0 w-full p-4">
+            <p-button icon="pi pi-shopping-cart" severity="danger" size="large" label="VER CARRITO DE COMPRAS" class="flex justify-content-center"
+                (click)="verCarritoCompras()"></p-button>
+        </div> -->
+
+        <p-dialog *ngIf="visibleCarrito" header="Pedido" [(visible)]="visibleCarrito" [modal]="true" [style]="{ width: '500px', margin: '5px' }"
+        [draggable]="false" [resizable]="false">
+            <div *ngIf="carritoCompras.length > 0">
+                <p-dataView #dv [value]="carritoCompras">
+                    <ng-template pTemplate="list" let-productos>
+                        <div class="grid grid-nogutter">
+                            <div class="col-12" *ngFor="let item of productos; let first = first; let i = index">
+                                
+                                <div class="flex flex-row align-items-center p-2 gap-4" [ngClass]="{ 'border-top-1 surface-border': !first }">
+                                    <img class="w-6rem xl:w-8rem shadow-2 block xl:block mx-auto border-round" [src]="url + item.producto.imagen" [alt]="item.producto.id_producto" />
+                                    <div class="flex flex-row justify-content-between align-items-center xl:align-items-start flex-1 gap-4">
+                                        <div class="flex flex-column gap-2">
+                                            <div class="text-2xl font-bold text-900">{{ item.producto.nombre }}</div>
+            
+                                            <div class="flex align-items-center gap-3">
+                                                <span class="font-semibold">{{ 'Cantidad: ' }}</span>
+                                                <span class="font-semibold text-xl">{{ item.cantidadActual}}</span>
+                                            </div>
+
+                                            <div *ngIf="item.nota" class="flex align-items-center gap-2">
+                                                <p class="font-semibold">{{ 'Nota: ' }}</p>
+                                                <p class="font-semibold">{{ item.nota}}</p>
+                                            </div>
+            
+                                        </div>
+                                        <div class="flex justify-content-center align-items-center gap-4 my-4">
+
+                                            <button [id]="i+'_resta'" pButton icon="pi pi-minus" class="p-button-rounded" (click)="changeCantidad('resta', item)">
+                                            </button>
+                                            <p class="text-lg font-semibold m-0">
+                                                {{ item.cantidadActual }}
+                                            </p>
+                                            <button [id]="i+'_suma'" pButton icon="pi pi-plus" class="p-button-rounded" (click)="changeCantidad('suma', item)">
+                                            </button>
+            
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </ng-template>
+                    
+                </p-dataView>
+
+                <div class="flex justify-content-center align-items-center gap-3 mt-4">
+                    <p-button  icon="pi pi-eraser" severity="danger" label="Limpiar Carrito"
+                        (click)="limpiarCarrito()"></p-button>
+
+                    <p-button  icon="pi pi-save" severity="success" label="Confirmar" 
+                        (click)="confirmarPedido()"></p-button>
+                </div>
+
+            </div>
+        </p-dialog>
+        
+        <p-dialog *ngIf="visible" header="Agregar al carrito" [(visible)]="visible" [modal]="true" [style]="{ width: '500px', margin: '5px' }"
+            [draggable]="false" [resizable]="false">
+        
+            <div class="grid col-12">
+                <div class="col-12 md:col-6">
+                    <img *ngIf="fotoProducto" [src]="fotoProducto" alt="Vista previa de la imagen" width="200" height="200"
+                        class="mt-2 mx-auto mb-5 block shadow-2">
+        
+                </div>
+                <div class="col-12 md:col-6">
+        
+                    <div class="text-2xl font-bold">{{ productoSeleccionado.nombre }}</div>
+        
+                    <p class="my-4">
+                        {{ productoSeleccionado.descripcion }}
+                    </p>
+        
+                    <span class="text-2xl font-semibold">{{ '$ ' + (productoSeleccionado.precio | number) }}</span>
+        
+                    <div class="flex justify-content-center align-items-center gap-4 my-4">
+                        <p-button (click)="seleccionarCantidad('resta')" icon="pi pi-minus" [rounded]="true"
+                            [disabled]="cantidadSeleccionada<=0">
+                        </p-button>
+                        <p class="text-lg font-semibold m-0">
+                            {{ cantidadSeleccionada }}
+                        </p>
+                        <p-button (click)="seleccionarCantidad('suma')" icon="pi pi-plus" [rounded]="true"
+                            [disabled]="!hayDisponibilidad()">
+                        </p-button>
+                    </div>
+
+                    <div class="border-round mb-4">
+                        <textarea rows="2" maxlength="200" pInputTextarea [(ngModel)]="nota"
+                            [autoResize]="true" class="h-full w-full"
+                            placeholder="Nota..."></textarea>
+                    </div>
+        
+                    <div class="mt-4">
+                        <p-button [disabled]="cantidadSeleccionada <= 0" (click)="agregarCarrito()" label="Agregar"
+                            iconPos="right" icon="pi pi-shopping-cart" styleClass="w-full">
+                        </p-button>
+                    </div>
+                </div>
+        
+            </div>
+            <!-- <ng-template pTemplate="footer">
+                <p-button icon="pi pi-check" (click)="visible = false" label="Ok" pAutoFocus [autofocus]="true"></p-button>
+            </ng-template> -->
+        </p-dialog>
+    </ng-container>
+
+    <ng-template #resumen>
+
+        <ng-container *ngIf="compraActual">
+
+            <h1 class="font-semibold text-2xl text-center mt-2">
+                Resumen de la venta actual
+            </h1>
+            <p-dataView #dv [value]="compraActual.pedidos">
+                <ng-template pTemplate="list" let-pedidos>
+                    <div class="grid grid-nogutter">
+                        <div class="col-12" *ngFor="let item of pedidos; let first = first">
+                            <div class="flex flex-row align-items-start p-2 gap-4 py-4" [ngClass]="{ 'border-top-1 surface-border': !first }">
+                                <img class="w-6rem xl:w-8rem shadow-2 block xl:block mx-auto border-round" [src]="url + item.producto.imagen" [alt]="item.producto.nombre" />
+                                <div class="flex flex-row justify-content-between align-items-center xl:align-items-start flex-1 gap-4">
+                                    <div class="flex flex-column gap-2">
+                                        <div class="text-2xl font-bold text-900">{{ item.producto.nombre }}</div>
+        
+                                        <div *ngIf="item.nota" class="flex align-items-center gap-2">
+                                            <p class="font-semibold">{{ 'Nota: ' }}</p>
+                                            <p class="font-semibold">{{ item.nota}}</p>
+                                        </div>
+
+                                        <div class="flex align-items-center gap-2">
+                                            <i class="pi pi-tag"></i>
+                                            <span class="font-semibold">{{ item.producto.categoria.nombre }}</span>
+                                        </div>
+        
+                                        <div class="flex align-items-center gap-3">
+                                            <span class="font-semibold">{{ 'Cantidad: ' }}</span>
+                                            <span class="font-semibold text-xl">{{ item.cantidad}}</span>
+                                        </div>
+        
+        
+                                    </div>
+                                    <div class="flex sm:flex-column align-items-center sm:align-items-end gap-3 sm:gap-2">
+        
+                                        <span class="text-2xl font-semibold">{{ '$' + (item.subtotal | number) }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </ng-template>
+            </p-dataView>
+        
+        
+            <div class="flex justify-content-end text-2xl font-bold border-top-1 surface-border p-2">
+                {{'Total: $' + (compraActual.total | number)}}
+            </div>
+
+
+
+            
+        </ng-container>
+    </ng-template>
+    
+</div>
+
+<ng-container *ngIf="mesa.estado_actual == 'OCUPADO'">
+    <div class="grid grid-nogutter mb-4">
+        <div class="col-6">
+
+            <form [formGroup]="formPropina" *ngIf="!compraActual.impresion">
+                <div class="w-6 p-2">
+                    <div class="flex flex-column gap-2 border-round mb-4">
+                        <label for="">Propina sugerida *</label>
+                        <p-dropdown appendTo="body" [options]="itemsPropinas" formControlName="propina" optionLabel="label" optionValue="value" placeholder="Seleccione" styleClass="w-full"></p-dropdown>
+                        <span *ngIf="isValidField('propina')" class="text-red-500 font-semibold mb-2">
+                            Este campo es requerido
+                        </span>
+                    </div>
+                            
+                </div>
+            </form>
+        </div>
+        <div class="col-6">
+            
+            <div class="flex align-items-center justify-content-end gap-4 p-2">
+                <p-button [icon]="vender ? 'pi pi-eye' : 'pi pi-shopping-cart'" severity="secondary" size="small" [rounded]="true" [label]="vender ? 'Ver Resumen' : 'Vender'"
+                (click)="handleVenderResumen()"></p-button>
+
+                <p-button *ngIf="!vender && esAdmin()" [icon]="compraActual.impresion ? 'pi pi-check' : 'pi pi-print'" severity="primary" size="small" [rounded]="true" [label]="compraActual.impresion ? 'Finalizar' : 'Imprimir'" 
+                    (click)="compraActual.impresion ? modalConfirmarPropina = true : enviarPropina()" [disabled]="compraActual.impresion ? false : formPropina.invalid"></p-button>
             </div>
         </div>
-    </ng-template>
-    <ng-template pTemplate="emptymessage">
-        no data
-    </ng-template>
-</p-dataView>
+    </div>
 
-<p-dialog *ngIf="visible" header="Agregar al carrito" [(visible)]="visible" [modal]="true" [style]="{ width: '500px' }"
+</ng-container>
+
+
+<!-- <p-dialog header="Seleccionar propina sugerida" [(visible)]="modalSeleccionarPropina" [modal]="true" [style]="{ width: '500px', margin: '5px' }" [draggable]="false"
+      [resizable]="false">
+    <div>
+        <form [formGroup]="formPropina" (ngSubmit)="enviarPropina()" autocomplete="off">
+
+            <div class="flex flex-column gap-2 border-round mb-4">
+                <label for="">Propina sugerida *</label>
+
+                <p-dropdown appendTo="body" [options]="itemsPropinas" formControlName="propina" optionLabel="label" optionValue="value" styleClass="w-full" placeholder="Seleccione"></p-dropdown>
+
+            </div>
+
+            
+            <p-button class="flex justify-content-center" type="submit" [rounded]="true" icon="pi pi-print" iconPos="right" [disabled]="!formPropina.valid" label="Imprimir"></p-button>
+        </form>
+    </div>
+</p-dialog> -->
+
+
+<!--Modal para confirmar la propina que dió el cliente -->
+<p-dialog *ngIf="modalConfirmarPropina" header="Seleccionar propina sugerida" [(visible)]="modalConfirmarPropina" [modal]="true" [style]="{ width: '300px', margin: '5px' }"
     [draggable]="false" [resizable]="false">
 
-    <div class="grid col-12">
-        <div class="col-6">
-            <img *ngIf="fotoProducto" [src]="fotoProducto" alt="Vista previa de la imagen" width="200" height="200"
-                class="mt-2 mx-auto mb-5 block shadow-2">
+    <div class="w-full">
 
-        </div>
-        <div class="col-6">
+        <form [formGroup]="formPropina" (ngSubmit)="confirmarPropina()">
+            <div class="flex flex-column gap-2 border-round mb-4">
+                <label for="">Propina *</label>
+                <p-inputNumber formControlName="propina" inputId="integeronly" prefix="$ " styleClass="w-full" placeholder="Escriba la propina pagada"> </p-inputNumber>
 
-            <div class="text-2xl font-bold">{{ productoSeleccionado.nombre }}</div>
-
-            <p class="my-4">
-                {{ productoSeleccionado.descripcion }}
-            </p>
-
-            <span class="text-2xl font-semibold">{{ '$ ' + (productoSeleccionado.precio | number) }}</span>
-
-            <div class="flex justify-content-center align-items-center gap-4 my-4">
-                <p-button (click)="seleccionarCantidad('resta')" icon="pi pi-minus" [rounded]="true"
-                    [disabled]="cantidadSeleccionada<=0">
-                </p-button>
-                <p class="text-lg font-semibold m-0">
-                    {{ cantidadSeleccionada }}
-                </p>
-                <p-button (click)="seleccionarCantidad('suma')" icon="pi pi-plus" [rounded]="true"
-                    [disabled]="!hayDisponibilidad()">
-                </p-button>
+                <span *ngIf="isValidField('propina')" class="text-red-500 font-semibold mb-2">
+                    Este campo es requerido
+                </span>
             </div>
 
-            <div class="mt-4">
-                <p-button [disabled]="cantidadSeleccionada <= 0" (click)="agregarCarrito()" label="Agregar"
-                    iconPos="right" icon="pi pi-shopping-cart" styleClass="w-full">
-                </p-button>
-            </div>
-        </div>
+            <p-button class="flex justify-content-center" type="submit" [rounded]="true" icon="pi pi-check" iconPos="right" [disabled]="!formPropina.valid" label="Confirmar"></p-button>
 
+        </form>
     </div>
-    <!-- <ng-template pTemplate="footer">
-        <p-button icon="pi pi-check" (click)="visible = false" label="Ok" pAutoFocus [autofocus]="true"></p-button>
-    </ng-template> -->
+
 </p-dialog>
+
+<p-toast position="bottom-center" key="imprimir">
+    <!-- <ng-template let-message pTemplate="message">
+        <div class="flex flex-column align-items-start" style="flex: 1">
+            <div class="flex align-items-center gap-2">
+                <span class="font-bold text-900">Error</span>
+            </div>
+            <div class="font-medium text-lg my-3 text-900">{{ message.detail }}</div>
+        </div>
+    </ng-template> -->
+</p-toast>

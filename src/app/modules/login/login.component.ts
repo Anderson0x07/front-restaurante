@@ -53,9 +53,9 @@ export class LoginComponent implements OnInit {
           localStorage.setItem('AUTH', JSON.stringify(data))
 
           if(data.rol == 'ROLE_ADMINISTRADOR') {
-            this.router.navigate(['admin/dashboard']);
+            this.router.navigate(['admin']);
           } else {
-            this.router.navigate(['admin/ventas'])
+            this.router.navigate(['mesero'])
           }
         },
         error: ({ error: { message } }: HttpErrorResponse) => {
@@ -77,23 +77,17 @@ export class LoginComponent implements OnInit {
 
   public enviarCodigo() {
 
-    
-    this.loading = true;
-
     const email = this.cambioPasswordForm.get('email')?.value;
 
     if (this.validateEmail(email)) {
 
       this.seguridadService.enviarToken(email).subscribe({
         next: (data) => {
-          console.log(data)
           this.tokenEnviado = true;
-          this.loading = false;
           this.activeIndex++;
 
         },
         error: ({ error }: HttpErrorResponse) => {
-          this.loading = false;
           this.messageService.add({ severity: 'error', summary: 'Error', detail: error.error });
 
         }
@@ -120,15 +114,11 @@ export class LoginComponent implements OnInit {
     const token = this.cambioPasswordForm.get('token')?.value;
     const newPassword = this.cambioPasswordForm.get('password')?.value;
 
-    this.loading = true;
-
     this.seguridadService.cambiarPassword(token, newPassword).subscribe({
       next: () => {
         this.activeIndex++;
-        this.loading = false;
       },
       error: ({ error }: HttpErrorResponse) => {
-        this.loading = false;
         this.messageService.add({ severity: 'error', summary: 'Error', detail: error.error });
 
       }
@@ -139,8 +129,6 @@ export class LoginComponent implements OnInit {
   items: MenuItem[] = Array(3).fill({});
 
   activeIndex: number = 0;
-
-  loading: boolean = false;
 
   next() {
     this.messageService.clear();

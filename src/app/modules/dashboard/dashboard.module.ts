@@ -11,6 +11,9 @@ import { GestionIngredientesComponent } from './components/gestion-ingredientes/
 import { GestionInventarioComponent } from './components/gestion-inventario/gestion-inventario.component';
 import { GestionUsuariosComponent } from './components/gestion-usuarios/gestion-usuarios.component';
 import { AcortarTextoPipe } from 'src/app/interceptors/pipe-acortar-texto.pipe';
+import { RedirectComponent } from './redireccionar.component';
+import { MiPerfilComponent } from './components/mi-perfil/mi-perfil.component';
+import { GestionReportesComponent } from './components/gestion-reportes/gestion-reportes.component';
 
 @NgModule({
     imports: [
@@ -27,7 +30,10 @@ import { AcortarTextoPipe } from 'src/app/interceptors/pipe-acortar-texto.pipe';
         GestionIngredientesComponent,
         GestionInventarioComponent,
         GestionUsuariosComponent,
-        AcortarTextoPipe
+        AcortarTextoPipe,
+        RedirectComponent,
+        MiPerfilComponent,
+        GestionReportesComponent
     ]
 })
 export class DashboardModule { }

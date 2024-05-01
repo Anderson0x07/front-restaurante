@@ -16,11 +16,21 @@ export class ModuloVentasComponent implements OnInit {
     public mesaSeleccionada!: MesaDto;
     public mostrarSeleccionProductos = false;
 
+    public irVentaActual = false;
+
 
     public gestionMesaSeleccionada(mesaSeleccionada: MesaDto): void {
       console.log("Mesa seleccionada ", mesaSeleccionada );
       this.mesaSeleccionada = mesaSeleccionada;
       this.mostrarSeleccionProductos = true;
+    }
+
+    public alSalir(evento: boolean): void {
+      if(evento) {
+        this.irVentaActual = false;
+        this.mostrarSeleccionProductos = false;
+      }
+     
     }
 
 }
