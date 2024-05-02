@@ -17,7 +17,7 @@
                     <p-tag [value]="item.estado_actual" [severity]="getSeverity(item)"></p-tag>
                 </div>
                 <div class="flex flex-column align-items-center gap-3 py-5">
-                    <img class="w-9 shadow-2 border-round" src="/assets/mesa.png" alt="Mesa img" />
+                    <img class="w-9 shadow-2 border-round" [src]="item.numero.toLowerCase().includes('domi') ? '/assets/domi.jpg' : '/assets/mesa.png'" alt="Mesa img" />
                 </div>
                 <div class="flex align-items-center justify-content-center">
                     <p-button label="Seleccionar" [severity]="getSeverity(item)" size="large" [rounded]="true" (click)="onSeleccionMesa(item)"></p-button>

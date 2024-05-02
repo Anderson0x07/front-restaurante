@@ -38,6 +38,8 @@ export class GestionMesasComponent implements OnInit {
     { value: 4 }, { value: 5 }, { value: 6 },
   ];
 
+  public codeRegex: RegExp = /^[1-9]+$/;
+
   ngOnInit(): void {
 
     this.initForm();
@@ -55,7 +57,7 @@ export class GestionMesasComponent implements OnInit {
   private initForm(): void {
     this.formulario = this.fb.group({
       numero: ['', Validators.required],
-      capacidad: ['', Validators.required],
+      capacidad: [''],
       estado: [false],
     });
   }

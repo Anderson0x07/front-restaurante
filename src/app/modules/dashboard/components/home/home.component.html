@@ -1,5 +1,11 @@
-<div class="surface-ground px-4 py-5 md:px-6 lg:px-8">
-    <div *ngIf="estadisticas" class="grid">
+<div class="surface-ground px-2 py-5 ">
+
+    <div>
+        <span class="p-3 text-900 font-medium text-2xl">{{ saludo + ' ' + nombreUsuario }} </span>
+        
+    </div>
+
+    <div *ngIf="estadisticas && !error; else mensajeError" class="grid">
         <div class="col-12 md:col-6 lg:col-4">
             <div class="surface-card shadow-2 p-3 border-round">
                 <div class="flex justify-content-between mb-3">
@@ -48,7 +54,7 @@
             <div class="surface-card shadow-2 p-3 border-round">
                 <div class="flex justify-content-between align-items-center ">
                     <div>
-                        <span class="text-900 font-medium text-2xl">Productos con stock menor a 5 unidades</span>
+                        <span class="text-900 font-medium text-xl">Productos con stock menor a 5 unidades</span>
                     </div>
                     <div class="flex align-items-center justify-content-center bg-red-100 border-round"
                         style="width:2.5rem;height:2.5rem">
@@ -81,4 +87,20 @@
         </ng-container>
 
     </div>
+
+    <ng-template #mensajeError>
+        <div class="col-12 mt-4">
+            <div class="surface-card shadow-2 p-3 border-round">
+                <div class="flex justify-content-between align-items-center ">
+                    <div>
+                        <span class="text-900 font-medium text-xl">{{error}}</span>
+                    </div>
+                    <div class="flex align-items-center justify-content-center bg-red-100 border-round"
+                        style="width:2.5rem;height:2.5rem">
+                        <i class="pi pi-exclamation-triangle text-red-500 text-xl"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </ng-template>
 </div>

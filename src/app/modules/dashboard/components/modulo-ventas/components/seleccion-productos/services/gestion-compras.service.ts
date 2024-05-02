@@ -30,6 +30,10 @@ export class GestionComprasService {
         return this.http.put(`${GestionComprasApiConstant.URL_EDIT}/${itemId}`, request);
     }
 
+    public cambiarEstadoImpresion(compraId: number): Observable<any> {
+        return this.http.put(`${GestionComprasApiConstant.URL_EDITAR_ESTADO}/${compraId}`, {});
+    }
+
     public delete(itemId: number): Observable<any> {
         return this.http.delete(`${GestionComprasApiConstant.URL_DELETE}/${itemId}`);
     }

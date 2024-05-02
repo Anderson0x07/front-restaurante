@@ -48,6 +48,8 @@ export class SeleccionProductosComponent implements OnInit, OnDestroy {
 
   public formPropina!: FormGroup;
 
+  public formDomi!: FormGroup;
+
   public productos!: ProductoDto[]; 
 
   public productosFiltrados: ProductoDto[] = [];
@@ -80,7 +82,7 @@ export class SeleccionProductosComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
 
-    if(this.mesa.estado_actual == 'OCUPADO') {
+    if(this.mesa.estado_actual == 'OCUPADO' || this.mesa.estado_actual == 'FACTURADO') {
       this.vender = false;
       this.getCompraActualMesa(this.mesa.id_mesa);
 
@@ -107,6 +109,12 @@ export class SeleccionProductosComponent implements OnInit, OnDestroy {
     
     this.formPropina = this.fb.group({
       propina: ['', [Validators.required]]
+    })
+
+    this.formDomi = this.fb.group({
+      documento: ['', [Validators.required]],
+      direccion: ['', [Validators.required]],
+      telefono: ['', [Validators.required]],
     })
 
   }
@@ -183,13 +191,6 @@ export class SeleccionProductosComponent implements OnInit, OnDestroy {
       });
     }
 
-    // this.productos.forEach(producto => {
-    //   if (producto.id_producto === this.productoSeleccionado.id_producto) {
-    //     producto.stock -= this.cantidadSeleccionada;
-    //   }
-    // });
-
-    console.log(this.cantidadSeleccionada)
 
     this.productosFiltrados.forEach(producto => {
       if (producto.id_producto === this.productoSeleccionado.id_producto) {
@@ -200,7 +201,7 @@ export class SeleccionProductosComponent implements OnInit, OnDestroy {
     localStorage.setItem('carritoCompras', JSON.stringify(carritoCompras));
     this.carritoCompras = carritoCompras;
 
-    this.messageService.add({ severity: 'success', summary: 'Exito', detail: 'Producto agregado al carrito', life: 3000 });
+    this.messageService.add({ key: "imprimir", severity: 'success', summary: 'Exito', detail: 'Producto agregado al carrito', life: 3000 });
     this.visible = false;
   }
 
@@ -247,8 +248,6 @@ export class SeleccionProductosComponent implements OnInit, OnDestroy {
     const productoExistente = this.carritoCompras.find((producto: any) => producto.producto.id_producto === item.producto.id_producto);
 
     const productoInventario = this.productos.find(producto => producto.id_producto === item.producto.id_producto);
-
-    console.log(productoInventario?.stock)
 
     if (productoExistente && productoInventario) {
 
@@ -335,45 +334,77 @@ export class SeleccionProductosComponent implements OnInit, OnDestroy {
         this.compraActual = compraActual;
       },
       error: (err) => {
-        console.log(err)
+        this.messageService.add({ key: 'imprimir', severity: 'error', summary: 'Error', detail: 'Error interno de servidor', life: 3000 });
+
       }
     })
   }
 
   requestImpresion: CompraDto = new CompraDto();
 
-  public enviarPropina(): void {
-    const compraId = this.compraActual.id_compra;
-    const propinaPorcentaje = this.formPropina.value.propina;
+  public enviarCompraImpresion(): void {
+    
+    if(this.esDomi()) {
+      this.modalDomicilio = true;
+    } else {
 
-    this.gestionComprasService.propinaCompraPorcentaje(compraId, propinaPorcentaje).subscribe({
-      next: (data) => {
-        console.log(data)
-
-        this.requestImpresion = data;
-        this.compraActual.impresion = data.impresion;
-
-      },
-      error: (err) => {
-        this.messageService.add({ key: 'imprimir', severity: 'error', summary: 'Error', detail: 'Error interno de servidor', life: 3000 });
-      },
-      complete: () => {
-        this.imprimir(this.requestImpresion, {})
-      }
-    })
+      const compraId = this.compraActual.id_compra;
+      const propinaPorcentaje = this.formPropina.value.propina;
+  
+      this.gestionComprasService.propinaCompraPorcentaje(compraId, propinaPorcentaje).subscribe({
+        next: (data) => {
+  
+          this.requestImpresion = data;
+          this.compraActual.impresion = data.impresion;
+  
+        },
+        error: (err) => {
+          this.messageService.add({ key: 'imprimir', severity: 'error', summary: 'Error', detail: 'Error interno de servidor', life: 3000 });
+        },
+        complete: () => {
+          this.imprimir(this.requestImpresion, {})
+        }
+      })
+    }
+    
   }
+
+  public enviarFormDomi(): void {
+    const clienteDomi = this.formDomi.value;
+
+    if(this.formDomi.valid) {
+
+      this.gestionComprasService.propinaCompraPorcentaje(this.compraActual.id_compra, 0).subscribe({
+        next: (data) => {
+  
+          this.requestImpresion = data;
+          this.compraActual.impresion = data.impresion;
+  
+        },
+        error: (err) => {
+          this.messageService.add({ key: 'imprimir', severity: 'error', summary: 'Error', detail: 'Error interno de servidor', life: 3000 });
+        },
+        complete: () => {
+          this.imprimir(this.requestImpresion, clienteDomi)
+        }
+      })
+
+    }
+  }
+
 
   private imprimir(compraDto: CompraDto, clienteDomi?: any): void {
     this.gestionComprasService.imprimir(compraDto, clienteDomi).subscribe({
       next: (data) => {
-        console.log(data)
         this.formPropina.reset();
+        this.formDomi.reset();
         this.messageService.add({ severity: 'success', summary: 'Éxito', detail: 'Compra realizada con éxito', life: 3000 });
 
       },
       error: (data) => {
         console.log(data)
         this.compraActual.impresion = false;
+        this.gestionComprasService.cambiarEstadoImpresion(this.compraActual.id_compra).subscribe();
         this.messageService.add({ key: 'imprimir', severity: 'error', summary: 'Error', detail: 'Error al imprimir la factura', life: 3000 });
 
       }
@@ -397,11 +428,35 @@ export class SeleccionProductosComponent implements OnInit, OnDestroy {
   }
 
 
-  public isValidField(field: string): boolean | null {
+  public isValidField(form: any, field: string): boolean | null {
     return (
-      this.formPropina.controls[field].errors &&
-      this.formPropina.controls[field].touched
+      form.controls[field].errors &&
+      form.controls[field].touched
     );
   }
+
+  public abrirModalConfirmarPropina(): void {
+    if(this.esDomi()) {
+      this.gestionComprasService.propinaCompra(this.compraActual.id_compra, 0).subscribe({
+        next: (data) => {
+          console.log(data)
+          this.volverSeleccionMesa();
+        },
+        error: (err) => {
+          this.messageService.add({ key: 'imprimir', severity: 'error', summary: 'Error', detail: 'Error interno de servidor', life: 3000 });
+  
+        }
+      })
+    } else {
+      this.modalConfirmarPropina = true
+    }
+  }
+
+  public esDomi(): boolean {
+    return this.mesa.numero.toLowerCase().includes('domi');
+  }
+
+  public modalDomicilio: boolean = false;
+
 
 }

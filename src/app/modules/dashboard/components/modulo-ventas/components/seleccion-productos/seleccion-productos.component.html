@@ -16,10 +16,6 @@
                             placeholder="Ordenar por categoria" (onChange)="onSortChange($event)"
                             styleClass="mb-2 md:mb-0"></p-dropdown>
                     </div>
-                    <!-- <div class="w-full flex justify-content-end">
-                        <p-button icon="pi pi-shopping-cart" severity="danger" size="large" [rounded]="true" label="Ver" 
-                            (click)="verCarritoCompras()" *ngIf="hayCarrito()"></p-button>
-                    </div> -->
 
                 </div>
             </ng-template>
@@ -55,10 +51,6 @@
             
         </p-dataView>
 
-        <!-- <div class="fixed bottom-0 left-0 w-full p-4">
-            <p-button icon="pi pi-shopping-cart" severity="danger" size="large" label="VER CARRITO DE COMPRAS" class="flex justify-content-center"
-                (click)="verCarritoCompras()"></p-button>
-        </div> -->
 
         <p-dialog *ngIf="visibleCarrito" header="Pedido" [(visible)]="visibleCarrito" [modal]="true" [style]="{ width: '500px', margin: '5px' }"
         [draggable]="false" [resizable]="false">
@@ -224,16 +216,16 @@
     
 </div>
 
-<ng-container *ngIf="mesa.estado_actual == 'OCUPADO'">
+<ng-container *ngIf="mesa.estado_actual == 'OCUPADO' || mesa.estado_actual == 'FACTURADO'">
     <div class="grid grid-nogutter mb-4">
         <div class="col-6">
 
-            <form [formGroup]="formPropina" *ngIf="!compraActual.impresion">
+            <form [formGroup]="formPropina" *ngIf="!compraActual.impresion && !esDomi()">
                 <div class="w-6 p-2">
                     <div class="flex flex-column gap-2 border-round mb-4">
                         <label for="">Propina sugerida *</label>
                         <p-dropdown appendTo="body" [options]="itemsPropinas" formControlName="propina" optionLabel="label" optionValue="value" placeholder="Seleccione" styleClass="w-full"></p-dropdown>
-                        <span *ngIf="isValidField('propina')" class="text-red-500 font-semibold mb-2">
+                        <span *ngIf="isValidField(formPropina, 'propina')" class="text-red-500 font-semibold mb-2">
                             Este campo es requerido
                         </span>
                     </div>
@@ -243,12 +235,12 @@
         </div>
         <div class="col-6">
             
-            <div class="flex align-items-center justify-content-end gap-4 p-2">
+            <div class="flex align-items-center justify-content-end gap-4 p-2 mt-4">
                 <p-button [icon]="vender ? 'pi pi-eye' : 'pi pi-shopping-cart'" severity="secondary" size="small" [rounded]="true" [label]="vender ? 'Ver Resumen' : 'Vender'"
                 (click)="handleVenderResumen()"></p-button>
 
                 <p-button *ngIf="!vender && esAdmin()" [icon]="compraActual.impresion ? 'pi pi-check' : 'pi pi-print'" severity="primary" size="small" [rounded]="true" [label]="compraActual.impresion ? 'Finalizar' : 'Imprimir'" 
-                    (click)="compraActual.impresion ? modalConfirmarPropina = true : enviarPropina()" [disabled]="compraActual.impresion ? false : formPropina.invalid"></p-button>
+                    (click)="compraActual.impresion ? abrirModalConfirmarPropina() : enviarCompraImpresion()" [disabled]="compraActual.impresion ? false : (esDomi() ? false : formPropina.invalid)"></p-button>
             </div>
         </div>
     </div>
@@ -256,23 +248,43 @@
 </ng-container>
 
 
-<!-- <p-dialog header="Seleccionar propina sugerida" [(visible)]="modalSeleccionarPropina" [modal]="true" [style]="{ width: '500px', margin: '5px' }" [draggable]="false"
+
+<!--MODAL PARA DOMICILIO-->
+<p-dialog header="Domicilio" [(visible)]="modalDomicilio" [modal]="true" [style]="{ width: '500px', margin: '5px' }" [draggable]="false"
       [resizable]="false">
     <div>
-        <form [formGroup]="formPropina" (ngSubmit)="enviarPropina()" autocomplete="off">
+        <form [formGroup]="formDomi" (ngSubmit)="enviarFormDomi()" autocomplete="off">
 
             <div class="flex flex-column gap-2 border-round mb-4">
-                <label for="">Propina sugerida *</label>
-
-                <p-dropdown appendTo="body" [options]="itemsPropinas" formControlName="propina" optionLabel="label" optionValue="value" styleClass="w-full" placeholder="Seleccione"></p-dropdown>
-
+                <label for="">Número de documento *</label>
+                <input type="text" pInputText placeholder="Escriba el número de documento del cliente" formControlName="documento">
+                <span *ngIf="isValidField(formDomi, 'documento')" class="text-red-500 font-semibold mb-2">
+                  Este campo es requerido
+                </span>
             </div>
 
-            
-            <p-button class="flex justify-content-center" type="submit" [rounded]="true" icon="pi pi-print" iconPos="right" [disabled]="!formPropina.valid" label="Imprimir"></p-button>
+            <div class="flex flex-column gap-2 border-round mb-4">
+                <label for="">Dirección *</label>
+                <input type="text" pInputText placeholder="Escriba la dirección del cliente" formControlName="direccion">
+                <span *ngIf="isValidField(formDomi, 'direccion')" class="text-red-500 font-semibold mb-2">
+                  Este campo es requerido
+                </span>
+            </div>
+
+            <div class="flex flex-column gap-2 border-round mb-4">
+                <label for="">Teléfono *</label>
+                <input type="text" pInputText placeholder="Escriba el teléfono del cliente" formControlName="telefono" maxlength="10">
+                <span *ngIf="isValidField(formDomi, 'telefono')" class="text-red-500 font-semibold mb-2">
+                  Este campo es requerido
+                </span>
+            </div>
+
+            <div class="flex justify-content-center">
+                <p-button type="submit" [rounded]="true" icon="pi pi-print" iconPos="right" [disabled]="!formDomi.valid" label="Imprimir"></p-button>
+            </div>
         </form>
     </div>
-</p-dialog> -->
+</p-dialog>
 
 
 <!--Modal para confirmar la propina que dió el cliente -->
@@ -286,7 +298,7 @@
                 <label for="">Propina *</label>
                 <p-inputNumber formControlName="propina" inputId="integeronly" prefix="$ " styleClass="w-full" placeholder="Escriba la propina pagada"> </p-inputNumber>
 
-                <span *ngIf="isValidField('propina')" class="text-red-500 font-semibold mb-2">
+                <span *ngIf="isValidField(formPropina, 'propina')" class="text-red-500 font-semibold mb-2">
                     Este campo es requerido
                 </span>
             </div>
@@ -298,13 +310,4 @@
 
 </p-dialog>
 
-<p-toast position="bottom-center" key="imprimir">
-    <!-- <ng-template let-message pTemplate="message">
-        <div class="flex flex-column align-items-start" style="flex: 1">
-            <div class="flex align-items-center gap-2">
-                <span class="font-bold text-900">Error</span>
-            </div>
-            <div class="font-medium text-lg my-3 text-900">{{ message.detail }}</div>
-        </div>
-    </ng-template> -->
-</p-toast>
+<p-toast position="bottom-center" key="imprimir"></p-toast>

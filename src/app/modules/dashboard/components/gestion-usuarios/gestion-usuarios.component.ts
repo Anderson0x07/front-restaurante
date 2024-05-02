@@ -222,16 +222,16 @@ export class GestionUsuariosComponent implements OnInit {
   }
 
 
-  public eliminar(itemId: number) {
+  public editarEstado(itemId: number) {
     this.messageService.clear();
-    const seguroEliminar = "¿Está seguro de que desea eliminar?"
+    const seguroEliminar = "¿Está seguro de que desea cambiar el estado?"
     this.confirmationService.confirm({
       message: seguroEliminar,
-      header: 'Eliminar',
+      header: 'Cambiar Estado',
       acceptLabel: 'Si',
       rejectLabel: 'No',
       accept: () => { 
-        this.gestionUsuariosService.delete(itemId).subscribe({
+        this.gestionUsuariosService.editState(itemId).subscribe({
           next: (res: {message: string}) => {
             this.messageService.add({ severity: 'success', summary: 'Éxitoso', detail: res.message, life: 3000 });
             this.listar();

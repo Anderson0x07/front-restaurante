@@ -19,7 +19,7 @@ export class GestionUsuarioApiConstant {
     environment.local + this.BASE +
     'editar';
 
-    static readonly URL_DELETE: string = 
+    static readonly URL_EDITAR_ESTADO: string = 
     environment.local + this.BASE +
-    'eliminar';
+    'editar-estado';
 }

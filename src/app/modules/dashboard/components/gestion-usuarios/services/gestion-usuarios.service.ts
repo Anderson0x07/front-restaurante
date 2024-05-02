@@ -26,8 +26,8 @@ export class GestionUsuariosService {
         return this.http.put(`${GestionUsuarioApiConstant.URL_EDIT}/${itemId}`, request);
     }
 
-    public delete(itemId: number): Observable<any> {
-        return this.http.delete(`${GestionUsuarioApiConstant.URL_DELETE}/${itemId}`);
+    public editState(itemId: number): Observable<any> {
+        return this.http.put(`${GestionUsuarioApiConstant.URL_EDITAR_ESTADO}/${itemId}`, {});
     }
 
     public findById(itemId: number): Observable<any> {

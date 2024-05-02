@@ -19,6 +19,10 @@ export class GestionComprasApiConstant {
     environment.local + this.BASE +
     'editar';
 
+    static readonly URL_EDITAR_ESTADO: string = 
+    environment.local + this.BASE +
+    'editar-estado';
+
     static readonly URL_DELETE: string = 
     environment.local + this.BASE +
     'eliminar';

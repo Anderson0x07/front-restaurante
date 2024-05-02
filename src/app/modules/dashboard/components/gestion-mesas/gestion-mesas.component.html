@@ -66,14 +66,14 @@
 
           <div class="flex flex-column gap-2 border-round mb-4">
             <label for="">Número de mesa *</label>
-            <input type="text" pInputText placeholder="Escriba el número de mesa" formControlName="numero">
+            <input type="text" pInputText placeholder="Escriba el número de mesa" formControlName="numero" maxlength="10">
             <span *ngIf="isValidField('numero')" class="text-red-500 font-semibold mb-2">
               Este campo es requerido
             </span>
           </div>
           <div class="flex flex-column gap-2 border-round mb-4">
             <label for="">Capacidad *</label>
-            <input type="text" pInputText placeholder="Seleccione la capacidad de la mesa" formControlName="capacidad">
+            <input pKeyFilter="num" [pKeyFilter]="codeRegex" pInputText placeholder="Seleccione la capacidad de la mesa" formControlName="capacidad" maxlength="1">
             <span *ngIf="isValidField('capacidad')" class="text-red-500 font-semibold mb-2">
               Este campo es requerido
             </span>

@@ -73,8 +73,8 @@
               <div class="flex justify-content-center">
                 <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-success mr-2"
                   (click)="abrirModal(item.id_usuario)"></button>
-                <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-warning"
-                  (click)="eliminar(item.id_usuario)"></button>
+                <button pButton pRipple [icon]="item.estado ? 'pi pi-eye' : 'pi pi-eye-slash'" class="p-button-rounded p-button-primary"
+                  (click)="editarEstado(item.id_usuario)"></button>
               </div>
             </td>
           </tr>

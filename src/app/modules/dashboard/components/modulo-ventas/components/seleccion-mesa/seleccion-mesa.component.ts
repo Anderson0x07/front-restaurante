@@ -1,6 +1,7 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { GestionMesasService } from '../../../gestion-mesas/services/gestion-mesas.service';
 import { MesaDto } from 'src/app/dtos/configuracion/mesa/mesa.dto';
+import { UsuarioDTO } from 'src/app/dtos/configuracion/usuario/usuario.dto';
 
 @Component({
   selector: 'app-seleccion-mesa',
@@ -20,7 +21,24 @@ export class SeleccionMesaComponent implements OnInit {
   ngOnInit() {
     this.gestionMesasService.getAll().subscribe({
       next: (data) => {
-        this.mesas = data.filter(item => item.estado)
+
+        const auth: UsuarioDTO = JSON.parse(localStorage.getItem("USUARIO")+'')
+
+        this.mesas = data.filter(item => item.estado && !item.numero.toLowerCase().includes('domi') || auth.rol.nombre === 'ADMINISTRADOR');
+
+        this.mesas.sort((a, b) => {
+            const includesDomiA = a.numero.toLowerCase().includes('domi');
+            const includesDomiB = b.numero.toLowerCase().includes('domi');
+
+            if (includesDomiA && !includesDomiB) {
+                return -1;
+            } else if (!includesDomiA && includesDomiB) {
+                return 1;
+            }
+
+            return a.numero.localeCompare(b.numero);
+          });
+
       }
     });
 
@@ -33,6 +51,10 @@ export class SeleccionMesaComponent implements OnInit {
 
       case 'OCUPADO':
         return 'danger';
+
+      case 'FACTURADO':
+        return 'warning';
+
       default:
         return 'success';
     }
