@@ -64,7 +64,7 @@ export class GestionComprasService {
 
         if(clienteDomi != null) {
             clienteDomicilio = {
-                documento: clienteDomi.documetno,
+                documento: clienteDomi.documento,
                 telefono: clienteDomi.telefono,
                 direccion: clienteDomi.direccion
             }
