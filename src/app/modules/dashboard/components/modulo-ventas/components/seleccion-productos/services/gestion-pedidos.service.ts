@@ -31,5 +31,8 @@ export class GestionPedidosService {
         return this.http.put(`${GestionPedidosApiConstant.URL_CONFIRMAR_PEDIDO}`, request);
     }
 
+    public delete(itemId: number): Observable<any> {
+        return this.http.delete(`${GestionPedidosApiConstant.URL_DELETE}/${itemId}`);
+    }
 
 }

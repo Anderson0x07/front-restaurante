@@ -19,4 +19,8 @@ export class GestionPedidosApiConstant {
     environment.local + this.BASE +
     'compra';
 
+    static readonly URL_DELETE: string = 
+    environment.local + this.BASE +
+    'eliminar';
+
 }

@@ -178,7 +178,6 @@ export class GestionUsuariosComponent implements OnInit {
           this.messageService.add({ severity: 'success', summary: 'Éxitoso', detail: res.message, life: 3000 });
         },
         error: (err: HttpErrorResponse) => {
-          console.log(err)
           this.messageService.add({ severity: 'error', summary: 'Error', detail: err.error.error, life: 3000 });
         },
       });
@@ -208,7 +207,6 @@ export class GestionUsuariosComponent implements OnInit {
       usuarioEditado.imagen = "";
     }
 
-    console.log(usuarioEditado.imagen)
     this.gestionUsuariosService.edit(usuarioEditado, this.itemId).subscribe({
       next: (data: {message: string}) => {
         this.visible = false;

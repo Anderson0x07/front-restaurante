@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
-import { MessageService, SelectItem } from 'primeng/api';
+import { ConfirmationService, MessageService, SelectItem } from 'primeng/api';
 import { CategoriaDto } from 'src/app/dtos/configuracion/categoria/categoria.dto';
 import { MesaDto } from 'src/app/dtos/configuracion/mesa/mesa.dto';
 import { GestionCategoriasService } from '../../../gestion-categorias/services/gestion-categorias.service';
@@ -16,7 +16,8 @@ import { url } from 'src/app/modules/shared/utils/Utils';
 
 @Component({
   selector: 'app-seleccion-productos',
-  templateUrl: './seleccion-productos.component.html'
+  templateUrl: './seleccion-productos.component.html',
+  providers: [ConfirmationService]
 })
 export class SeleccionProductosComponent implements OnInit, OnDestroy {
 
@@ -26,7 +27,8 @@ export class SeleccionProductosComponent implements OnInit, OnDestroy {
     private gestionComprasService: GestionComprasService,
     private gestionPedidosService: GestionPedidosService,
     private messageService: MessageService,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private confirmationService: ConfirmationService
   ) { }
 
   ngOnDestroy(): void {
@@ -40,9 +42,15 @@ export class SeleccionProductosComponent implements OnInit, OnDestroy {
   public categorias: SelectItem[] = [{label: 'Todos', value: 'all'}];
 
   public itemsPropinas: SelectItem[] = [
+    { label: "1%", value: 1 },
+    { label: "2%", value: 2 },
     { label: "3%", value: 3 },
+    { label: "4%", value: 4 },
     { label: "5%", value: 5 },
+    { label: "6%", value: 6 },
     { label: "7%", value: 7 },
+    { label: "8%", value: 8 },
+    { label: "9%", value: 9 },
     { label: "10%", value: 10 },
   ]
 
@@ -88,12 +96,7 @@ export class SeleccionProductosComponent implements OnInit, OnDestroy {
 
     }
 
-    this.gestionProductosService.getAll().subscribe({
-      next: (data) => {
-        this.productos = data.filter(producto => producto.estado);
-        this.productosFiltrados = data.filter(producto => producto.estado);
-      }
-    });
+    this.obtenerProductos();
 
     this.gestionCategoriasService.getAll().subscribe({
       next: (data) => {
@@ -117,12 +120,25 @@ export class SeleccionProductosComponent implements OnInit, OnDestroy {
       telefono: ['', [Validators.required]],
     })
 
+    this.vendedor = JSON.parse(localStorage.getItem('USUARIO')+'');
+
+
   }
 
+  private obtenerProductos(): void {
+    this.gestionProductosService.getAll().subscribe({
+      next: (data) => {
+        this.productos = data.filter(producto => producto.estado);
+        this.productosFiltrados = data.filter(producto => producto.estado);
+      }
+    });
+  }
+
+  public vendedor: UsuarioDTO = new UsuarioDTO();
+
   public esAdmin(): boolean {
-    const vendedor: UsuarioDTO = JSON.parse(localStorage.getItem('USUARIO')+'');
     
-    return vendedor.rol.nombre == 'ADMINISTRADOR';
+    return this.vendedor.rol.nombre == 'ADMINISTRADOR';
   }
 
   public volverSeleccionMesa(): void {
@@ -130,24 +146,26 @@ export class SeleccionProductosComponent implements OnInit, OnDestroy {
     this.alSalir.emit(true);
   }
 
+  public categoriaSeleccionada: string = 'all';
 
-  public onSortChange(event: any) {
-    let value = event.value;
-    if(value == 'all') {
+  public onSortChange() {
+    if(this.categoriaSeleccionada == 'all') {
       this.productosFiltrados = this.productos;
       
     } else {
-      this.productosFiltrados = this.productos.filter(item => item.categoria.id_categoria == value);
+      this.productosFiltrados = this.productos.filter(item => item.categoria.id_categoria == this.categoriaSeleccionada);
     }
 
   }
 
   public getSeverity(producto: ProductoDto): string {
-    return producto.stock <= 0 ? 'danger' : 'success';
+    return producto.stock && producto.stock <= 0 ? 'danger' : 'success';
   };
 
   public abrirModalAgregarProducto(productoSeleccionado: ProductoDto): void {
-    if(productoSeleccionado.stock > 0) {
+
+
+    if(!productoSeleccionado.stock || productoSeleccionado.stock > 0) {
       this.nota = '';
       this.cantidadSeleccionada = 0;
       this.visible = true;
@@ -193,7 +211,7 @@ export class SeleccionProductosComponent implements OnInit, OnDestroy {
 
 
     this.productosFiltrados.forEach(producto => {
-      if (producto.id_producto === this.productoSeleccionado.id_producto) {
+      if (producto.id_producto === this.productoSeleccionado.id_producto && producto.stock) {
         producto.stock -= this.cantidadSeleccionada;
       }
     });
@@ -208,7 +226,10 @@ export class SeleccionProductosComponent implements OnInit, OnDestroy {
   public limpiarCarrito() {
     localStorage.removeItem('carritoCompras');
     this.visibleCarrito = false;
-    this.productosFiltrados = [...this.productos];
+
+    this.categoriaSeleccionada = 'all';
+    this.obtenerProductos();
+    this.productosFiltrados = this.productos
     
   }
 
@@ -255,7 +276,7 @@ export class SeleccionProductosComponent implements OnInit, OnDestroy {
 
       if(operacion == 'suma') {
 
-        if(productoInventario.stock > cantidadActual) {
+        if(productoInventario.stock > cantidadActual || !productoInventario.stock) {
           productoExistente.cantidadActual++;
         }
   
@@ -289,8 +310,8 @@ export class SeleccionProductosComponent implements OnInit, OnDestroy {
       return {
         producto: productoDto,
         nota: item.nota,
-        cantidad: item.cantidad,
-        subtotal: item.producto.precio * item.cantidad
+        cantidad: item.cantidadActual,
+        subtotal: item.producto.precio * item.cantidadActual
       };
     });
 
@@ -302,7 +323,6 @@ export class SeleccionProductosComponent implements OnInit, OnDestroy {
 
     this.gestionPedidosService.confirmarPedido(request).subscribe({
       next: (data) => {
-        console.log(data)
         this.visibleCarrito = false;
         this.volverSeleccionMesa();
         this.messageService.add({ severity: 'success', summary: 'Éxito', detail: 'Pedido realizado con éxito', life: 3000 });
@@ -326,6 +346,8 @@ export class SeleccionProductosComponent implements OnInit, OnDestroy {
       this.vender = true;
       this.resumen = false;
     }
+
+    this.formPropina.reset();
   }
 
   private getCompraActualMesa(mesaId: number) {
@@ -362,7 +384,7 @@ export class SeleccionProductosComponent implements OnInit, OnDestroy {
           this.messageService.add({ key: 'imprimir', severity: 'error', summary: 'Error', detail: 'Error interno de servidor', life: 3000 });
         },
         complete: () => {
-          this.imprimir(this.requestImpresion, {})
+          this.imprimir(this.requestImpresion, null)
         }
       })
     }
@@ -402,7 +424,6 @@ export class SeleccionProductosComponent implements OnInit, OnDestroy {
 
       },
       error: (data) => {
-        console.log(data)
         this.compraActual.impresion = false;
         this.gestionComprasService.cambiarEstadoImpresion(this.compraActual.id_compra).subscribe();
         this.messageService.add({ key: 'imprimir', severity: 'error', summary: 'Error', detail: 'Error al imprimir la factura', life: 3000 });
@@ -417,7 +438,6 @@ export class SeleccionProductosComponent implements OnInit, OnDestroy {
 
     this.gestionComprasService.propinaCompra(this.compraActual.id_compra, propinaFinal).subscribe({
       next: (data) => {
-        console.log(data)
         this.volverSeleccionMesa();
       },
       error: (err) => {
@@ -439,7 +459,6 @@ export class SeleccionProductosComponent implements OnInit, OnDestroy {
     if(this.esDomi()) {
       this.gestionComprasService.propinaCompra(this.compraActual.id_compra, 0).subscribe({
         next: (data) => {
-          console.log(data)
           this.volverSeleccionMesa();
         },
         error: (err) => {
@@ -458,5 +477,64 @@ export class SeleccionProductosComponent implements OnInit, OnDestroy {
 
   public modalDomicilio: boolean = false;
 
+  public eliminarPedido(pedido: PedidoDto): void {
+    this.messageService.clear();
+
+    if(this.esAdmin()) {
+      this.confirmationService.confirm({
+        message: '¿Está seguro que desea eliminar el producto del pedido?',
+        header: 'Advertencia',
+        acceptLabel: 'Si',
+        rejectLabel: 'No',
+        rejectIcon: 'pi pi-times',
+        acceptIcon: 'pi pi-check',
+        rejectButtonStyleClass: 'p-button-danger p-button-outlined p-button-rounded gap-2',
+        acceptButtonStyleClass: 'p-button-success p-button-rounded gap-2',
+        accept: () => { 
+          this.gestionPedidosService.delete(pedido.id_pedido).subscribe({
+            next: (data) => {
+              this.messageService.add({ key: 'imprimir', severity: 'success', summary: 'Éxitoso', detail: data.message, life: 3000 });
+              this.getCompraActualMesa(this.mesa.id_mesa);
+            },
+            error: (err) => {
+              this.messageService.add({ key: 'imprimir', severity: 'error', summary: 'Error', detail: 'Error al eliminar el producto', life: 3000 });
+      
+            }
+          })
+        }
+      });
+    }
+
+  }
+
+  public eliminarCompra(compraActual: CompraDto): void {
+    this.messageService.clear();
+
+    if(this.esAdmin()) {
+      this.confirmationService.confirm({
+        message: '¿Está seguro que desea canclear la compra?',
+        header: 'Advertencia',
+        acceptLabel: 'Si',
+        rejectLabel: 'No',
+        rejectIcon: 'pi pi-times',
+        acceptIcon: 'pi pi-check',
+        rejectButtonStyleClass: 'p-button-danger p-button-outlined p-button-rounded gap-2',
+        acceptButtonStyleClass: 'p-button-success p-button-rounded gap-2',
+        accept: () => { 
+          this.gestionComprasService.delete(compraActual.id_compra).subscribe({
+            next: (data) => {
+              this.messageService.add({ key: 'imprimir', severity: 'success', summary: 'Éxitoso', detail: data.message, life: 3000 });
+              this.volverSeleccionMesa();
+            },
+            error: (err) => {
+              this.messageService.add({ key: 'imprimir', severity: 'error', summary: 'Error', detail: 'Error al eliminar la compra', life: 3000 });
+            }
+          })
+        }
+      });
+    }
+
+    
+  }
 
 }

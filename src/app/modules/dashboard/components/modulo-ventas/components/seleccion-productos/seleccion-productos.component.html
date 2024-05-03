@@ -3,7 +3,7 @@
         <p-button icon="pi pi-arrow-left" [outlined]="true" severity="secondary" [rounded]="true" label="Volver" 
             (click)="volverSeleccionMesa()"></p-button>
         <p-button icon="pi pi-shopping-cart" severity="danger" size="large" [rounded]="true" label="Ver" 
-            (click)="verCarritoCompras()" *ngIf="hayCarrito()"></p-button>
+            (click)="verCarritoCompras()" *ngIf="hayCarrito() && vender"></p-button>
         
     </div>
     <ng-container *ngIf="vender; else resumen">
@@ -13,7 +13,7 @@
                 <div class="flex justify-content-between">
                     <div *ngIf="categoriasCargadas" class="flex flex-column md:flex-row md:justify-content-between">
                         <p-dropdown [options]="categorias" optionLabel="label" optionValue="value"
-                            placeholder="Ordenar por categoria" (onChange)="onSortChange($event)"
+                            placeholder="Ordenar por categoria" [(ngModel)]="categoriaSeleccionada" (onChange)="onSortChange()"
                             styleClass="mb-2 md:mb-0"></p-dropdown>
                     </div>
 
@@ -29,7 +29,7 @@
                                     <i class="pi pi-tag"></i>
                                     <span class="font-semibold">{{ item.categoria.nombre }}</span>
                                 </span>
-                                <p-tag [value]="item.stock <= 0 ? 'NO DISPONIBLE' : 'DISPONIBLE'"
+                                <p-tag [value]="item.stock && item.stock <= 0 ? 'NO DISPONIBLE' : 'DISPONIBLE'"
                                     [severity]="getSeverity(item)"></p-tag>
                             </div>
                             <div class="flex flex-column align-items-center gap-3 py-5">
@@ -38,22 +38,24 @@
                             </div>
                             <div class="flex align-items-center justify-content-between">
                                 <span class="text-2xl font-semibold">{{ '$ ' + (item.precio | number) }}</span>
-                                <p-button icon="pi pi-plus" severity="secondary" size="large" [rounded]="true" [disabled]="item.stock <= 0"
+                                <p-button icon="pi pi-plus" severity="secondary" size="large" [rounded]="true" [disabled]="item.stock && item.stock <= 0"
                                     (click)="abrirModalAgregarProducto(item)"></p-button>
                             </div>
                         </div>
                     </div>
                 </div>
             </ng-template>
-            <ng-template pTemplate="emptymessage">
-                no data
+            <ng-template pTemplate="empty">
+                <div class="flex justify-content-center text-2xl">
+                    No hay productos disponibles
+                </div>
             </ng-template>
             
         </p-dataView>
 
 
         <p-dialog *ngIf="visibleCarrito" header="Pedido" [(visible)]="visibleCarrito" [modal]="true" [style]="{ width: '500px', margin: '5px' }"
-        [draggable]="false" [resizable]="false">
+            [draggable]="false" [resizable]="false">
             <div *ngIf="carritoCompras.length > 0">
                 <p-dataView #dv [value]="carritoCompras">
                     <ng-template pTemplate="list" let-productos>
@@ -92,6 +94,9 @@
                                 </div>
                             </div>
                         </div>
+                    </ng-template>
+                    <ng-template pTemplate="empty">
+                        No hay elementos en el carrito de compras
                     </ng-template>
                     
                 </p-dataView>
@@ -152,9 +157,6 @@
                 </div>
         
             </div>
-            <!-- <ng-template pTemplate="footer">
-                <p-button icon="pi pi-check" (click)="visible = false" label="Ok" pAutoFocus [autofocus]="true"></p-button>
-            </ng-template> -->
         </p-dialog>
     </ng-container>
 
@@ -169,8 +171,11 @@
                 <ng-template pTemplate="list" let-pedidos>
                     <div class="grid grid-nogutter">
                         <div class="col-12" *ngFor="let item of pedidos; let first = first">
-                            <div class="flex flex-row align-items-start p-2 gap-4 py-4" [ngClass]="{ 'border-top-1 surface-border': !first }">
-                                <img class="w-6rem xl:w-8rem shadow-2 block xl:block mx-auto border-round" [src]="url + item.producto.imagen" [alt]="item.producto.nombre" />
+                            <div class="flex flex-row align-items-center p-2 gap-4 py-4" [ngClass]="{ 'border-top-1 surface-border': !first }">
+                                <div *ngIf="esAdmin()">
+                                    <p-button icon="pi pi-times" [rounded]="true" [text]="true" [raised]="true" severity="danger" (click)="eliminarPedido(item)"></p-button>
+                                </div>
+                                <img class="w-6rem xl:w-8rem shadow-2 xl:block lg:block mx-auto border-round hidden" [src]="url + item.producto.imagen" [alt]="item.producto.nombre" />
                                 <div class="flex flex-row justify-content-between align-items-center xl:align-items-start flex-1 gap-4">
                                     <div class="flex flex-column gap-2">
                                         <div class="text-2xl font-bold text-900">{{ item.producto.nombre }}</div>
@@ -192,13 +197,20 @@
         
         
                                     </div>
-                                    <div class="flex sm:flex-column align-items-center sm:align-items-end gap-3 sm:gap-2">
+                                    
+                                </div>
+                                <div class="flex sm:flex-column align-items-center sm:align-items-end gap-3 sm:gap-2">
         
-                                        <span class="text-2xl font-semibold">{{ '$' + (item.subtotal | number) }}</span>
-                                    </div>
+                                    <span class="text-2xl font-semibold">{{ '$' + (item.subtotal | number) }}</span>
                                 </div>
                             </div>
                         </div>
+                    </div>
+                </ng-template>
+                <ng-template pTemplate="empty">
+                    <div *ngIf="esAdmin()" class="flex justify-content-center">
+                        <p-button icon="pi pi-times" label="Cancelar compra" [rounded]="true" [text]="true" [raised]="true" severity="danger" (click)="eliminarCompra(compraActual)"></p-button>
+
                     </div>
                 </ng-template>
             </p-dataView>
@@ -207,9 +219,6 @@
             <div class="flex justify-content-end text-2xl font-bold border-top-1 surface-border p-2">
                 {{'Total: $' + (compraActual.total | number)}}
             </div>
-
-
-
             
         </ng-container>
     </ng-template>
@@ -220,7 +229,7 @@
     <div class="grid grid-nogutter mb-4">
         <div class="col-6">
 
-            <form [formGroup]="formPropina" *ngIf="!compraActual.impresion && !esDomi()">
+            <form [formGroup]="formPropina" *ngIf="!compraActual.impresion && !esDomi() && !vender && esAdmin()">
                 <div class="w-6 p-2">
                     <div class="flex flex-column gap-2 border-round mb-4">
                         <label for="">Propina sugerida *</label>
@@ -311,3 +320,4 @@
 </p-dialog>
 
 <p-toast position="bottom-center" key="imprimir"></p-toast>
+<p-confirmDialog></p-confirmDialog>

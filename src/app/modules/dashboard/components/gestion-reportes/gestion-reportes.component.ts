@@ -86,11 +86,11 @@ export class GestionReportesComponent implements OnInit {
     
     this.gestionComprasService.findById(item.id_compra).subscribe({
       next: (data) => {
-        console.log(data)
         this.detalleCompra = data;
       },
       error: (err) => {
-        console.log(err)
+        this.messageService.add({ key: 'reporte', severity: 'error', summary: 'Error', detail: 'Error interno de servidor', life: 3000 });
+
       }
     })
   }
@@ -99,6 +99,8 @@ export class GestionReportesComponent implements OnInit {
     this.gestionReportesService.enviarReporteDiario().subscribe({
       next: (data) => {
         console.log(data)
+        this.messageService.add({ key: 'reporte', severity: 'success', summary: 'Éxitoso', detail: 'Reporte enviado satisfactoriamente.', life: 3000 });
+
       },
       error: (err: HttpErrorResponse) => {
         console.log(err)
@@ -117,10 +119,9 @@ export class GestionReportesComponent implements OnInit {
     this.gestionReportesService.enviarReporteFecha(fechaFormat).subscribe({
       next: (data) => {
         console.log(data)
-
+        this.messageService.add({ key: 'reporte', severity: 'success', summary: 'Éxitoso', detail: 'Reporte enviado satisfactoriamente.', life: 3000 });
       },
       error: (err: HttpErrorResponse) => {
-        console.log(err)
         this.messageService.add({ key: 'reporte', severity: 'error', summary: 'Error', detail: 'No se puede enviar el reporte de ventas, no hay ventas el dia de hoy.', life: 3000 });
 
       }
