@@ -570,7 +570,7 @@ export class SeleccionProductosComponent implements OnInit, OnDestroy {
 
   ver() {
 
-    fetch('https://localhost:8000/test', {
+    fetch('https://6048-181-51-239-65.ngrok-free.app/test', {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json'
