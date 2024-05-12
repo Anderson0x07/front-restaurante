@@ -20,6 +20,6 @@ export class CompraDto {
 
     public impresion!: boolean;
 
-    public pedidos?: Array<PedidoDto>;
+    public pedidos?: Array<PedidoDto> | any[];
 
 }

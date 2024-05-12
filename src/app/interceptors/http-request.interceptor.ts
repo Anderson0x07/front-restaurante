@@ -26,7 +26,7 @@ export class HttpRequestInterceptor implements HttpInterceptor {
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     this.spinnerState.displaySpinner();
 
-    let contentHeader = this.getOnlyTypeJson();
+    let contentHeader = this.getOnlyTypeJson(req);
     
     return next.handle(req.clone({ setHeaders: contentHeader})).pipe(
       tap({
@@ -47,7 +47,10 @@ export class HttpRequestInterceptor implements HttpInterceptor {
     );
   }
 
-  private getOnlyTypeJson(): any {  
+  private getOnlyTypeJson(req: any): any {  
+
+    if(req.url.includes('print')) return { 'Content-Type': 'application/json;charset=UTF-8' };
+
     let object: ObjectInterceptor = {
       'Content-Type': 'application/json;charset=UTF-8'
     };

@@ -49,7 +49,6 @@ export class LoginComponent implements OnInit {
 
       this.seguridadService.login(this.loginForm.value).subscribe({
         next: (data) => {
-          console.log(data)
           localStorage.setItem('AUTH', JSON.stringify(data))
 
           if(data.rol == 'ROLE_ADMINISTRADOR') {
@@ -140,7 +139,6 @@ export class LoginComponent implements OnInit {
         this.cambiarPassword();
 
       } else if(this.activeIndex == 2) {
-        console.log("volver al login")
         this.cambioPassword = false
       }
     }

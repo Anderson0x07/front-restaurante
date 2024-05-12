@@ -58,7 +58,7 @@ export class SeleccionProductosComponent implements OnInit, OnDestroy {
 
   public formDomi!: FormGroup;
 
-  public productos!: ProductoDto[]; 
+  public productos: ProductoDto[] = []; 
 
   public productosFiltrados: ProductoDto[] = [];
 
@@ -123,13 +123,20 @@ export class SeleccionProductosComponent implements OnInit, OnDestroy {
     this.vendedor = JSON.parse(localStorage.getItem('USUARIO')+'');
 
 
+    const savedCartItems = localStorage.getItem('carritoCompras');
+    if (savedCartItems) {
+      this.cartItems = JSON.parse(savedCartItems);
+    }
   }
+
+  public cartItems: Array<any> = [];
 
   private obtenerProductos(): void {
     this.gestionProductosService.getAll().subscribe({
       next: (data) => {
-        this.productos = data.filter(producto => producto.estado);
-        this.productosFiltrados = data.filter(producto => producto.estado);
+
+        this.productos = data.filter(producto => producto.estado).map(producto => ({...producto}));
+        this.productosFiltrados = data.filter(producto => producto.estado).map(producto => ({...producto}));
       }
     });
   }
@@ -150,22 +157,28 @@ export class SeleccionProductosComponent implements OnInit, OnDestroy {
 
   public onSortChange() {
     if(this.categoriaSeleccionada == 'all') {
-      this.productosFiltrados = this.productos;
+      this.productosFiltrados = [...this.productos];
       
     } else {
-      this.productosFiltrados = this.productos.filter(item => item.categoria.id_categoria == this.categoriaSeleccionada);
+      // this.productosFiltrados = [...this.productos.filter(item => item.categoria.id_categoria == this.categoriaSeleccionada)];
+      this.productosFiltrados = this.productos.filter(item => item.categoria.id_categoria === this.categoriaSeleccionada)
+                                           .map(producto => ({ ...producto }));
     }
 
   }
 
   public getSeverity(producto: ProductoDto): string {
-    return producto.stock && producto.stock <= 0 ? 'danger' : 'success';
+    return producto.stock === null ? 'success' : (producto.stock !== null && producto.stock > 0) ? 'success' : 'danger';
   };
+
+
+  public getLabelStock(producto: ProductoDto): string {
+    return producto.stock === null ? 'DISPONIBLE' : (producto.stock !== null && producto.stock > 0) ? 'DISPONIBLE' : 'NO DISPONIBLE';
+  }
 
   public abrirModalAgregarProducto(productoSeleccionado: ProductoDto): void {
 
-
-    if(!productoSeleccionado.stock || productoSeleccionado.stock > 0) {
+    if (productoSeleccionado.stock === null || (productoSeleccionado.stock !== null && productoSeleccionado.stock > 0)) {
       this.nota = '';
       this.cantidadSeleccionada = 0;
       this.visible = true;
@@ -229,7 +242,7 @@ export class SeleccionProductosComponent implements OnInit, OnDestroy {
 
     this.categoriaSeleccionada = 'all';
     this.obtenerProductos();
-    this.productosFiltrados = this.productos
+    //this.productosFiltrados = this.productos
     
   }
 
@@ -269,25 +282,38 @@ export class SeleccionProductosComponent implements OnInit, OnDestroy {
     const productoExistente = this.carritoCompras.find((producto: any) => producto.producto.id_producto === item.producto.id_producto);
 
     const productoInventario = this.productos.find(producto => producto.id_producto === item.producto.id_producto);
+    const productoFiltrado = this.productosFiltrados.find(producto => producto.id_producto === item.producto.id_producto);
 
-    if (productoExistente && productoInventario) {
+    if (productoExistente && productoInventario && productoFiltrado) {
 
       let cantidadActual = productoExistente.cantidadActual;
 
       if(operacion == 'suma') {
 
-        if(productoInventario.stock > cantidadActual || !productoInventario.stock) {
+        if (productoInventario.stock === null || (productoInventario.stock !== null && productoInventario.stock >= cantidadActual)) {
           productoExistente.cantidadActual++;
+
+          if(productoFiltrado.stock !== null && productoFiltrado.stock > 0) {
+            productoFiltrado.stock--;
+          }
         }
   
       } else if(operacion == 'resta' && cantidadActual > 1){
         productoExistente.cantidadActual--;
+
+        if(productoFiltrado.stock !== null) {
+          productoFiltrado.stock++;
+        }
       }
-      
     }
 
     localStorage.setItem('carritoCompras', JSON.stringify(this.carritoCompras));
-   
+  }
+
+  public obtenerProductoInventario(productoId: number): ProductoDto {
+    const producto = this.productos.find(producto => producto.id_producto === productoId);
+
+    return producto || null!;
   }
 
   public confirmarPedido(): void {
@@ -325,11 +351,15 @@ export class SeleccionProductosComponent implements OnInit, OnDestroy {
       next: (data) => {
         this.visibleCarrito = false;
         this.volverSeleccionMesa();
-        this.messageService.add({ severity: 'success', summary: 'Éxito', detail: 'Pedido realizado con éxito', life: 3000 });
+        if(data.error && data.error.length > 0) {
+          this.messageService.add({ key: 'imprimir', severity: 'error', summary: 'Error', detail: data.error.join(' - '), life: 3000 });
+        } else {
+          this.messageService.add({ severity: 'success', summary: 'Éxito', detail: 'Pedido realizado con éxito', life: 3000 });
+        }
 
       },
       error: () => {
-        this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Error al confirmar la venta', life: 3000 });
+        this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Error al confirmar la venta, no hay inventario disponible en algún producto.', life: 3000 });
 
       }
     })
@@ -536,5 +566,47 @@ export class SeleccionProductosComponent implements OnInit, OnDestroy {
 
     
   }
+
+
+  // addToCart(product: any): void {
+  //   const existingProduct = this.cartItems.find(item => item.id === product.id);
+  //   if (existingProduct) {
+  //     existingProduct.quantity++;
+  //   } else {
+  //     this.cartItems.push({ ...product, quantity: 1 });
+  //   }
+  //   product.stock--;
+  //   this.saveCartItems();
+  // }
+
+  // cartItems: any[] = [];
+
+
+
+  // removeCartItem(product: any): void {
+  //   const index = this.cartItems.indexOf(product);
+  //   if (index !== -1) {
+  //     this.cartItems.splice(index, 1);
+  //     product.stock++;
+  //   }
+  // }
+
+  // increaseQuantity(product: any): void {
+  //   if (product.stock > 0) {
+  //     product.quantity++;
+  //     product.stock--;
+  //   }
+  // }
+
+  // decreaseQuantity(product: any): void {
+  //   if (product.quantity > 1) {
+  //     product.quantity--;
+  //     product.stock++;
+  //   }
+  // }
+
+  // private saveCartItems() {
+  //   localStorage.setItem('cartItems', JSON.stringify(this.cartItems));
+  // }
 
 }

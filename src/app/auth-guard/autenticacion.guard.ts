@@ -89,7 +89,6 @@ export class AdministradorGuard implements CanActivate {
 
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
     let auth: AutenticacionResponseDTO = JSON.parse(localStorage.getItem('AUTH')+'');
-    console.log(auth.rol)
     if (auth.rol == 'ROLE_ADMINISTRADOR') {
       return true;
     } else {
@@ -127,7 +126,6 @@ export class RolResolver implements CanActivate {
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
 
     let auth: AutenticacionResponseDTO = JSON.parse(localStorage.getItem('AUTH')+'');
-    console.log("rol")
 
     if (auth.rol == 'ROLE_ADMINISTRADOR') {
       this.router.navigate(['/dashboard']);

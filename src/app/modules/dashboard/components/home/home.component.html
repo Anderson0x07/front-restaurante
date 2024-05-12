@@ -1,7 +1,7 @@
 <div class="surface-ground px-2 py-5 ">
 
-    <div>
-        <span class="p-3 text-900 font-medium text-2xl">{{ saludo + ' ' + nombreUsuario }} </span>
+    <div class="surface-card shadow-2 p-3 border-round mb-3">
+        <span class="text-900 font-medium text-2xl">{{ saludo + ' ' + nombreUsuario }} </span>
         
     </div>
 
@@ -78,7 +78,7 @@
                         </div>
                         <div class="flex align-items-center justify-content-center border-round">
                             <img class="shadow-2 border-round w-8rem h-auto"
-                                [src]="'https://significado.com/wp-content/uploads/Imagen-Animada.jpg'" [alt]="item.id_producto" />
+                                [src]="url + item.imagen" [alt]="item.id_producto" />
                         </div>
                     </div>
                 </div>

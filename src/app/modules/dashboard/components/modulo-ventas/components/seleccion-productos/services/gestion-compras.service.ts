@@ -84,12 +84,13 @@ export class GestionComprasService {
                 numero: compraDto.mesa.numero
             },
             fecha_compra: compraDto.fecha_compra,
+            hora: compraDto.hora,
             total: compraDto.total,
             propina: compraDto.propina,
             pedidos: compraDto.pedidos
         }
         
-        return this.http.post<any>("http://localhost:8000/print", body)
+        return this.http.post<any>("https://localhost:8000/print", body)
     }
 
     public enviarReporteDiario(): Observable<any> {

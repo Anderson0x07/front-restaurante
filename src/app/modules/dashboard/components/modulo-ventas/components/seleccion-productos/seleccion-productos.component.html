@@ -29,7 +29,7 @@
                                     <i class="pi pi-tag"></i>
                                     <span class="font-semibold">{{ item.categoria.nombre }}</span>
                                 </span>
-                                <p-tag [value]="item.stock && item.stock <= 0 ? 'NO DISPONIBLE' : 'DISPONIBLE'"
+                                <p-tag [value]="getLabelStock(item)"
                                     [severity]="getSeverity(item)"></p-tag>
                             </div>
                             <div class="flex flex-column align-items-center gap-3 py-5">
@@ -38,7 +38,8 @@
                             </div>
                             <div class="flex align-items-center justify-content-between">
                                 <span class="text-2xl font-semibold">{{ '$ ' + (item.precio | number) }}</span>
-                                <p-button icon="pi pi-plus" severity="secondary" size="large" [rounded]="true" [disabled]="item.stock && item.stock <= 0"
+                                <p-button icon="pi pi-plus" severity="secondary" size="large" [rounded]="true" 
+                                    [disabled]="obtenerProductoInventario(item.id_producto).stock !== null && (obtenerProductoInventario(item.id_producto).stock === 0 || !obtenerProductoInventario(item.id_producto).stock)"
                                     (click)="abrirModalAgregarProducto(item)"></p-button>
                             </div>
                         </div>
@@ -70,23 +71,24 @@
             
                                             <div class="flex align-items-center gap-3">
                                                 <span class="font-semibold">{{ 'Cantidad: ' }}</span>
-                                                <span class="font-semibold text-xl">{{ item.cantidadActual}}</span>
+                                                <span class="font-semibold text-xl">{{ item.cantidadActual }}</span>
                                             </div>
 
                                             <div *ngIf="item.nota" class="flex align-items-center gap-2">
                                                 <p class="font-semibold">{{ 'Nota: ' }}</p>
-                                                <p class="font-semibold">{{ item.nota}}</p>
+                                                <p class="font-semibold">{{ item.nota }}</p>
                                             </div>
             
                                         </div>
                                         <div class="flex justify-content-center align-items-center gap-4 my-4">
 
-                                            <button [id]="i+'_resta'" pButton icon="pi pi-minus" class="p-button-rounded" (click)="changeCantidad('resta', item)">
+                                            <button [id]="i+'_resta'" pButton icon="pi pi-minus" class="p-button-rounded" (click)="changeCantidad('resta', item)" [disabled]="item.cantidadActual <= 1">
                                             </button>
                                             <p class="text-lg font-semibold m-0">
                                                 {{ item.cantidadActual }}
                                             </p>
-                                            <button [id]="i+'_suma'" pButton icon="pi pi-plus" class="p-button-rounded" (click)="changeCantidad('suma', item)">
+                                            <button [id]="i+'_suma'" pButton icon="pi pi-plus" class="p-button-rounded" (click)="changeCantidad('suma', item)" 
+                                                [disabled]="obtenerProductoInventario(item.producto.id_producto).stock !== null && (obtenerProductoInventario(item.producto.id_producto).stock <= item.cantidadActual || !obtenerProductoInventario(item.producto.id_producto).stock)">
                                             </button>
             
                                         </div>
@@ -208,28 +210,35 @@
                     </div>
                 </ng-template>
                 <ng-template pTemplate="empty">
-                    <div *ngIf="esAdmin()" class="flex justify-content-center">
+                    <div *ngIf="esAdmin(); else mesero" class="flex justify-content-center">
                         <p-button icon="pi pi-times" label="Cancelar compra" [rounded]="true" [text]="true" [raised]="true" severity="danger" (click)="eliminarCompra(compraActual)"></p-button>
 
                     </div>
+
+                    <ng-template #mesero>
+                        <div class="text-center text-semibold p-2 border-1 surface-border surface-card border-round ">
+                            No hay pedidos en la compra actual
+                        </div>
+                    </ng-template>
                 </ng-template>
             </p-dataView>
         
-        
-            <div class="flex justify-content-end text-2xl font-bold border-top-1 surface-border p-2">
+            <div *ngIf="compraActual.pedidos && compraActual.pedidos.length > 0" class="flex justify-content-end text-2xl font-bold border-top-1 surface-border p-2">
                 {{'Total: $' + (compraActual.total | number)}}
             </div>
+        
             
         </ng-container>
     </ng-template>
     
 </div>
 
-<ng-container *ngIf="mesa.estado_actual == 'OCUPADO' || mesa.estado_actual == 'FACTURADO'">
+<!-- Seccion footer propina impresion confirmacion -->
+<ng-container *ngIf="mesa.estado_actual != 'LIBRE'">
     <div class="grid grid-nogutter mb-4">
         <div class="col-6">
 
-            <form [formGroup]="formPropina" *ngIf="!compraActual.impresion && !esDomi() && !vender && esAdmin()">
+            <form [formGroup]="formPropina" *ngIf="!compraActual.impresion && !esDomi() && !vender && esAdmin() && (compraActual.pedidos && compraActual.pedidos.length > 0)">
                 <div class="w-6 p-2">
                     <div class="flex flex-column gap-2 border-round mb-4">
                         <label for="">Propina sugerida *</label>
@@ -248,7 +257,7 @@
                 <p-button [icon]="vender ? 'pi pi-eye' : 'pi pi-shopping-cart'" severity="secondary" size="small" [rounded]="true" [label]="vender ? 'Ver Resumen' : 'Vender'"
                 (click)="handleVenderResumen()"></p-button>
 
-                <p-button *ngIf="!vender && esAdmin()" [icon]="compraActual.impresion ? 'pi pi-check' : 'pi pi-print'" severity="primary" size="small" [rounded]="true" [label]="compraActual.impresion ? 'Finalizar' : 'Imprimir'" 
+                <p-button *ngIf="!vender && esAdmin() && (compraActual.pedidos && compraActual.pedidos.length > 0)" [icon]="compraActual.impresion ? 'pi pi-check' : 'pi pi-print'" severity="primary" size="small" [rounded]="true" [label]="compraActual.impresion ? 'Finalizar' : 'Imprimir'" 
                     (click)="compraActual.impresion ? abrirModalConfirmarPropina() : enviarCompraImpresion()" [disabled]="compraActual.impresion ? false : (esDomi() ? false : formPropina.invalid)"></p-button>
             </div>
         </div>

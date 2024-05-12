@@ -10,12 +10,21 @@ import { url } from 'src/app/modules/shared/utils/Utils';
 export class HomeComponent implements OnInit {
 
   ngOnInit(): void {
+
       this.gestionEstadisticasService.getStats().subscribe({
         next: (data) => {
           this.estadisticas = data;
         },
         error: (err) => {
           this.error = "No hay información disponible"
+        },
+        complete: () => {
+          const usuario = localStorage.getItem('USUARIO');
+
+          if(usuario) {
+            const nombreUsuario = JSON.parse(usuario).nombre;
+            this.nombreUsuario = nombreUsuario;
+          }
         }
       });
 
@@ -29,8 +38,8 @@ export class HomeComponent implements OnInit {
         this.saludo = 'Buenas noches';
       }
 
+      
 
-      this.nombreUsuario = JSON.parse(localStorage.getItem('USUARIO')+'').nombre;
   }
 
   constructor(

@@ -98,12 +98,10 @@ export class GestionReportesComponent implements OnInit {
   public enviarReporteDiario(): void {
     this.gestionReportesService.enviarReporteDiario().subscribe({
       next: (data) => {
-        console.log(data)
         this.messageService.add({ key: 'reporte', severity: 'success', summary: 'Éxitoso', detail: 'Reporte enviado satisfactoriamente.', life: 3000 });
 
       },
       error: (err: HttpErrorResponse) => {
-        console.log(err)
         this.messageService.add({ key: 'reporte', severity: 'error', summary: 'Error', detail: 'No se puede enviar el reporte de ventas, no hay ventas el dia de hoy.', life: 3000 });
 
       }
@@ -118,7 +116,6 @@ export class GestionReportesComponent implements OnInit {
 
     this.gestionReportesService.enviarReporteFecha(fechaFormat).subscribe({
       next: (data) => {
-        console.log(data)
         this.messageService.add({ key: 'reporte', severity: 'success', summary: 'Éxitoso', detail: 'Reporte enviado satisfactoriamente.', life: 3000 });
       },
       error: (err: HttpErrorResponse) => {

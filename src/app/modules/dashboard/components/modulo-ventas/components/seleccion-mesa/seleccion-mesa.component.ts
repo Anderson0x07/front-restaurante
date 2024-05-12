@@ -61,6 +61,7 @@ export class SeleccionMesaComponent implements OnInit {
   };
 
   onSeleccionMesa(mesaSeleccionada: MesaDto): void {
+    localStorage.removeItem('carritoCompras');
     this.seleccionMesa.emit(mesaSeleccionada)
   }
 
