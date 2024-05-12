@@ -49,7 +49,7 @@ export class HttpRequestInterceptor implements HttpInterceptor {
 
   private getOnlyTypeJson(req: any): any {  
 
-    if(req.url.includes('print')) return { 'Content-Type': 'application/json;charset=UTF-8' };
+    if(req.url.includes('print') || req.url.includes('test')) return { 'Content-Type': 'application/json;charset=UTF-8' };
 
     let object: ObjectInterceptor = {
       'Content-Type': 'application/json;charset=UTF-8'

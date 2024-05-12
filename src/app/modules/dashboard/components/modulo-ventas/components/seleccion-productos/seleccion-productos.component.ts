@@ -568,15 +568,29 @@ export class SeleccionProductosComponent implements OnInit, OnDestroy {
     
   }
 
-  ver(): void {
-    this.gestionComprasService.test().subscribe({
-      next: (data) => {
-        console.log("Test anderson")
-        console.log(data)
-      },
-      error: (err) => {
+  ver() {
+
+    fetch('https://localhost:8000/test', {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+      }).then(response => {
+        console.log(response.json())
+      }).catch(err => {
         console.log(err)
       }
-    })
+
+    )
+
+    // this.gestionComprasService.test().subscribe({
+    //   next: (data) => {
+    //     console.log("Test anderson")
+    //     console.log(data)
+    //   },
+    //   error: (err) => {
+    //     console.log(err)
+    //   }
+    // })
   }
 }
