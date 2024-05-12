@@ -446,72 +446,22 @@ export class SeleccionProductosComponent implements OnInit, OnDestroy {
 
 
   private imprimir(compraDto: CompraDto, clienteDomi?: any) {
+  
+    this.gestionComprasService.imprimir(compraDto, clienteDomi).subscribe({
+      next: (data) => {
+        this.formPropina.reset();
+        this.formDomi.reset();
+        this.messageService.add({ severity: 'success', summary: 'Éxito', detail: 'Compra realizada con éxito', life: 3000 });
 
+      },
+      error: (error) => {
+        this.compraActual.impresion = false;
+        this.gestionComprasService.cambiarEstadoImpresion(this.compraActual.id_compra).subscribe();
+        this.messageService.add({ key: 'imprimir', severity: 'error', summary: 'Error', detail: 'Error al imprimir la factura', life: 3000 });
 
-    let clienteDomicilio = null;
-
-    if(clienteDomi != null) {
-        clienteDomicilio = {
-            documento: clienteDomi.documento,
-            telefono: clienteDomi.telefono,
-            direccion: clienteDomi.direccion
-        }
-    }
-
-    const body = {
-        cliente: clienteDomicilio,
-        id_compra: compraDto.id_compra,
-        mesero: {
-            id_usuario: compraDto.mesero.id_usuario,
-            nombre: compraDto.mesero.nombre,
-            apellido: compraDto.mesero.apellido,
-            documento: compraDto.mesero.documento
-        },
-        mesa: {
-            id_mesa: compraDto.mesa.id_mesa,
-            numero: compraDto.mesa.numero
-        },
-        fecha_compra: compraDto.fecha_compra,
-        hora: compraDto.hora,
-        total: compraDto.total,
-        propina: compraDto.propina,
-        pedidos: compraDto.pedidos
-    }
-
-
-    fetch('http://localhost:8000/print', {
-        method: "POST",
-        body: JSON.stringify(body),
-        headers: {
-            'Content-Type': 'application/json'
-        }
-    }).then(() => {
-      this.formPropina.reset();
-      this.formDomi.reset();
-      this.messageService.add({ severity: 'success', summary: 'Éxito', detail: 'Compra realizada con éxito', life: 3000 });
-    }).catch(() => {
-      this.compraActual.impresion = false;
-      this.gestionComprasService.cambiarEstadoImpresion(this.compraActual.id_compra).subscribe();
-      this.messageService.add({ key: 'imprimir', severity: 'error', summary: 'Error', detail: 'Error al imprimir la factura', life: 3000 });
-    });
-
+      }
+    })
   }
-
-  //   this.gestionComprasService.imprimir(compraDto, clienteDomi).subscribe({
-  //     next: (data) => {
-  //       this.formPropina.reset();
-  //       this.formDomi.reset();
-  //       this.messageService.add({ severity: 'success', summary: 'Éxito', detail: 'Compra realizada con éxito', life: 3000 });
-
-  //     },
-  //     error: (data) => {
-  //       this.compraActual.impresion = false;
-  //       this.gestionComprasService.cambiarEstadoImpresion(this.compraActual.id_compra).subscribe();
-  //       this.messageService.add({ key: 'imprimir', severity: 'error', summary: 'Error', detail: 'Error al imprimir la factura', life: 3000 });
-
-  //     }
-  //   })
-  // }
 
   public confirmarPropina(): void {
 
