@@ -93,6 +93,10 @@ export class GestionComprasService {
         return this.http.post<any>("https://localhost:8000/print", body)
     }
 
+    public test(): Observable<any> {
+        return this.http.get("https://localhost:8000/test")
+    }
+
     public enviarReporteDiario(): Observable<any> {
         return this.http.get(GestionComprasApiConstant.URL_EXPORT_REPORTE_DIARIO, { responseType: 'blob' });
     }

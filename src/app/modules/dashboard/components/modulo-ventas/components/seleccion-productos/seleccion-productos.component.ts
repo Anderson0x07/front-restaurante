@@ -568,46 +568,15 @@ export class SeleccionProductosComponent implements OnInit, OnDestroy {
     
   }
 
-
-  // addToCart(product: any): void {
-  //   const existingProduct = this.cartItems.find(item => item.id === product.id);
-  //   if (existingProduct) {
-  //     existingProduct.quantity++;
-  //   } else {
-  //     this.cartItems.push({ ...product, quantity: 1 });
-  //   }
-  //   product.stock--;
-  //   this.saveCartItems();
-  // }
-
-  // cartItems: any[] = [];
-
-
-
-  // removeCartItem(product: any): void {
-  //   const index = this.cartItems.indexOf(product);
-  //   if (index !== -1) {
-  //     this.cartItems.splice(index, 1);
-  //     product.stock++;
-  //   }
-  // }
-
-  // increaseQuantity(product: any): void {
-  //   if (product.stock > 0) {
-  //     product.quantity++;
-  //     product.stock--;
-  //   }
-  // }
-
-  // decreaseQuantity(product: any): void {
-  //   if (product.quantity > 1) {
-  //     product.quantity--;
-  //     product.stock++;
-  //   }
-  // }
-
-  // private saveCartItems() {
-  //   localStorage.setItem('cartItems', JSON.stringify(this.cartItems));
-  // }
-
+  ver(): void {
+    this.gestionComprasService.test().subscribe({
+      next: (data) => {
+        console.log("Test anderson")
+        console.log(data)
+      },
+      error: (err) => {
+        console.log(err)
+      }
+    })
+  }
 }

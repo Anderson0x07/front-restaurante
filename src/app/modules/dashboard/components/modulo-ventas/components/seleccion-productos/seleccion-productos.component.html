@@ -4,6 +4,8 @@
             (click)="volverSeleccionMesa()"></p-button>
         <p-button icon="pi pi-shopping-cart" severity="danger" size="large" [rounded]="true" label="Ver" 
             (click)="verCarritoCompras()" *ngIf="hayCarrito() && vender"></p-button>
+
+        <button (click)="ver()">Ver</button>
         
     </div>
     <ng-container *ngIf="vender; else resumen">
