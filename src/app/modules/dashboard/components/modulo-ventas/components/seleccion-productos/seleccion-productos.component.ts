@@ -483,6 +483,7 @@ export class SeleccionProductosComponent implements OnInit, OnDestroy {
           .then(byteArray => {
             const base64 = this.byteArrayToBase64(byteArray);
             printJS({printable: base64, type: 'pdf', base64: true})
+            this.modalDomicilio = false;
             this.messageService.add({ key: 'imprimir', severity: 'success', summary: 'Éxito', detail: 'Generando factura...', life: 3000 });
           })
           .catch(error => {
