@@ -90,11 +90,24 @@ export class GestionComprasService {
             pedidos: compraDto.pedidos
         }
         
-        return this.http.post<any>("https://localhost:8000/print", body)
+        return this.http.post(GestionComprasApiConstant.URL_IMPRIMIR_FACTURA, body, {responseType: 'blob'})
     }
 
-    public test(): Observable<any> {
-        return this.http.get("https://localhost:8000/test")
+    public imprimirComanda(compraDto: CompraDto): Observable<any> {
+
+
+        const body = {
+            id_compra: compraDto.id_compra,
+            mesa: {
+                id_mesa: compraDto.mesa.id_mesa,
+                numero: compraDto.mesa.numero
+            },
+            fecha_compra: compraDto.fecha_compra,
+            hora: compraDto.hora,
+            pedidos: compraDto.pedidos
+        }
+        
+        return this.http.post(GestionComprasApiConstant.URL_IMPRIMIR_COMANDA, body, {responseType: 'blob'})
     }
 
     public enviarReporteDiario(): Observable<any> {

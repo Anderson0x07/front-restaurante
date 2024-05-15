@@ -1,1 +1,1 @@
-export const url: string = "https://elasticbeanstalk-us-east-1-475704544382.s3.amazonaws.com/images/";
+export const url: string = "https://res.cloudinary.com/dwldygpr6/image/upload/h_500,w_500/v1715730873/imagenes/";

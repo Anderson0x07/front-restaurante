@@ -4,9 +4,6 @@
             (click)="volverSeleccionMesa()"></p-button>
         <p-button icon="pi pi-shopping-cart" severity="danger" size="large" [rounded]="true" label="Ver" 
             (click)="verCarritoCompras()" *ngIf="hayCarrito() && vender"></p-button>
-
-        <button (click)="ver()">Ver</button>
-        
     </div>
     <ng-container *ngIf="vender; else resumen">
 
@@ -77,8 +74,8 @@
                                             </div>
 
                                             <div *ngIf="item.nota" class="flex align-items-center gap-2">
-                                                <p class="font-semibold">{{ 'Nota: ' }}</p>
-                                                <p class="font-semibold">{{ item.nota }}</p>
+                                                <span class="font-semibold">{{ 'Nota: ' }}</span>
+                                                <span class="font-semibold">{{ item.nota }}</span>
                                             </div>
             
                                         </div>
@@ -185,8 +182,8 @@
                                         <div class="text-2xl font-bold text-900">{{ item.producto.nombre }}</div>
         
                                         <div *ngIf="item.nota" class="flex align-items-center gap-2">
-                                            <p class="font-semibold">{{ 'Nota: ' }}</p>
-                                            <p class="font-semibold">{{ item.nota}}</p>
+                                            <span class="font-semibold">{{ 'Nota: ' }}</span>
+                                            <span class="font-semibold">{{ item.nota}}</span>
                                         </div>
 
                                         <div class="flex align-items-center gap-2">
@@ -240,7 +237,7 @@
     <div class="grid grid-nogutter mb-4">
         <div class="col-6">
 
-            <form [formGroup]="formPropina" *ngIf="!compraActual.impresion && !esDomi() && !vender && esAdmin() && (compraActual.pedidos && compraActual.pedidos.length > 0)">
+            <form [formGroup]="formPropina" *ngIf="!modalConfirmarPropina && !esDomi() && !vender && esAdmin() && (compraActual.pedidos && compraActual.pedidos.length > 0)">
                 <div class="w-6 p-2">
                     <div class="flex flex-column gap-2 border-round mb-4">
                         <label for="">Propina sugerida *</label>
@@ -256,11 +253,20 @@
         <div class="col-6">
             
             <div class="flex align-items-center justify-content-end gap-4 p-2 mt-4">
+
+                <p-button *ngIf="!vender && esAdmin() && (compraActual.pedidos && compraActual.pedidos.length > 0)" [icon]="'pi pi-print'" severity="primary" size="small" [rounded]="true" [label]="'Comanda'" 
+                    (click)="enviarComanda()"></p-button>
+
                 <p-button [icon]="vender ? 'pi pi-eye' : 'pi pi-shopping-cart'" severity="secondary" size="small" [rounded]="true" [label]="vender ? 'Ver Resumen' : 'Vender'"
                 (click)="handleVenderResumen()"></p-button>
 
-                <p-button *ngIf="!vender && esAdmin() && (compraActual.pedidos && compraActual.pedidos.length > 0)" [icon]="compraActual.impresion ? 'pi pi-check' : 'pi pi-print'" severity="primary" size="small" [rounded]="true" [label]="compraActual.impresion ? 'Finalizar' : 'Imprimir'" 
-                    (click)="compraActual.impresion ? abrirModalConfirmarPropina() : enviarCompraImpresion()" [disabled]="compraActual.impresion ? false : (esDomi() ? false : formPropina.invalid)"></p-button>
+                <!--TODO: Generar otro boton para imprimir de nuevo con la propina de nuevo tambien-->
+
+                <p-button *ngIf="!vender && esAdmin() && (compraActual.pedidos && compraActual.pedidos.length > 0)" [icon]="'pi pi-print'" severity="primary" size="small" [rounded]="true" [label]="'Imprimir'" 
+                    (click)="enviarCompraImpresion()" [disabled]="(esDomi() ? false : formPropina.invalid)"></p-button>
+
+                <p-button *ngIf="!vender && esAdmin() && (compraActual.pedidos && compraActual.pedidos.length > 0)" [icon]="'pi pi-check'" severity="primary" size="small" [rounded]="true" [label]="'Finalizar'" 
+                    (click)="abrirModalConfirmarPropina()" [disabled]="!compraActual.impresion"></p-button>
             </div>
         </div>
     </div>

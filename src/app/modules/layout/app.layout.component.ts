@@ -7,10 +7,12 @@ import { AppTopBarComponent } from './components/topbar/app.topbar.component';
 import { UsuarioDTO } from 'src/app/dtos/configuracion/usuario/usuario.dto';
 import { SeguridadService } from '../login/service/seguridad.service';
 import { AutenticacionResponseDTO } from 'src/app/dtos/login/autenticacion-response.dto';
+import { MessageService } from 'primeng/api';
 
 @Component({
     selector: 'app-layout',
-    templateUrl: './app.layout.component.html'
+    templateUrl: './app.layout.component.html',
+    providers: [MessageService]
 })
 export class AppLayoutComponent implements OnInit {
 
@@ -99,8 +101,9 @@ export class AppLayoutComponent implements OnInit {
                     this.gestionarMenu(data.rol.nombre);
 
                 },
-                error: (err) => {
-                    console.log(err)
+                error: () => {
+                    this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Error de servidor', life: 3000 });
+
                 }
             })
         }
@@ -122,7 +125,7 @@ export class AppLayoutComponent implements OnInit {
 
     @ViewChild(AppTopBarComponent) appTopbar!: AppTopBarComponent;
 
-    constructor(public layoutService: LayoutService, public renderer: Renderer2, public router: Router, public seguridadService: SeguridadService) {
+    constructor(public layoutService: LayoutService, public renderer: Renderer2, public router: Router, public seguridadService: SeguridadService, private messageService: MessageService) {
 
         this.overlayMenuOpenSubscription = this.layoutService.overlayOpen$.subscribe(() => {
             if (!this.menuOutsideClickListener) {
