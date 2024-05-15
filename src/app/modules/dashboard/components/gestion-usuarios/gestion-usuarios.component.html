@@ -109,14 +109,14 @@
           <div class="flex flex-row justify-content-between gap-2 border-round mb-4">
             <div>
               <label for="">Nombre *</label>
-              <input type="text" pInputText placeholder="Escriba el nombre del mesero" formControlName="nombre">
+              <input type="text" pInputText placeholder="Escriba el nombre del mesero" formControlName="nombre" maxlength="30">
               <span *ngIf="isValidField('nombre')" class="text-red-500 font-semibold mb-2">
                 Este campo es requerido
               </span>
             </div>
             <div>
               <label for="">Apellido *</label>
-              <input type="text" pInputText placeholder="Escriba el apellido del mesero" formControlName="apellido">
+              <input type="text" pInputText placeholder="Escriba el apellido del mesero" formControlName="apellido" maxlength="30">
               <span *ngIf="isValidField('apellido')" class="text-red-500 font-semibold mb-2">
                 Este campo es requerido
               </span>
@@ -124,8 +124,9 @@
           </div>
           <div class="flex flex-column gap-2 border-round mb-4">
             <label for="">Documento *</label>
-            <p-inputNumber formControlName="documento" mode="decimal" inputId="withoutgrouping-document" [readonly]="itemId != -1"
-              [useGrouping]="false" styleClass="w-full" placeholder="Escriba el número de documento"> </p-inputNumber>
+            <input pKeyFilter="num" [pKeyFilter]="codeRegex" pInputText placeholder="Escriba el número de documento" [readonly]="itemId != -1" 
+              formControlName="documento" maxlength="10">
+              
             <span *ngIf="isValidField('documento')" class="text-red-500 font-semibold mb-2">
               Este campo es requerido
             </span>
@@ -133,8 +134,8 @@
 
           <div class="flex flex-column gap-2 border-round mb-4">
             <label for="">Teléfono *</label>
-            <p-inputNumber formControlName="telefono" mode="decimal" inputId="withoutgrouping-telefono" [readonly]="itemId != -1"
-              [useGrouping]="false" styleClass="w-full" placeholder="Escriba el número de telefono"> </p-inputNumber>
+            <input pKeyFilter="num" [pKeyFilter]="codeRegex" pInputText placeholder="Escriba el número de teléfono" [readonly]="itemId != -1" 
+              formControlName="telefono" maxlength="10">
 
             <span *ngIf="isValidField('telefono')" class="text-red-500 font-semibold mb-2">
               Este campo es requerido

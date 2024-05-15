@@ -230,12 +230,32 @@ export class GestionProductosComponent implements OnInit {
 
   public eliminar(itemId: number) {
     this.messageService.clear();
+
+    this.gestionProductosService.findById(itemId).subscribe({
+      next: (data) => {
+
+        if(data.stock > 0 || data.pedidos.length > 0) {
+          this.messageService.add({ severity: 'error', summary: 'Error', detail: 'No se puede eliminar, está en uso', life: 3000 });
+
+        } else {
+          this.confirmarEliminacion(itemId);
+        }
+      }
+    })
+  }
+
+  public confirmarEliminacion(itemId: number) {
+    this.messageService.clear();
     const seguroEliminar = "¿Está seguro de que desea eliminar?"
     this.confirmationService.confirm({
       message: seguroEliminar,
       header: 'Eliminar',
       acceptLabel: 'Si',
       rejectLabel: 'No',
+      rejectIcon: 'pi pi-times',
+      acceptIcon: 'pi pi-check',
+      rejectButtonStyleClass: 'p-button-danger p-button-outlined p-button-rounded gap-2',
+      acceptButtonStyleClass: 'p-button-success p-button-rounded gap-2',
       accept: () => { 
         this.gestionProductosService.delete(itemId).subscribe({
           next: (res: {message: string}) => {

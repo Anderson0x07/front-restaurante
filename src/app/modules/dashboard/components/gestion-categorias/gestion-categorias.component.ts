@@ -132,6 +132,10 @@ export class GestionCategoriasComponent implements OnInit {
       header: 'Eliminar',
       acceptLabel: 'Si',
       rejectLabel: 'No',
+      rejectIcon: 'pi pi-times',
+      acceptIcon: 'pi pi-check',
+      rejectButtonStyleClass: 'p-button-danger p-button-outlined p-button-rounded gap-2',
+      acceptButtonStyleClass: 'p-button-success p-button-rounded gap-2',
       accept: () => { 
         this.gestionCategoriasService.delete(itemId).subscribe({
           next: (res: {message: string}) => {

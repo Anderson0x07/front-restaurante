@@ -51,6 +51,7 @@ export class GestionUsuariosComponent implements OnInit {
 
   public rolesCargados: boolean = false;
 
+  public codeRegex: RegExp = /^[0-9]+$/;
 
   
   selectFile() {

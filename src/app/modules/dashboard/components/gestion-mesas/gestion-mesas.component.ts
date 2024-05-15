@@ -118,8 +118,24 @@ export class GestionMesasComponent implements OnInit {
     });
   }
 
-
   public eliminar(itemId: number) {
+    this.messageService.clear();
+
+    this.gestionMesasService.findById(itemId).subscribe({
+      next: (data) => {
+
+        if(data.estado_actual != 'LIBRE') {
+          this.messageService.add({ severity: 'error', summary: 'Error', detail: 'No se puede eliminar, está en uso', life: 3000 });
+
+        } else {
+          this.confirmarEliminacion(itemId);
+        }
+      }
+    })    
+  }
+
+
+  public confirmarEliminacion(itemId: number) {
     this.messageService.clear();
     const seguroEliminar = "¿Está seguro de que desea eliminar?"
     this.confirmationService.confirm({
@@ -127,6 +143,10 @@ export class GestionMesasComponent implements OnInit {
       header: 'Eliminar',
       acceptLabel: 'Si',
       rejectLabel: 'No',
+      rejectIcon: 'pi pi-times',
+      acceptIcon: 'pi pi-check',
+      rejectButtonStyleClass: 'p-button-danger p-button-outlined p-button-rounded gap-2',
+      acceptButtonStyleClass: 'p-button-success p-button-rounded gap-2',
       accept: () => { 
         this.gestionMesasService.delete(itemId).subscribe({
           next: (res: {message: string}) => {
