@@ -17,4 +17,6 @@ export class PedidoDto {
 
     public subtotal!: number;
 
+    public comanda!: boolean;
+
 }

@@ -47,4 +47,12 @@ export class GestionComprasApiConstant {
     static readonly URL_EXPORT_REPORTE_DIARIO: string = 
     environment.local + this.BASE +
     'informe';
+
+    static readonly URL_IMPRIMIR_FACTURA: string = 
+    environment.local + this.BASE +
+    'export-factura';
+
+    static readonly URL_IMPRIMIR_COMANDA: string = 
+    environment.local + this.BASE +
+    'export-comanda';
 }

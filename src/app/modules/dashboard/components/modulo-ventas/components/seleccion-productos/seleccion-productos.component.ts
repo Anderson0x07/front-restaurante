@@ -13,6 +13,7 @@ import { PedidoDto } from 'src/app/dtos/ventas/pedido/pedido.dto';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { UsuarioDTO } from 'src/app/dtos/configuracion/usuario/usuario.dto';
 import { url } from 'src/app/modules/shared/utils/Utils';
+import * as printJS from 'print-js';
 
 @Component({
   selector: 'app-seleccion-productos',
@@ -337,7 +338,8 @@ export class SeleccionProductosComponent implements OnInit, OnDestroy {
         producto: productoDto,
         nota: item.nota,
         cantidad: item.cantidadActual,
-        subtotal: item.producto.precio * item.cantidadActual
+        subtotal: item.producto.precio * item.cantidadActual,
+        comanda: false
       };
     });
 
@@ -373,6 +375,7 @@ export class SeleccionProductosComponent implements OnInit, OnDestroy {
       this.vender = false;
       this.resumen = true;
     } else {
+      this.obtenerProductos();
       this.vender = true;
       this.resumen = false;
     }
@@ -446,12 +449,45 @@ export class SeleccionProductosComponent implements OnInit, OnDestroy {
 
 
   private imprimir(compraDto: CompraDto, clienteDomi?: any) {
-  
+
+
+    const pedidoMap = new Map<number, PedidoDto>();
+    
+    if (compraDto.pedidos) {
+      compraDto.pedidos.forEach((pedido: PedidoDto) => {
+        if (pedidoMap.has(pedido.producto.id_producto)) {
+          const existingPedido = pedidoMap.get(pedido.producto.id_producto)!;
+          existingPedido.cantidad += pedido.cantidad;
+          existingPedido.subtotal += pedido.subtotal;
+        } else {
+          pedidoMap.set(pedido.producto.id_producto, { ...pedido });
+        }
+      });
+    }
+
+    const pedidosAgrupados: PedidoDto[] = [];
+    pedidoMap.forEach(pedido => {
+        pedidosAgrupados.push(pedido);
+    });
+
+    compraDto.pedidos = pedidosAgrupados;
+
     this.gestionComprasService.imprimir(compraDto, clienteDomi).subscribe({
       next: (data) => {
         this.formPropina.reset();
         this.formDomi.reset();
-        this.messageService.add({ severity: 'success', summary: 'Éxito', detail: 'Compra realizada con éxito', life: 3000 });
+
+        const file = new Blob([data], { type: 'application/pdf' });
+
+        this.blobToByteArray(file)
+          .then(byteArray => {
+            const base64 = this.byteArrayToBase64(byteArray);
+            printJS({printable: base64, type: 'pdf', base64: true})
+            this.messageService.add({ key: 'imprimir', severity: 'success', summary: 'Éxito', detail: 'Generando factura...', life: 3000 });
+          })
+          .catch(error => {
+            console.error('Error al convertir el Blob a base64:', error);
+          });
 
       },
       error: (error) => {
@@ -499,6 +535,7 @@ export class SeleccionProductosComponent implements OnInit, OnDestroy {
       })
     } else {
       this.modalConfirmarPropina = true
+      this.formPropina.reset();
     }
   }
 
@@ -543,7 +580,7 @@ export class SeleccionProductosComponent implements OnInit, OnDestroy {
 
     if(this.esAdmin()) {
       this.confirmationService.confirm({
-        message: '¿Está seguro que desea canclear la compra?',
+        message: '¿Está seguro que desea cancelar la compra?',
         header: 'Advertencia',
         acceptLabel: 'Si',
         rejectLabel: 'No',
@@ -568,29 +605,57 @@ export class SeleccionProductosComponent implements OnInit, OnDestroy {
     
   }
 
-  ver() {
 
-    fetch('https://6048-181-51-239-65.ngrok-free.app/test', {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json'
+  public enviarComanda(): void {
+    this.gestionComprasService.imprimirComanda(this.compraActual).subscribe({
+      next: (data) => {
+
+        const file = new Blob([data], { type: 'application/pdf' });
+
+        this.blobToByteArray(file)
+          .then(byteArray => {
+            const base64 = this.byteArrayToBase64(byteArray);
+            printJS({printable: base64, type: 'pdf', base64: true});
+            this.messageService.add({ key: 'imprimir', severity: 'success', summary: 'Éxito', detail: 'Generando comanda...', life: 3000 });
+            this.getCompraActualMesa(this.mesa.id_mesa);
+          })
+          .catch(error => {
+            console.error('Error al convertir el Blob a base64:', error);
+          });
+
+          
+
+      },
+      error: () => {
+        this.messageService.add({ key: 'imprimir', severity: 'error', summary: 'Error', detail: 'Ya se imprimió la comanda del pedido actual', life: 3000 });
       }
-      }).then(response => {
-        console.log(response.json())
-      }).catch(err => {
-        console.log(err)
-      }
-
-    )
-
-    // this.gestionComprasService.test().subscribe({
-    //   next: (data) => {
-    //     console.log("Test anderson")
-    //     console.log(data)
-    //   },
-    //   error: (err) => {
-    //     console.log(err)
-    //   }
-    // })
+    })
   }
+
+
+  private blobToByteArray(blob: Blob): Promise<Uint8Array> {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => {
+        if (reader.readyState === FileReader.DONE) {
+          resolve(new Uint8Array(reader.result as ArrayBuffer));
+        } else {
+          reject(reader.error);
+        }
+      };
+      reader.onerror = reject;
+      reader.readAsArrayBuffer(blob);
+    });
+  }
+
+  private byteArrayToBase64(byteArray: Uint8Array): string {
+    let binary = '';
+    const bytes = new Uint8Array(byteArray);
+    const len = bytes.byteLength;
+    for (let i = 0; i < len; i++) {
+      binary += String.fromCharCode(bytes[i]);
+    }
+    return window.btoa(binary);
+  }
+
 }
