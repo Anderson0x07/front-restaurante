@@ -127,8 +127,8 @@
 
             <div class="flex flex-row align-items-center p-2 gap-4"
               [ngClass]="{ 'border-top-1 surface-border': !first }">
-              <img class="w-6rem xl:w-8rem shadow-2 block xl:block mx-auto border-round"
-                [src]="url + item.producto.imagen" [alt]="item.producto.id_producto" />
+              <img class="w-3rem xl:w-3rem shadow-2 block xl:block mx-auto border-round"
+                [src]="getImagen(item.producto)" [alt]="item.producto.id_producto" />
               <div class="flex flex-row justify-content-between align-items-center xl:align-items-start flex-1 gap-4">
                 <div class="flex flex-column gap-2 w-full">
                   <div class="text-xl font-bold text-900">{{ item.producto.nombre }}</div>
@@ -157,8 +157,16 @@
             
           </div>
 
-          <div class="col-12 flex justify-content-end p-2 mt-2">
+          <!-- <div class="col-12 flex justify-content-end p-2 mt-2">
             <p class="text-2xl text-red-600">Total: <span class="font-bold">$ {{detalleCompra.total.toLocaleString()}}</span></p>
+            <p class="text-2xl text-red-600">Propina: <span class="font-bold">$ {{detalleCompra.propina.toLocaleString()}}</span></p>
+          </div> -->
+
+          <div class="col-12 flex justify-content-end font-bold border-top-1 surface-border p-2">
+            <div class="text-right gap-2 mt-3">
+              <p class="text-red-700 font-normal text-2xl">{{'Propina: $ ' + detalleCompra.propina.toLocaleString()}}</p>
+              <p class="text-red-500 text-3xl">{{'Total: $ ' + detalleCompra.total.toLocaleString()}}</p>
+            </div>
           </div>
         </div>
       </ng-template>

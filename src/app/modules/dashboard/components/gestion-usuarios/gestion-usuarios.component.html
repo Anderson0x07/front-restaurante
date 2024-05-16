@@ -41,7 +41,7 @@
         <ng-template pTemplate="body" let-item>
           <tr>
             <td style="width:14%; min-width:10rem;">
-              <img [src]="url + item.imagen" [alt]="item.nombre" width="100" height="100" class="mt-2 mx-auto mb-5 block shadow-2">
+              <img [src]="url + (item.imagen === '' ? 'default-profile' :  item.imagen)" [alt]="item.nombre" width="100" height="100" class="mt-2 mx-auto mb-5 block shadow-2">
 
             </td>
             <td style="min-width:10rem;">

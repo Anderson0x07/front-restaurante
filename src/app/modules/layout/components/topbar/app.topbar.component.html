@@ -9,7 +9,7 @@
 
     <button #topbarmenubutton class="p-link layout-topbar-menu-button layout-topbar-button" (click)="layoutService.showProfileSidebar()">
         
-        <p-avatar [image]="url + usuario.imagen" styleClass="cursor-pointer" 
+        <p-avatar [image]="url + (usuario.imagen === '' ? 'default-profile' :  usuario.imagen)" styleClass="cursor-pointer" 
             size="large" shape="circle">
         </p-avatar>
     </button>

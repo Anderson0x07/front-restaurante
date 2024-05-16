@@ -56,6 +56,7 @@ export class SeleccionProductosComponent implements OnInit, OnDestroy {
   ]
 
   public formPropina!: FormGroup;
+  public formConfirmarPropina!: FormGroup;
 
   public formDomi!: FormGroup;
 
@@ -115,6 +116,10 @@ export class SeleccionProductosComponent implements OnInit, OnDestroy {
       propina: ['', [Validators.required]]
     })
 
+    this.formConfirmarPropina = this.fb.group({
+      propina: ['', [Validators.required]]
+    })
+    
     this.formDomi = this.fb.group({
       documento: ['', [Validators.required]],
       direccion: ['', [Validators.required]],
@@ -184,9 +189,39 @@ export class SeleccionProductosComponent implements OnInit, OnDestroy {
       this.cantidadSeleccionada = 0;
       this.visible = true;
   
-      this.fotoProducto = this.url + productoSeleccionado.imagen;
+      this.fotoProducto = this.getImagen(productoSeleccionado);
       this.productoSeleccionado = productoSeleccionado;
     }
+  }
+
+  public getImagen(producto: ProductoDto): string {
+
+    if(producto.imagen === "") {
+      switch(producto.categoria.nombre) {
+        case 'Burguers':
+          return this.url + 'icono-burguer';
+        case 'Hot Dogs':
+          return this.url + 'icono-hot-dog';
+        case 'Salchis Magicas':
+          return this.url + 'icono-salchipapa';
+        case 'Cortes de Carne':
+          return this.url + 'icono-carne';
+        case 'Frapes':
+          return this.url + 'icono-frappe';
+        case 'Cervezas':
+          return this.url + 'icono-cerveza';
+        case 'Sodas':
+          return this.url + 'icono-soda';
+        case 'Micheladas':
+          return this.url + 'icono-michelada';
+        case 'Cocteles':
+          return this.url + 'icono-coctel';
+        default:
+          break;
+      }
+    } 
+    
+    return this.url + (producto.imagen === "" ? 'default' : producto.imagen);
   }
 
 
@@ -502,7 +537,7 @@ export class SeleccionProductosComponent implements OnInit, OnDestroy {
 
   public confirmarPropina(): void {
 
-    const propinaFinal = this.formPropina.value.propina;
+    const propinaFinal = this.formConfirmarPropina.value.propina;
 
     this.gestionComprasService.propinaCompra(this.compraActual.id_compra, propinaFinal).subscribe({
       next: (data) => {
@@ -526,6 +561,7 @@ export class SeleccionProductosComponent implements OnInit, OnDestroy {
   }
 
   public abrirModalConfirmarPropina(): void {
+    this.formConfirmarPropina.reset();
     if(this.esDomi()) {
       this.gestionComprasService.propinaCompra(this.compraActual.id_compra, 0).subscribe({
         next: (data) => {

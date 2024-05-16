@@ -32,7 +32,7 @@
                                     [severity]="getSeverity(item)"></p-tag>
                             </div>
                             <div class="flex flex-column align-items-center gap-3 py-5">
-                                <img class="w-9 shadow-2 border-round" [src]="url + item.imagen" [alt]="item.nombre" />
+                                <img class="w-9 shadow-2 border-round" [src]="getImagen(item)" [alt]="item.nombre" />
                                 <div class="text-2xl font-bold">{{ item.nombre }}</div>
                             </div>
                             <div class="flex align-items-center justify-content-between">
@@ -63,7 +63,7 @@
                             <div class="col-12" *ngFor="let item of productos; let first = first; let i = index">
                                 
                                 <div class="flex flex-row align-items-center p-2 gap-4" [ngClass]="{ 'border-top-1 surface-border': !first }">
-                                    <img class="w-6rem xl:w-8rem shadow-2 block xl:block mx-auto border-round" [src]="url + item.producto.imagen" [alt]="item.producto.id_producto" />
+                                    <img class="w-6rem xl:w-8rem shadow-2 block xl:block mx-auto border-round" [src]="getImagen(item)" [alt]="item.producto.id_producto" />
                                     <div class="flex flex-row justify-content-between align-items-center xl:align-items-start flex-1 gap-4">
                                         <div class="flex flex-column gap-2">
                                             <div class="text-2xl font-bold text-900">{{ item.producto.nombre }}</div>
@@ -176,7 +176,7 @@
                                 <div *ngIf="esAdmin()">
                                     <p-button icon="pi pi-times" [rounded]="true" [text]="true" [raised]="true" severity="danger" (click)="eliminarPedido(item)"></p-button>
                                 </div>
-                                <img class="w-6rem xl:w-8rem shadow-2 xl:block lg:block mx-auto border-round hidden" [src]="url + item.producto.imagen" [alt]="item.producto.nombre" />
+                                <img class="w-6rem xl:w-8rem shadow-2 xl:block lg:block mx-auto border-round hidden" [src]="getImagen(item.producto)" [alt]="item.producto.nombre" />
                                 <div class="flex flex-row justify-content-between align-items-center xl:align-items-start flex-1 gap-4">
                                     <div class="flex flex-column gap-2">
                                         <div class="text-2xl font-bold text-900">{{ item.producto.nombre }}</div>
@@ -225,7 +225,7 @@
             <div *ngIf="compraActual.pedidos && compraActual.pedidos.length > 0" class="flex justify-content-end font-bold border-top-1 surface-border p-2">
 
                 <div class="text-right gap-2">
-                    <p class="text-blue-700 font-normal text-2xl" *ngIf="formPropina.value.propina">{{'Propina Sugerida: $ ' + (compraActual.total * formPropina.value.propina / 100 | number)}}</p>
+                    <p class="text-blue-700 font-normal text-2xl" *ngIf="!modalConfirmarPropina && formPropina.value.propina">{{'Propina Sugerida: $ ' + (compraActual.total * formPropina.value.propina / 100 | number)}}</p>
                     <p class="text-blue-500 text-3xl">{{'Total: $ ' + (compraActual.total | number)}}</p>
 
                 </div>
@@ -325,17 +325,17 @@
 
     <div class="w-full">
 
-        <form [formGroup]="formPropina" (ngSubmit)="confirmarPropina()">
+        <form [formGroup]="formConfirmarPropina" (ngSubmit)="confirmarPropina()">
             <div class="flex flex-column gap-2 border-round mb-4">
                 <label for="">Propina *</label>
                 <p-inputNumber formControlName="propina" inputId="integeronly" prefix="$ " styleClass="w-full" placeholder="Escriba la propina pagada"> </p-inputNumber>
 
-                <span *ngIf="isValidField(formPropina, 'propina')" class="text-red-500 font-semibold mb-2">
+                <span *ngIf="isValidField(formConfirmarPropina, 'propina')" class="text-red-500 font-semibold mb-2">
                     Este campo es requerido
                 </span>
             </div>
 
-            <p-button class="flex justify-content-center" type="submit" [rounded]="true" icon="pi pi-check" iconPos="right" [disabled]="!formPropina.valid" label="Confirmar"></p-button>
+            <p-button class="flex justify-content-center" type="submit" [rounded]="true" icon="pi pi-check" iconPos="right" [disabled]="!formConfirmarPropina.valid" label="Confirmar"></p-button>
 
         </form>
     </div>
