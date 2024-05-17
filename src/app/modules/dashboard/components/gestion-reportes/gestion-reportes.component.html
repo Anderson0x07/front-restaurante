@@ -80,7 +80,7 @@
               {{item.hora}}
             </td>
             <td style="min-width: 8rem; width: 10rem">
-              <p-tag [value]="'$ ' + (item.total + item.propina).toLocaleString()" [severity]="'success'"></p-tag>
+              <p-tag [value]="'$ ' + item.total.toLocaleString()" [severity]="'success'"></p-tag>
             </td>
             <td style="min-width: 8rem; width: 8rem">
               <p-tag [value]="'$ '+ item.propina.toLocaleString()"

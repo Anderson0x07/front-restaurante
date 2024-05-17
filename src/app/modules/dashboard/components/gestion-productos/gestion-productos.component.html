@@ -55,7 +55,7 @@
                     </td>
                     
                     <td style="min-width: 10rem;">
-                      {{'$ ' + (item.precio | number : "1.1-1")}}
+                      {{'$ ' + (item.precio.toLocaleString())}}
                     </td>
                     <td class="text-center" style="min-width: 5rem;">
                       <p-tag [value]="item.stock ?? 'N/A'" [severity]="item.stock ? 'success' : 'info'" ></p-tag>
