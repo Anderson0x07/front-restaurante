@@ -285,7 +285,7 @@ export class GestionProductosComponent implements OnInit {
         next: (data) => {
 
           this.imagenSeleccionada = data.imagen;
-          this.previewUrl = this.url + data.imagen;
+          this.previewUrl = this.getImagen(data);
           this.formulario.patchValue({
             nombre: data.nombre,
             descripcion: data.descripcion,
