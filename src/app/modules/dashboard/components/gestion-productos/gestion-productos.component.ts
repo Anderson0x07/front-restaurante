@@ -171,12 +171,9 @@ export class GestionProductosComponent implements OnInit {
 
       producto.imagen = "";
 
-      // if (this.imagenSeleccionada != "") {
-      //   producto.imagen = this.imagenSeleccionada + " " + this.fileName;
-      // } else {
-      //   this.messageService.add({severity: 'warn', summary: 'Advertencia', detail: 'Debe seleccionar una imagen para el producto'});
-      //   return;
-      // }
+      if (this.imagenSeleccionada != "") {
+        producto.imagen = this.imagenSeleccionada + " " + this.fileName;
+      }
 
       this.gestionProductosService.save(producto).subscribe({
         next: (res: {message: string}) => {
