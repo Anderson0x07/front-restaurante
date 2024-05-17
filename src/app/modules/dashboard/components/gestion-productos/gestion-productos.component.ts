@@ -271,6 +271,7 @@ export class GestionProductosComponent implements OnInit {
     this.visible = true;
     this.itemId = itemId;
     if (itemId === -1) {
+      this.imagenSeleccionada = '';
       this.previewUrl = '';
 
       this.formulario.reset();
