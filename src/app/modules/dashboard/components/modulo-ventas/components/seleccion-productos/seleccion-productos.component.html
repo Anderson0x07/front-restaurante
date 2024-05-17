@@ -9,16 +9,20 @@
 
         <p-dataView #dv [value]="productosFiltrados" layout="grid">
             <ng-template pTemplate="header">
-                <div class="flex justify-content-between align-items-center w-full">
-                    <div *ngIf="categoriasCargadas" class="flex justify-content-between gap-2">
+                <div class="flex justify-content-between align-items-center w-full gap-2 xl:gap-6">
+
+                    <div class="xl:w-3" *ngIf="categoriasCargadas">
                         <p-dropdown [options]="categorias" optionLabel="label" optionValue="value"
                             placeholder="Ordenar por categoria" [(ngModel)]="categoriaSeleccionada" (onChange)="onSortChange()"
-                            styleClass="mb-2 md:mb-0"></p-dropdown>
+                            styleClass="w-full"></p-dropdown>
+                    </div>
 
-                        <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
-                            <span class="p-input-icon-left">
+                    <div class="xl:w-4">
+                        <div class="w-full">
+
+                            <span class="p-input-icon-left w-full">
                                 <i class="pi pi-search"></i>
-                                <input pInputText type="text" (keyup)="search()" [(ngModel)]="searchText" placeholder="Buscar..."  class="w-full sm:w-auto"/>
+                                <input pInputText type="text" (keyup)="search()" [(ngModel)]="searchText" placeholder="Buscar..." class="w-full" styleClass="w-full"/>
                             </span>
                         </div>
                     </div>
@@ -29,7 +33,7 @@
         
             <ng-template let-productosFiltrados pTemplate="grid">
                 <div class="grid grid-nogutter">
-                    <div class="col-12 sm:col-6 lg:col-3 xl:col-2 p-2" *ngFor="let item of productosFiltrados">
+                    <div class="col-12 sm:col-6 lg:col-3 xl:col-3 p-2" *ngFor="let item of productosFiltrados">
                         <div class="p-3 border-1 surface-border surface-card border-round shadow-4">
                             <div class="flex flex-wrap align-items-center justify-content-between gap-2">
                                 <span class="flex align-items-center gap-2">

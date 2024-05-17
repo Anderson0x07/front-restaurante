@@ -709,6 +709,7 @@ export class SeleccionProductosComponent implements OnInit, OnDestroy {
   searchText: string = '';
 
   public search() {
+    this.categoriaSeleccionada = 'all';
     this.productosFiltrados = this.productos.filter(
       (item) => item.nombre.toLowerCase().includes(this.searchText.toLowerCase())
     );
