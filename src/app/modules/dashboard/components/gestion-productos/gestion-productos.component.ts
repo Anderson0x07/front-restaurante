@@ -205,7 +205,7 @@ export class GestionProductosComponent implements OnInit {
 
     productoEditado.imagen = this.imagenSeleccionada;
 
-    if (!this.imagenSeleccionada.includes('http')) {
+    if (this.imagenSeleccionada != '') {
       productoEditado.imagen = this.imagenSeleccionada + " " + this.fileName;
     } else {
       productoEditado.imagen = "";
@@ -281,6 +281,8 @@ export class GestionProductosComponent implements OnInit {
       this.header = 'Editar elemento';
       this.gestionProductosService.findById(itemId).subscribe({
         next: (data) => {
+
+          console.log(data)
 
           this.imagenSeleccionada = data.imagen;
           this.previewUrl = this.getImagen(data);

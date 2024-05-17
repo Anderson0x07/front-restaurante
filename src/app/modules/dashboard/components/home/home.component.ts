@@ -18,16 +18,15 @@ export class HomeComponent implements OnInit {
         },
         error: (err) => {
           this.error = "No hay información disponible"
-        },
-        complete: () => {
-          const usuario = localStorage.getItem('USUARIO');
-
-          if(usuario) {
-            const nombreUsuario = JSON.parse(usuario).nombre;
-            this.nombreUsuario = nombreUsuario;
-          }
         }
       });
+      
+      const usuario = localStorage.getItem('USUARIO');
+
+      if(usuario) {
+        const nombreUsuario = JSON.parse(usuario).nombre;
+        this.nombreUsuario = nombreUsuario;
+      }
 
       const hora = new Date().getHours();
 

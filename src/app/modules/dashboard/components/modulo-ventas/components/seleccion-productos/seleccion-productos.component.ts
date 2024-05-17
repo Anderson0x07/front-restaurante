@@ -228,7 +228,7 @@ export class SeleccionProductosComponent implements OnInit, OnDestroy {
   public hayCarrito(): boolean {
     let carritoCompras = JSON.parse(localStorage.getItem('carritoCompras')+'');
 
-    return carritoCompras;
+    return carritoCompras && carritoCompras.length > 0;
   }
 
   public verCarritoCompras(): void {
@@ -334,15 +334,24 @@ export class SeleccionProductosComponent implements OnInit, OnDestroy {
           }
         }
   
-      } else if(operacion == 'resta' && cantidadActual > 1){
-        productoExistente.cantidadActual--;
+      } else if(operacion == 'resta'){
+        if (cantidadActual > 1) {
+          productoExistente.cantidadActual--;
 
-        if(productoFiltrado.stock !== null) {
-          productoFiltrado.stock++;
+          if (productoFiltrado.stock !== null) {
+              productoFiltrado.stock++;
+          }
+        } else if (cantidadActual === 1) {
+          this.carritoCompras = this.carritoCompras.filter((producto: any) => producto.producto.id_producto !== item.producto.id_producto);
+
+          if (productoFiltrado.stock !== null) {
+              productoFiltrado.stock++;
+          }
         }
       }
     }
 
+    this.visibleCarrito = this.carritoCompras.length > 0;
     localStorage.setItem('carritoCompras', JSON.stringify(this.carritoCompras));
   }
 
@@ -695,6 +704,14 @@ export class SeleccionProductosComponent implements OnInit, OnDestroy {
       binary += String.fromCharCode(bytes[i]);
     }
     return window.btoa(binary);
+  }
+
+  searchText: string = '';
+
+  public search() {
+    this.productosFiltrados = this.productos.filter(
+      (item) => item.nombre.toLowerCase().includes(this.searchText.toLowerCase())
+    );
   }
 
 }

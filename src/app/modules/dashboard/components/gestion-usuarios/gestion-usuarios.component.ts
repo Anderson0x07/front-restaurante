@@ -202,7 +202,7 @@ export class GestionUsuariosComponent implements OnInit {
 
     usuarioEditado.imagen = this.imagenSeleccionada;
 
-    if (!this.imagenSeleccionada.includes('http')) {
+    if (this.imagenSeleccionada != '') {
       usuarioEditado.imagen = this.imagenSeleccionada + " " + this.fileName;
     } else {
       usuarioEditado.imagen = "";
