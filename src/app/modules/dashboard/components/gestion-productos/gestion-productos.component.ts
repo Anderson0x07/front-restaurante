@@ -116,7 +116,7 @@ export class GestionProductosComponent implements OnInit {
   private initForm(): void {
     this.formulario = this.fb.group({
       nombre: ['', Validators.required],
-      descripcion: ['', Validators.required],
+      descripcion: [''],
       precio: ['', Validators.required],
       descuento: [''],
       stock: [''],

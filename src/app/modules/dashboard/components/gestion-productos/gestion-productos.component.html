@@ -133,12 +133,9 @@
             </span>
           </div>
           <div class="flex flex-column gap-2 border-round mb-4">
-            <label for="">Descripcion *</label>
-            <textarea rows="3" maxlength="200" pInputTextarea formControlName="descripcion" [autoResize]="true" 
+            <label for="">Descripción</label>
+            <textarea rows="3" maxlength="200" pInputTextarea formControlName="descripcion" [autoResize]="true"
               class="h-full w-full" placeholder="Escriba la descripción del producto"></textarea>
-            <span *ngIf="isValidField('descripcion')" class="text-red-500 font-semibold mb-2">
-              Este campo es requerido
-            </span>
           </div>
 
           <div class="flex flex-column gap-2 border-round mb-4">
