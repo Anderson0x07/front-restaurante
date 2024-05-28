@@ -22,4 +22,6 @@ export class CompraDto {
 
     public pedidos?: Array<PedidoDto> | any[];
 
+    public facturaFinal: boolean = false;
+
 }

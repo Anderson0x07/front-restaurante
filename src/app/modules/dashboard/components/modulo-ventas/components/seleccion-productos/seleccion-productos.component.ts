@@ -528,7 +528,10 @@ export class SeleccionProductosComponent implements OnInit, OnDestroy {
             const base64 = this.byteArrayToBase64(byteArray);
             printJS({printable: base64, type: 'pdf', base64: true})
             this.modalDomicilio = false;
-            this.messageService.add({ key: 'imprimir', severity: 'success', summary: 'Éxito', detail: 'Generando factura...', life: 3000 });
+
+            if(!compraDto.facturaFinal) {
+              this.messageService.add({ key: 'imprimir', severity: 'success', summary: 'Éxito', detail: 'Generando factura...', life: 3000 });
+            }
           })
           .catch(error => {
             console.error('Error al convertir el Blob a base64:', error);
@@ -550,9 +553,9 @@ export class SeleccionProductosComponent implements OnInit, OnDestroy {
 
     this.gestionComprasService.propinaCompra(this.compraActual.id_compra, propinaFinal).subscribe({
       next: (data) => {
-        // this.imprimir(data, null);
-        this.volverSeleccionMesa();
         this.messageService.add({ key: 'imprimir', severity: 'success', summary: 'Éxito', detail: 'Venta completada con éxito', life: 3000 });
+        this.imprimir(data, null);
+        this.volverSeleccionMesa();
 
       },
       error: (err) => {
@@ -575,6 +578,8 @@ export class SeleccionProductosComponent implements OnInit, OnDestroy {
     if(this.esDomi()) {
       this.gestionComprasService.propinaCompra(this.compraActual.id_compra, 0).subscribe({
         next: (data) => {
+          this.messageService.add({ key: 'imprimir', severity: 'success', summary: 'Éxito', detail: 'Venta completada con éxito', life: 3000 });
+          this.imprimir(data, null);
           this.volverSeleccionMesa();
         },
         error: (err) => {

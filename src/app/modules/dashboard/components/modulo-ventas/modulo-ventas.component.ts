@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { MessageService } from 'primeng/api';
 import { MesaDto } from 'src/app/dtos/configuracion/mesa/mesa.dto';
 
@@ -7,11 +7,8 @@ import { MesaDto } from 'src/app/dtos/configuracion/mesa/mesa.dto';
   templateUrl: './modulo-ventas.component.html',
   providers: [MessageService]
 })
-export class ModuloVentasComponent implements OnInit {
+export class ModuloVentasComponent {
 
-    ngOnInit(): void {
-
-    }
 
     public mesaSeleccionada!: MesaDto;
     public mostrarSeleccionProductos = false;

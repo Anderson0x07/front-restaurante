@@ -83,6 +83,7 @@ export class GestionComprasService {
                 id_mesa: compraDto.mesa.id_mesa,
                 numero: compraDto.mesa.numero
             },
+            facturaFinal: compraDto.facturaFinal,
             fecha_compra: compraDto.fecha_compra,
             hora: compraDto.hora,
             total: compraDto.total,
