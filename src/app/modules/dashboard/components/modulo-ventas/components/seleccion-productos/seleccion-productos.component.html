@@ -185,7 +185,7 @@
                     <div class="grid grid-nogutter">
                         <div class="col-12" *ngFor="let item of pedidos; let first = first">
                             <div class="flex flex-row align-items-center p-2 gap-4 py-4" [ngClass]="{ 'border-top-1 surface-border': !first }">
-                                <div *ngIf="esAdmin()">
+                                <div *ngIf="esAdmin() && !compraActual.impresion">
                                     <p-button icon="pi pi-times" [rounded]="true" [text]="true" [raised]="true" severity="danger" (click)="eliminarPedido(item)"></p-button>
                                 </div>
                                 <img class="w-6rem xl:w-8rem shadow-2 xl:block lg:block mx-auto border-round hidden" [src]="getImagen(item.producto)" [alt]="item.producto.nombre" />
@@ -221,7 +221,7 @@
                     </div>
                 </ng-template>
                 <ng-template pTemplate="empty">
-                    <div *ngIf="esAdmin(); else mesero" class="flex justify-content-center">
+                    <div *ngIf="esAdmin() && !compraActual.impresion; else mesero" class="flex justify-content-center">
                         <p-button icon="pi pi-times" label="Cancelar compra" [rounded]="true" [text]="true" [raised]="true" severity="danger" (click)="eliminarCompra(compraActual)"></p-button>
 
                     </div>

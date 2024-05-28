@@ -108,7 +108,7 @@
 
 <p-dialog *ngIf="visibleDetalleCompra" header="Pedido" [(visible)]="visibleDetalleCompra" [modal]="true"
   [style]="{ width: '500px', margin: '5px' }" [draggable]="false" [resizable]="false">
-  <div *ngIf="detalleCompra?.pedidos.length > 0">
+  <ng-container *ngIf="detalleCompra?.pedidos.length > 0; else compraCancelada">
 
     <div class="flex justify-content-between">
       <p>
@@ -171,7 +171,12 @@
       <p-button icon="pi pi-times" severity="secondary" label="Cerrar" (click)="visibleDetalleCompra = false"></p-button>
     </div>
 
-  </div>
+  </ng-container>
+  <ng-template #compraCancelada>
+    <div class="text-center text-semibold p-2 border-1 surface-border surface-card border-round ">
+      Venta anulada.
+    </div>
+  </ng-template>
 </p-dialog>
 
 <p-toast position="bottom-center" key="reporte">

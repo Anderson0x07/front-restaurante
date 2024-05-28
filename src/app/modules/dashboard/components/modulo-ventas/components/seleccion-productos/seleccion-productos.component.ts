@@ -550,6 +550,7 @@ export class SeleccionProductosComponent implements OnInit, OnDestroy {
 
     this.gestionComprasService.propinaCompra(this.compraActual.id_compra, propinaFinal).subscribe({
       next: (data) => {
+        // this.imprimir(data, null);
         this.volverSeleccionMesa();
         this.messageService.add({ key: 'imprimir', severity: 'success', summary: 'Éxito', detail: 'Venta completada con éxito', life: 3000 });
 
