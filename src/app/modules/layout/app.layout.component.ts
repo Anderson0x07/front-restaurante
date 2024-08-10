@@ -96,6 +96,14 @@ export class AppLayoutComponent implements OnInit {
             // CONSULTAR EL USUARIO COMPLETO DE ACUERDO AL EMAIL
             this.seguridadService.getUser(usuario.username).subscribe({
                 next: (data: UsuarioDTO) => {
+
+                    if(!data.estado) {
+                        this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Usuario inactivo', life: 3000 });
+                        localStorage.clear();
+                        this.router.navigate(['/login']);
+                        return;
+                    }
+
                     this.usuario = data;
                     localStorage.setItem('USUARIO', JSON.stringify(data));
                     this.gestionarMenu(data.rol.nombre);
