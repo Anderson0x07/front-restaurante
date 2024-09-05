@@ -91,6 +91,9 @@ export class AppLayoutComponent implements OnInit {
     usuario: UsuarioDTO = new UsuarioDTO();
 
     ngOnInit(): void {
+
+        this.programarPeticionApi();
+
         let usuario: AutenticacionResponseDTO = JSON.parse(localStorage.getItem('AUTH') + '');
         if (usuario) {
             // CONSULTAR EL USUARIO COMPLETO DE ACUERDO AL EMAIL
@@ -115,6 +118,33 @@ export class AppLayoutComponent implements OnInit {
                 }
             })
         }
+    }
+
+    
+    private programarPeticionApi(): void {
+        const ahora = new Date();
+        const horaObjetivo = new Date(ahora);
+        
+        horaObjetivo.setHours(23, 35, 0, 0);
+        
+        let diferencia = horaObjetivo.getTime() - ahora.getTime();
+
+        console.log(diferencia)
+
+        // Si la hora objetivo ya pasó hoy, programa para el mismo horario del día siguiente
+        if (diferencia < 0) {
+            diferencia += 24 * 60 * 60 * 1000; // Agregar 24 horas en milisegundos
+        }
+
+        // Programar la petición a la API
+        setTimeout(() => this.hacerPeticionApi(), diferencia);
+    }
+
+    private hacerPeticionApi(): void {
+        const auth = JSON.parse(localStorage.getItem('AUTH')+'');
+        this.seguridadService.getUser(auth.username).subscribe(response => {
+            console.log('Respuesta de la API:', response);
+        });
     }
 
     private gestionarMenu(rol: string) {
