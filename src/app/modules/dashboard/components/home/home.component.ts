@@ -12,33 +12,31 @@ export class HomeComponent implements OnInit {
 
   ngOnInit(): void {
 
-      this.gestionEstadisticasService.getStats().subscribe({
-        next: (data) => {
-          this.estadisticas = data;
-        },
-        error: (err) => {
-          this.error = "No hay información disponible"
-        }
-      });
-      
-      const usuario = localStorage.getItem('USUARIO');
-
-      if(usuario) {
-        const nombreUsuario = JSON.parse(usuario).nombre;
-        this.nombreUsuario = nombreUsuario;
+    this.gestionEstadisticasService.getStats().subscribe({
+      next: (data) => {
+        this.estadisticas = data;
+      },
+      error: (err) => {
+        this.error = "No hay información disponible"
       }
+    });
+    
+    const usuario = localStorage.getItem('USUARIO');
 
-      const hora = new Date().getHours();
+    if(usuario) {
+      const nombreUsuario = JSON.parse(usuario).nombre;
+      this.nombreUsuario = nombreUsuario;
+    }
 
-      if (hora >= 0 && hora < 12) {
-        this.saludo = 'Buenos días';
-      } else if (hora >= 12 && hora < 18) {
-        this.saludo = 'Buenas tardes';
-      } else {
-        this.saludo = 'Buenas noches';
-      }
+    const hora = new Date().getHours();
 
-      
+    if (hora >= 0 && hora < 12) {
+      this.saludo = 'Buenos días';
+    } else if (hora >= 12 && hora < 18) {
+      this.saludo = 'Buenas tardes';
+    } else {
+      this.saludo = 'Buenas noches';
+    }
 
   }
 
