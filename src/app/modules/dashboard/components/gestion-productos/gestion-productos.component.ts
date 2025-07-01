@@ -319,7 +319,7 @@ export class GestionProductosComponent implements OnInit {
   public search() {
     this.listaFiltro = this.registros.filter(
       (item) => item.nombre.toLowerCase().includes(this.searchText.toLowerCase()) || 
-        item.descripcion.toLowerCase().includes(this.searchText.toLowerCase()) || 
+        item.descripcion?.toLowerCase().includes(this.searchText.toLowerCase()) || 
         item.precio.toString().includes(this.searchText) ||
         item.stock?.toString().includes(this.searchText) ||
         item.descuento?.toString().includes(this.searchText) ||

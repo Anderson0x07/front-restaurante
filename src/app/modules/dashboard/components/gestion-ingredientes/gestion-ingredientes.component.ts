@@ -197,7 +197,7 @@ export class GestionIngredientesComponent implements OnInit {
     this.listaFiltro = this.registros.filter(
       (ingrediente) => ingrediente.nombre.toLowerCase().includes(this.searchText.toLowerCase()) ||
                       ingrediente.unidad_medida.toLowerCase().includes(this.searchText.toLowerCase()) || 
-                      ingrediente.descripcion.toLowerCase().includes(this.searchText.toLowerCase())
+                      ingrediente.descripcion?.toLowerCase().includes(this.searchText.toLowerCase())
     );
   }
 

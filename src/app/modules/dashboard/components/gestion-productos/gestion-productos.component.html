@@ -50,8 +50,8 @@
                     <td style="min-width:10rem;">
                         {{item.nombre}}
                     </td>
-                    <td style="min-width:10rem;">
-                        {{item.descripcion | acortarTexto:20}}
+                    <td [title]="item.descripcion" style="min-width:10rem;">
+                        {{item.descripcion ?? '--' | acortarTexto:20}}
                     </td>
                     
                     <td style="min-width: 10rem;">
