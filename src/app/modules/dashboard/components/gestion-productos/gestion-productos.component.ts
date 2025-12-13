@@ -347,10 +347,11 @@ export class GestionProductosComponent implements OnInit {
         case 'cervezas':
           return this.url + 'icono-cerveza';
         case 'sodas':
-        case 'malteadas':
+        case 'bebidas':
           return this.url + 'icono-soda';
         case 'micheladas':
           return this.url + 'icono-michelada';
+        case 'malteadas':
         case 'cocteles':
           return this.url + 'icono-coctel';
         default:
