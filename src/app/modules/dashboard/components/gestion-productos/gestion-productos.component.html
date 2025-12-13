@@ -30,7 +30,7 @@
                       <th pSortableColumn="descripcion">Descripción <p-sortIcon field="descripcion"></p-sortIcon></th>
                       <th pSortableColumn="precio">Precio <p-sortIcon field="precio"></p-sortIcon></th>
                       <th class="text-center" pSortableColumn="stock">Stock <p-sortIcon field="stock"></p-sortIcon></th>
-                      <th class="text-center" pSortableColumn="descuento">Descuento <p-sortIcon field="descuento"></p-sortIcon></th>
+                      <!-- <th class="text-center" pSortableColumn="descuento">Descuento <p-sortIcon field="descuento"></p-sortIcon></th> -->
                       <th pSortableColumn="estado">Estado <p-sortIcon field="estado"></p-sortIcon></th>
                       <th class="text-center">Acciones</th>
                   </tr>
@@ -61,9 +61,9 @@
                       <p-tag [value]="item.stock ?? 'N/A'" [severity]="item.stock ? 'success' : 'info'" ></p-tag>
                     </td>
 
-                    <td class="text-center" style="min-width: 5rem;">
+                    <!-- <td class="text-center" style="min-width: 5rem;">
                       <p-tag [value]="item.descuento ? item.descuento+'%' : 'N/A'" [severity]="item.descuento ? 'success' : 'info'" ></p-tag>
-                    </td>
+                    </td> -->
 
                     <td style="min-width: 8rem;">
                       <p-tag [value]="item.estado ? 'Activo' : 'Inactivo'" [severity]="item.estado ? 'success' : 'danger'" ></p-tag>
@@ -147,11 +147,11 @@
             </span>
           </div>
 
-          <div class="flex flex-column gap-2 border-round mb-4">
+          <!-- <div class="flex flex-column gap-2 border-round mb-4">
             <label for="">Descuento</label>
             <p-dropdown appendTo="body" [options]="descuentos" formControlName="descuento" optionLabel="label" optionValue="value" placeholder="Seleccione" styleClass="w-full"></p-dropdown>
 
-          </div>
+          </div> -->
 
           <div class="flex flex-column gap-2 border-round mb-4">
             <label for="">Stock</label>

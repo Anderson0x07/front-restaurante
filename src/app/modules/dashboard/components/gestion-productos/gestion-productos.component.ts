@@ -330,24 +330,28 @@ export class GestionProductosComponent implements OnInit {
   public getImagen(producto: ProductoDto): string {
 
     if(producto.imagen === "") {
-      switch(producto.categoria.nombre) {
-        case 'Burguers':
+      switch(producto.categoria.nombre.toLowerCase()) {
+        case 'hamburguesas':
           return this.url + 'icono-burguer';
-        case 'Hot Dogs':
+        case 'hot dogs':
           return this.url + 'icono-hot-dog';
-        case 'Salchis Magicas':
+        case 'salchipapas':
+        case 'salchipollos':
+        case 'picadas':
+        case 'papas locas':
           return this.url + 'icono-salchipapa';
-        case 'Cortes de Carne':
+        case 'cortes de carne':
           return this.url + 'icono-carne';
-        case 'Frapes':
+        case 'frappes':
           return this.url + 'icono-frappe';
-        case 'Cervezas':
+        case 'cervezas':
           return this.url + 'icono-cerveza';
-        case 'Sodas':
+        case 'sodas':
+        case 'malteadas':
           return this.url + 'icono-soda';
-        case 'Micheladas':
+        case 'micheladas':
           return this.url + 'icono-michelada';
-        case 'Cocteles':
+        case 'cocteles':
           return this.url + 'icono-coctel';
         default:
           break;
