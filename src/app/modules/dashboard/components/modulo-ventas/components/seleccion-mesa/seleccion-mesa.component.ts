@@ -36,7 +36,7 @@ export class SeleccionMesaComponent implements OnInit {
                 return 1;
             }
 
-            return a.numero.localeCompare(b.numero);
+            return b.numero.localeCompare(a.numero);
           });
 
       }
@@ -63,6 +63,19 @@ export class SeleccionMesaComponent implements OnInit {
   onSeleccionMesa(mesaSeleccionada: MesaDto): void {
     localStorage.removeItem('carritoCompras');
     this.seleccionMesa.emit(mesaSeleccionada)
+  }
+
+  getUrl(numeroMesa: string): string {
+
+    if(numeroMesa.includes('domi')) {
+      return '/assets/domi.png';
+    }
+
+    if(numeroMesa.startsWith('b')) {
+      return '/assets/barra.png';
+    }
+
+    return '/assets/mesa.jpg';
   }
 
 }
