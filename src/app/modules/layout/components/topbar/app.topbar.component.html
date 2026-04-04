@@ -1,15 +1,17 @@
 <div class="layout-topbar">
     <a class="layout-topbar-logo" routerLink="">
-        <img src="assets/logo-posse.jpeg" alt="logo">
+        <img [src]="urlLogo" alt="logo">
     </a>
 
-    <button #menubutton class="p-link layout-menu-button layout-topbar-button" (click)="layoutService.onMenuToggle()">
-        <i class="pi pi-bars"></i>
-    </button>
+    <ng-container *ngIf="usuario.rol && usuario.rol?.nombre != 'MESERO'">
+        <button #menubutton class="p-link layout-menu-button layout-topbar-button" (click)="layoutService.onMenuToggle()">
+            <i class="pi pi-bars"></i>
+        </button>
+    </ng-container>
 
     <button #topbarmenubutton class="p-link layout-topbar-menu-button layout-topbar-button" (click)="layoutService.showProfileSidebar()">
         
-        <p-avatar [image]="url + (usuario.imagen === '' ? 'default-profile' :  usuario.imagen)" styleClass="cursor-pointer" 
+        <p-avatar [image]="url + (usuario.imagen === '' || !usuario.imagen ? 'default-profile' :  usuario.imagen)" styleClass="cursor-pointer" 
             size="large" shape="circle">
         </p-avatar>
     </button>

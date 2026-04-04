@@ -4,7 +4,7 @@
     <ng-container *ngIf="!cambioPassword; else cambiarPassword">
 
       <div class="text-center">
-        <img src="assets/logo-posse.jpeg" alt="Image" height="100" class="mb-3">
+        <img [src]="urlLogo" alt="Image" height="100" class="mb-3">
         <div class="text-3xl font-medium">Iniciar sesión</div>
       </div>
       <form [formGroup]="loginForm">
@@ -15,7 +15,7 @@
         </div>
         <div class="mb-3">
           <label for="password" class="ml-1 block text-900 font-medium">Contraseña</label>
-          <input formControlName="password" id="password" type="password" placeholder="••••••••" pInputText
+          <input formControlName="password" id="password" type="password" placeholder="Contraseña" pInputText
             class="w-full">
         </div>
         <div class="flex justify-between mb-6">
@@ -29,7 +29,7 @@
     <ng-template #cambiarPassword>
 
       <div class="text-center mb-3">
-        <img src="assets/logo-posse.jpeg" alt="Image" height="100" class="mb-3">
+        <img [src]="urlLogo" alt="Image" height="100" class="mb-3">
 
         <h2 class="text-3xl font-medium">{{getInfo().titulo}}</h2>
         <p class="text-md font-normal">{{getInfo().descripcion}} </p>

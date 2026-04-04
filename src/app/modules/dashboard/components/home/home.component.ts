@@ -24,7 +24,10 @@ export class HomeComponent implements OnInit {
     const usuario = localStorage.getItem('USUARIO');
 
     if(usuario) {
-      const nombreUsuario = JSON.parse(usuario).nombre;
+
+      const user = JSON.parse(usuario);
+
+      const nombreUsuario = user.nombre + ' ' + user.apellido;
       this.nombreUsuario = nombreUsuario;
     }
 
@@ -55,13 +58,13 @@ export class HomeComponent implements OnInit {
 
     if(producto.imagen === "") {
       switch(producto.categoria.nombre) {
-        case 'Burguers':
+        case 'Hamburguesas':
           return this.url + 'icono-burguer';
-        case 'Hot Dogs':
+        case 'Perros':
           return this.url + 'icono-hot-dog';
-        case 'Salchis Magicas':
+        case 'Salchipapas':
           return this.url + 'icono-salchipapa';
-        case 'Cortes de Carne':
+        case 'Carnes':
           return this.url + 'icono-carne';
         case 'Frapes':
           return this.url + 'icono-frappe';

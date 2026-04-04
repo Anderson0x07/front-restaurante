@@ -1,6 +1,6 @@
 <div class="layout-wrapper" [ngClass]="containerClass">
     <app-topbar [usuario]="usuario"></app-topbar>
-    <div class="layout-sidebar">
+    <div class="layout-sidebar" *ngIf="usuario.rol && usuario.rol?.nombre != 'MESERO'">
         <app-sidebar [modulos]="modulos"></app-sidebar>
     </div>
     <div class="layout-main-container">

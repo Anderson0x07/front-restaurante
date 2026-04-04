@@ -7,7 +7,7 @@ import { GestionProductosComponent } from './components/gestion-productos/gestio
 import { GestionIngredientesComponent } from './components/gestion-ingredientes/gestion-ingredientes.component';
 import { GestionInventarioComponent } from './components/gestion-inventario/gestion-inventario.component';
 import { GestionUsuariosComponent } from './components/gestion-usuarios/gestion-usuarios.component';
-import { AdministradorGuard } from 'src/app/auth-guard/autenticacion.guard';
+import { AdminInventarioGuard, AdministradorGuard } from 'src/app/auth-guard/autenticacion.guard';
 import { RedirectComponent } from './redireccionar.component';
 import { MiPerfilComponent } from './components/mi-perfil/mi-perfil.component';
 import { GestionReportesComponent } from './components/gestion-reportes/gestion-reportes.component';
@@ -25,8 +25,8 @@ import { GestionReportesComponent } from './components/gestion-reportes/gestion-
             { path: 'mesas', component: GestionMesasComponent, canActivate: [AdministradorGuard] },
             { path: 'categorias', component: GestionCategoriasComponent, canActivate: [AdministradorGuard] },
             { path: 'productos', component: GestionProductosComponent, canActivate: [AdministradorGuard] },
-            { path: 'ingredientes', component: GestionIngredientesComponent, canActivate: [AdministradorGuard] },
-            { path: 'inventario', component: GestionInventarioComponent, canActivate: [AdministradorGuard] },
+            { path: 'ingredientes', component: GestionIngredientesComponent, canActivate: [AdminInventarioGuard] },
+            { path: 'inventario', component: GestionInventarioComponent, canActivate: [AdminInventarioGuard] },
             { path: 'usuarios', component: GestionUsuariosComponent, canActivate: [AdministradorGuard] },
             { path: 'reportes', component: GestionReportesComponent, canActivate: [AdministradorGuard] },
             { path: 'mi-perfil', component: MiPerfilComponent },

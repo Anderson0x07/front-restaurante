@@ -49,7 +49,7 @@ export class AutenticacionGuard implements CanActivate {
    */
   private canActivateUserLogin(url: string, rol: string): boolean {
     if (url.includes('login')) {
-      if(rol == 'ROLE_ADMINISTRADOR') {
+      if(rol == 'ROLE_ADMINISTRADOR' || rol == 'ROLE_INVENTARIO') {
         this.router.navigate(['admin']);
       } else {
         this.router.navigate(['mesero'])
@@ -120,6 +120,44 @@ export class MeseroGuard implements CanActivate {
 @Injectable({
   providedIn: 'root'
 })
+export class InventarioGuard implements CanActivate {
+  constructor(private router: Router) {}
+
+  canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
+
+    let auth: AutenticacionResponseDTO = JSON.parse(localStorage.getItem('AUTH')+'');
+
+    if (auth.rol == 'ROLE_INVENTARIO') {
+      return true;
+    } else {
+      this.router.navigateByUrl('/error');
+      return false;
+    }
+  }
+}
+
+@Injectable({
+  providedIn: 'root'
+})
+export class AdminInventarioGuard implements CanActivate {
+  constructor(private router: Router) {}
+
+  canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
+
+    let auth: AutenticacionResponseDTO = JSON.parse(localStorage.getItem('AUTH')+'');
+
+    if (auth.rol == 'ROLE_ADMINISTRADOR' || auth.rol == 'ROLE_INVENTARIO') {
+      return true;
+    } else {
+      this.router.navigateByUrl('/error');
+      return false;
+    }
+  }
+}
+
+@Injectable({
+  providedIn: 'root'
+})
 export class RolResolver implements CanActivate {
   constructor(private router: Router) {}
 
@@ -131,6 +169,8 @@ export class RolResolver implements CanActivate {
       this.router.navigate(['/dashboard']);
     } else if (auth.rol == 'ROLE_MESERO') {
       this.router.navigate(['/ventas']);
+    } else if(auth.rol == 'ROLE_INVENTARIO') {
+      this.router.navigate(['/inventario']);
     } else {
       this.router.navigate(['/error']);
     }

@@ -1,5 +1,5 @@
 import { Routes } from '@angular/router';
-import { AdministradorGuard, AutenticacionGuard, MeseroGuard } from './auth-guard/autenticacion.guard';
+import { AdminInventarioGuard, AutenticacionGuard, MeseroGuard } from './auth-guard/autenticacion.guard';
 import { AppLayoutComponent } from './modules/layout/app.layout.component';
 import { MiPerfilComponent } from './modules/dashboard/components/mi-perfil/mi-perfil.component';
 
@@ -12,7 +12,7 @@ export const ROUTES: Routes = [
     },
     {
       path: 'admin', component: AppLayoutComponent,
-      canActivate: [AutenticacionGuard, AdministradorGuard],
+      canActivate: [AutenticacionGuard, AdminInventarioGuard],
       children: [
         { path: '', loadChildren: () => import('./modules/dashboard/dashboard.module').then(m => m.DashboardModule) },
       ]

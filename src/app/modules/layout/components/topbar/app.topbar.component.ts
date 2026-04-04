@@ -3,6 +3,7 @@ import { LayoutService } from "../../service/app.layout.service";
 import { Router } from '@angular/router';
 import { UsuarioDTO } from 'src/app/dtos/configuracion/usuario/usuario.dto';
 import { url } from 'src/app/modules/shared/utils/Utils';
+import { Constants } from 'src/app/constant/constants';
 
 @Component({
     selector: 'app-topbar',
@@ -24,6 +25,8 @@ export class AppTopBarComponent {
     ) { }
 
     public url: string = url;
+
+    public urlLogo: string = Constants.URL_LOGO
 
     cerrarSesion(): void {
         localStorage.clear();

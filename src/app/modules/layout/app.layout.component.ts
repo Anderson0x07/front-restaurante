@@ -88,6 +88,24 @@ export class AppLayoutComponent implements OnInit {
         }
     ]
 
+    public modulosInventario: Array<any> = [
+        {
+            label: 'Modulos',
+            items: [
+                {
+                    label: 'Gestión de Ingredientes',
+                    routerLink: '/admin/ingredientes',
+                    icon: 'pi pi-slack'
+                },
+                {
+                    label: 'Gestión de Inventario',
+                    routerLink: '/admin/inventario',
+                    icon: 'pi pi-server'
+                },
+            ]
+        }
+    ]
+
     usuario: UsuarioDTO = new UsuarioDTO();
 
     ngOnInit(): void {
@@ -150,6 +168,8 @@ export class AppLayoutComponent implements OnInit {
     private gestionarMenu(rol: string) {
         if (rol == 'MESERO') {
             this.modulos = this.modulosMeseros
+        } else if(rol == 'INVENTARIO') {
+            this.modulos = this.modulosInventario
         }
     }
 

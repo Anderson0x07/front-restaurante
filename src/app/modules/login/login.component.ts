@@ -4,6 +4,8 @@ import { SeguridadService } from './service/seguridad.service';
 import { Router } from '@angular/router';
 import { MenuItem, MessageService } from 'primeng/api';
 import { HttpErrorResponse } from '@angular/common/http';
+import { Constants } from 'src/app/constant/constants';
+import { LayoutService } from '../layout/service/app.layout.service';
 
 @Component({
   selector: 'app-login',
@@ -16,12 +18,15 @@ export class LoginComponent implements OnInit {
     private fb: FormBuilder,
     private seguridadService: SeguridadService,
     private router: Router,
-    private messageService: MessageService
+    private messageService: MessageService,
+    public layoutService: LayoutService,
   ) { }
 
   ngOnInit() {
     this.initForm();
   }
+
+  urlLogo: string = Constants.URL_LOGO;
 
   loginForm!: FormGroup;
   cambioPasswordForm!: FormGroup;
@@ -51,9 +56,10 @@ export class LoginComponent implements OnInit {
         next: (data) => {
           localStorage.setItem('AUTH', JSON.stringify(data))
 
-          if(data.rol == 'ROLE_ADMINISTRADOR') {
+          if(data.rol == 'ROLE_ADMINISTRADOR' || data.rol == 'ROLE_INVENTARIO') {
             this.router.navigate(['admin']);
           } else {
+            this.layoutService.onMenuToggle(true);
             this.router.navigate(['mesero'])
           }
         },

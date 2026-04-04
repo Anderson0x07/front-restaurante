@@ -17,6 +17,8 @@ export class RedirectComponent implements OnInit {
       this.router.navigate(['/admin/dashboard']);
     } else if (auth.rol == 'ROLE_MESERO') {
       this.router.navigate(['/mesero/ventas']);
+    } else if (auth.rol == 'ROLE_INVENTARIO') {
+      this.router.navigate(['/admin/inventario']);
     } else {
       this.router.navigate(['/error']);
     }

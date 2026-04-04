@@ -69,7 +69,9 @@ export class LayoutService {
         );
     }
 
-    onMenuToggle() {
+
+    onMenuToggle(isMesero: boolean = false) {
+        
         if (this.isOverlay()) {
             this.state.overlayMenuActive = !this.state.overlayMenuActive;
             if (this.state.overlayMenuActive) {
@@ -78,11 +80,9 @@ export class LayoutService {
         }
 
         if (this.isDesktop()) {
-            this.state.staticMenuDesktopInactive =
-                !this.state.staticMenuDesktopInactive;
+            this.state.staticMenuDesktopInactive = isMesero ? true : !this.state.staticMenuDesktopInactive;
         } else {
-            this.state.staticMenuMobileActive =
-                !this.state.staticMenuMobileActive;
+            this.state.staticMenuMobileActive = isMesero ? true : !this.state.staticMenuMobileActive;
 
             if (this.state.staticMenuMobileActive) {
                 this.overlayOpen.next(null);
